@@ -1,3 +1,9 @@
+import torch
+import torch.nn as nn
+import torchvision
+import copy
+from torch.nn import functional as F
+
 class PreActBlock(nn.Module):
     """Pre-activation version of the BasicBlock."""
 
