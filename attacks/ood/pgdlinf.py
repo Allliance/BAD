@@ -1,4 +1,4 @@
-from attacks.attack import Attack
+from ..attack import Attack
 
 class PGD(Attack):
     r"""

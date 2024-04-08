@@ -1,3 +1,5 @@
+from ..attack import Attack
+
 class PGD(Attack):
     r"""
     PGD in the paper 'Towards Deep Learning Models Resistant to Adversarial Attacks'
