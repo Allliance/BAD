@@ -1,4 +1,4 @@
-class PGDL2(Attack):
+class PGD(Attack):
     r"""
     PGD in the paper 'Towards Deep Learning Models Resistant to Adversarial Attacks'
     [https://arxiv.org/abs/1706.06083]
