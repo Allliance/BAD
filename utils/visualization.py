@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import torchvision
+import numpy as np
 
 def visualize_samples(dataloader, n, title="Sample"):
     normal_samples = []
@@ -39,4 +40,36 @@ def visualize_samples(dataloader, n, title="Sample"):
     axs[1].set_title('Abnormal', fontsize=14)
     axs[1].axis('off')
 
+    plt.show()
+    
+
+def plot_gaps(cleans, bads, dataset, best_eps):
+    # Plot both arrays
+    x = np.arange(len(cleans))  # the label locations
+
+    width = 0.35  
+    
+    fig, ax = plt.subplots()
+    fig.set_figwidth(15)
+    for i in range(len(cleans)):
+        ax.text(x[i], -0.1, f"Eps: {best_eps[i]:.3f}", ha='center')
+        
+    rects1 = ax.bar(x - width/2, cleans, width, label='clean resnet', color='blue')
+    rects2 = ax.bar(x + width/2, bads, width, label='bad resnet', color='red')
+
+    ax.set_ylabel('auroc')
+    ax.set_title(f'Bar Chart for {dataset} for best eps')
+    ax.set_xticks(x)
+    ax.legend()
+
+    fig.savefig(f'results/{dataset}.png', bbox_inches='tight')
+    plt.show()
+
+
+def plot_process(epsilons, gaps, dataset, target=None):
+    plt.plot(epsilons, gaps)  # Plot y1 with blue color
+    plt.xlabel('epsilon')
+    plt.ylabel('auroc gap')
+    plt.title(f'gaps on {dataset} for target {target}')
+    plt.savefig(f'results/gap_{dataset}_{target}.png')
     plt.show()
