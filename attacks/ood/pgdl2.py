@@ -1,3 +1,6 @@
+import torch
+import torch.nn as nn
+
 from ..attack import Attack
 
 class PGD(Attack):
@@ -50,7 +53,7 @@ class PGD(Attack):
         """
 
         images = images.clone().detach().to(self.device)
-        float_labels = labels.clone().detach().to(self.device).type(torch.FloatTensor).to(device)
+        float_labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
         
         loss = nn.CrossEntropyLoss(reduction='none')
         
