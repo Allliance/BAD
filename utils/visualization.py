@@ -43,7 +43,7 @@ def visualize_samples(dataloader, n, title="Sample"):
     plt.show()
     
 
-def plot_gaps(cleans, bads, dataset, best_eps):
+def plot_gaps(cleans, bads, dataset, best_eps, verbose=False):
     # Plot both arrays
     x = np.arange(len(cleans))  # the label locations
 
@@ -63,13 +63,15 @@ def plot_gaps(cleans, bads, dataset, best_eps):
     ax.legend()
 
     fig.savefig(f'results/{dataset}.png', bbox_inches='tight')
-    plt.show()
+    if verbose:
+        plt.show()
 
 
-def plot_process(epsilons, gaps, dataset, target=None):
+def plot_process(epsilons, gaps, title, verbose=False):
     plt.plot(epsilons, gaps)  # Plot y1 with blue color
     plt.xlabel('epsilon')
     plt.ylabel('auroc gap')
-    plt.title(f'gaps on {dataset} for target {target}')
-    plt.savefig(f'results/gap_{dataset}_{target}.png')
-    plt.show()
+    plt.title(title)
+    plt.savefig(f'results/{title}.png')
+    if verbose:
+        plt.show()
