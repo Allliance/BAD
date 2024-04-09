@@ -78,7 +78,7 @@ def get_ood_loader(out='cifar100', sample=True, batch_size=256):
     return testloader
 
 
-def get_cls_loader(dataset='cifar10', sample_portion=1, batch_size=256):
+def get_cls_loader(dataset='cifar10', sample_portion=0.2, batch_size=256):
     if dataset == 'cifar10':
         transform = transforms.Compose(
             [
