@@ -1,15 +1,14 @@
 import torch
 import torch.nn as nn
 
-_mean = (0.5, 0.5, 0.5)
-_std = (0.5, 0.5, 0.5)
-
-mu = torch.tensor(_mean).view(3,1,1)
-std = torch.tensor(_std).view(3,1,1)
 
 class Model(nn.Module):
-    def __init__(self, backbone, device=None, normalize=True):
+    def __init__(self, backbone, device=None, normalize=True, mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)):
         super(Model, self).__init__()
+
+        mu = torch.tensor(mean).view(3,1,1)
+        std = torch.tensor(std).view(3,1,1)
+        
         self.backbone = backbone
         if device:
             mu = mu.to(device)
