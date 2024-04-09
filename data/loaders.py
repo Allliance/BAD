@@ -39,34 +39,34 @@ def get_ood_loader(out='cifar100', sample=True, batch_size=256):
     in_dataset = SingleLabelDataset(1, 
                       torchvision.datasets.CIFAR10(root=ROOT, train=False,transform=transform, download=True))
     if out == 'SVHN':
-        OutDataset = SingleLabelDataset(0, torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform))
+        out_dataset = SingleLabelDataset(0, torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform))
     elif out == 'mnist':
         transform_out = transforms.Compose([
         transforms.Resize((32, 32)),
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor()
         ])
-        OutDataset = SingleLabelDataset(0, torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform_out))
+        out_dataset = SingleLabelDataset(0, torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform_out))
 
     elif out=='cifar100':
-        OutDataset = SingleLabelDataset(0, torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=transform))
+        out_dataset = SingleLabelDataset(0, torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=transform))
     elif out == 'gaussian':
-        OutDataset = GaussianDataset(0)
+        out_dataset = GaussianDataset(0)
     elif out == 'fmnist':
         transform_out = transforms.Compose([
         transforms.Resize((32, 32)),
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor() 
         ])
-        OutDataset = SingleLabelDataset(0, torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=transform_out))
+        out_dataset = SingleLabelDataset(0, torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=transform_out))
     else:
         raise NotImplementedError
 
     if sample:
         in_dataset = sample_dataset(in_dataset)
-        OutDataset = sample_dataset(out_dataset)
+        out_dataset = sample_dataset(out_dataset)
 
-    merged_dataset = torch.utils.data.ConcatDataset([in_dataset, OutDataset])
+    merged_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     
     
     testloader = torch.utils.data.DataLoader(merged_dataset, batch_size=batch_size,
