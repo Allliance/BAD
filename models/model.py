@@ -10,6 +10,7 @@ class Model(nn.Module):
         std = torch.tensor(std).view(3,1,1)
         
         self.backbone = backbone
+        
         if device:
             mu = mu.to(device)
             std = std.to(device)
