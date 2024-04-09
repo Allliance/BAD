@@ -17,7 +17,7 @@ def sample_dataset(dataset, portion=0.1, balanced=True):
         indices = []
         labels = [y for _, y in dataset]
         unique_labels = list(set(labels))
-        labels_indices = defaultdict(lambda x: [])
+        labels_indices = defaultdict(lambda : [])
         
         for i, label in enumerate(labels):
             labels_indices[label].append(i)
