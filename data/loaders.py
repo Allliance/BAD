@@ -3,24 +3,40 @@ import torch
 import torchvision
 from torchvision import transforms
 from .datasets import SingleLabelDataset, GaussianDataset
+from torch.utils.data import Subset
+from collections import defaultdict
 
 ROOT = '~/data'
 
-def sample_dataset(dataset, lim=2000):
-    indices = random.sample(list(range(len(dataset))), k=lim)
-    data = [dataset.data[x] for x in indices]
-    dataset.data = data
-    return dataset
+def sample_dataset(dataset, portion=0.1, balanced=True):
+    
+    if not balanced:
+        indices = random.sample(range(len(dataset)), int(portion * len(dataset)))
+    # It is assumed that the dataset has labels
+    else:
+        indices = []
+        labels = [y for _, y in dataset]
+        unique_labels = list(set(labels))
+        labels_indices = defaultdict(lambda x: [])
+        
+        for i, label in enumerate(labels):
+            labels_indices[label].append(i)
+            
+        for label in unique_labels:
+            indices += random.sample(labels_indices[label], int(portion * len(labels_indices[label])))
+        
+    return Subset(dataset, indices)
 
 
-def get_ood_loader(out='cifar100', sample=True):
+
+def get_ood_loader(out='cifar100', sample=True, batch_size=256):
     transform = transforms.Compose(
         [
         transforms.Resize((32, 32)),
         transforms.ToTensor(),
         ])
     
-    InDataset = SingleLabelDataset(1, 
+    in_dataset = SingleLabelDataset(1, 
                       torchvision.datasets.CIFAR10(root=ROOT, train=False,transform=transform, download=True))
     if out == 'SVHN':
         OutDataset = SingleLabelDataset(0, torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform))
@@ -47,30 +63,38 @@ def get_ood_loader(out='cifar100', sample=True):
         raise NotImplementedError
 
     if sample:
-        InDataset = sample_dataset(InDataset)
-        OutDataset = sample_dataset(OutDataset)
+        in_dataset = sample_dataset(in_dataset)
+        OutDataset = sample_dataset(out_dataset)
 
-    merged_dataset = torch.utils.data.ConcatDataset([InDataset, OutDataset])
-    testloader = torch.utils.data.DataLoader(merged_dataset, batch_size=256,
+    merged_dataset = torch.utils.data.ConcatDataset([in_dataset, OutDataset])
+    
+    
+    testloader = torch.utils.data.DataLoader(merged_dataset, batch_size=batch_size,
                                          shuffle=True)
     
     # Sanity Check
-    next(iter(get_ood_loader(dataset)))
+    next(iter(testloader))
     
     return testloader
 
-def get_cls_loader(dataset='cifar10', sample=False):
+
+def get_cls_loader(dataset='cifar10', sample_portion=1, batch_size=256):
     if dataset == 'cifar10':
         transform = transforms.Compose(
             [
             transforms.Resize((32, 32)),
             transforms.ToTensor(),
             ])
-        cifar = torchvision.datasets.CIFAR10(root=ROOT, train=False, download=True, transform=transform)
-        if sample:
-            cifar = sample_dataset(cifar)
-        testloader = torch.utils.data.DataLoader(cifar, batch_size=256,
-                                                shuffle=False)
+        test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False, download=True, transform=transform)
     else:
         raise NotImplementedError
+
+    if sample_portion < 1:
+        test_dataset = sample_dataset(test_dataset, portion=sample_portion)
+    
+    testloader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    
+    # Sanity Check
+    next(iter(testloader))
+
     return testloader
