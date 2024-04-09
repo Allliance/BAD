@@ -28,13 +28,16 @@ class PGD(Attack):
 
     """
 
-    def __init__(self, model, target_class=None, eps=8 / 255, alpha=2 / 255, steps=10, random_start=True):
+    def __init__(self, model, target_map=None, map_exclusive=False, exclusive_label=None,
+                 eps=8 / 255, alpha=2 / 255, steps=10, random_start=True):
         super().__init__("PGD", model)
         self.eps = eps
         self.alpha = alpha
         self.steps = steps
         self.random_start = random_start
-        self.target_class = target_class
+        self.target_map = target_map
+        self.map_exclusive = map_exclusive
+        self.exclusive_label = exclusive_label
         self.supported_mode = ["default", "targeted"]
 
     def forward(self, images, labels):
@@ -55,17 +58,30 @@ class PGD(Attack):
             )
             adv_images = torch.clamp(adv_images, min=0, max=1).detach()
 
-        if self.target_class is not None:
-            target_labels = torch.tensor(self.target_class).repeat(len(adv_images)).to(adv_images.device)
+        
+        if self.target_map is not None:
+            target_labels = torch.tensor([self.target_map(label) for label in labels]).to(self.device)
+        else:
+            target_labels = labels.clone().detach().to(self.device)
+
+        targeted_multipliers = (labels != target_labels).float()
+        
         for _ in range(self.steps):
             adv_images.requires_grad = True
             outputs = self.get_logits(adv_images)
 
+            # Untargeted loss
+            untargeted_loss = loss(outputs, labels)
+            targeted_loss = loss(outputs, target_labels)
+            
+            if self.exclusive_label:
+                targeted_loss = targeted_loss * (labels == self.exclusive_label).float()
+                untargeted_loss = untargeted_loss * (labels == self.exclusive_label).float()
+            
             # Calculate loss
-            if self.target_class is not None:
-                cost = -loss(outputs, target_labels) * (labels != target_labels) + loss(outputs, labels) * (labels == target_labels)
-            else:
-                cost = loss(outputs, labels)
+            cost = -targeted_multipliers * targeted_loss
+            if not self.map_exclusive:
+                cost += ((1 - targeted_multipliers) * untargeted_loss)
             cost = cost.sum()
             
             # Update adversarial images
