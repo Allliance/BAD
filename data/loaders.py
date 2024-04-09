@@ -1,4 +1,6 @@
 import random
+import torch
+import torchvision
 from torchvision import transforms
 from .datasets import SingleLabelDataset, GaussianDataset
 
