@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 
 _mean = (0.5, 0.5, 0.5)
 _std = (0.5, 0.5, 0.5)
