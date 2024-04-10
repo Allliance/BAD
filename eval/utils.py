@@ -36,13 +36,18 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
     if eps_lb is None:
         eps_lb = 0
     eps_ub = config.get('eps_ub')
-    
     if eps_ub is None:
         eps_ub = find_eps_upperbound(lambda eps: eval(m1, testloader, device,
                                                       attack=config['attack'](m1, target_map=target_map, **get_attack_params(eps)),
                                                       progress=False), log=log)
         
-    epsilons = torch.linspace(eps_lb, eps_ub, config['eps_steps']).tolist()
+    eps_steps = config.get('eps_steps')
+    if eps_steps is None:
+        eps_steps = 10
+    
+    target_map = config['target_map']
+    
+    epsilons = torch.linspace(eps_lb, eps_ub, eps_steps).tolist()
     gaps = []
 
     for eps in epsilons:

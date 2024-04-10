@@ -2,7 +2,7 @@ from tqdm import tqdm
 from sklearn.metrics import roc_auc_score, accuracy_score
 from ..scores.msp import get_msp
 
-def eval(model, loader, device, metric='acc', attack=None, progress=False):
+def evaluate(model, loader, device, metric='acc', attack=None, progress=False):
     model.to(device)
     model.eval()
     correct = 0
