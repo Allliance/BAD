@@ -36,14 +36,16 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
     }
     
     target_map = config['target_map']
+    attack_class = config['attack']
     
     eps_lb = config.get('eps_lb')
     if eps_lb is None:
         eps_lb = 0
+    
     eps_ub = config.get('eps_ub')
     if eps_ub is None:
         eps_ub = find_eps_upperbound(lambda eps: 
-            evaluator(m1, attack=config['attack'](m1, target_map=target_map, **get_attack_params(eps))))
+            evaluator(m1, attack=attack_class(m1, target_map=target_map, **get_attack_params(eps))), log=log)
         
     eps_steps = config.get('eps_steps')
     if eps_steps is None:
@@ -56,13 +58,11 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
     for eps in epsilons:
         if log:
             print("Working on epsilon", eps * 255)
-    
-        attack = attack_config['attack']
         
         attack_params = get_attack_params(eps)
         
-        attack1 = attack(m1, target_map=target_map, **attack_params)
-        attack2 = attack(m2, target_map=target_map, **attack_params)
+        attack1 = attack_class(m1, target_map=target_map, **attack_params)
+        attack2 = attack_class(m2, target_map=target_map, **attack_params)
 
         score1 = evaluator(m1, attack1)
         score2 = evaluator(m2, attack2)
