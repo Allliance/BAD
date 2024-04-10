@@ -3,6 +3,9 @@ from sklearn.metrics import roc_auc_score, accuracy_score
 from ..scores.msp import get_msp
 
 def evaluate(model, loader, device, metric='acc', attack=None, progress=False):
+    torch.cuda.empty_cache()
+    gc.collect()
+    
     model.to(device)
     model.eval()
     correct = 0

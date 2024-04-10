@@ -17,7 +17,6 @@ def find_eps_upperbound(evaluator, thresh=0.4, log=False):
     return upper_attack_eps
 
 def get_attack_params(attack_eps=8/255, attack_steps=10):
-    attack_steps = attack_steps
     attack_alpha = 2.5 * attack_eps / attack_steps
     
     return {
@@ -57,9 +56,6 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
     for eps in epsilons:
         if log:
             print("Working on epsilon", eps * 255)
-    
-        torch.cuda.empty_cache()
-        gc.collect()
     
         attack = attack_config['attack']
         
