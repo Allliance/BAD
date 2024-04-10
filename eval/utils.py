@@ -27,7 +27,7 @@ def get_attack_params(attack_eps=8/255, attack_steps=10):
 
 def find_best_gap(m1, m2, evaluator, config, log=False):
     
-    print("Working on current config:", config['title'])
+    print("Working on config:", config['title'])
     
     best_result = {
         1: 0,
@@ -80,7 +80,7 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
             best_result[1] = score1
             best_result[2] = score2
             
-            print(f"{config['title']} --- Best gap until eps = {attack_eps * 255} is {best_result['gap']}")    
+            print(f"{config['title']} --- Best gap until eps = {eps * 255} is {best_result['gap']}")    
     
     plot_process(epsilons, gaps, config['title'])
     return best_result
