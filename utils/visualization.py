@@ -3,6 +3,7 @@ import torchvision
 import numpy as np
 
 def visualize_samples(dataloader, n, title="Sample"):
+    plt.clf()
     normal_samples = []
     abnormal_samples = []
 
@@ -44,6 +45,8 @@ def visualize_samples(dataloader, n, title="Sample"):
     
 
 def plot_gaps(cleans, bads, dataset, best_eps, verbose=False):
+    
+    plt.clf()
     # Plot both arrays
     x = np.arange(len(cleans))  # the label locations
 
@@ -68,6 +71,8 @@ def plot_gaps(cleans, bads, dataset, best_eps, verbose=False):
 
 
 def plot_process(epsilons, gaps, title, verbose=False):
+    plt.clf()
+    
     plt.plot(epsilons, gaps)  # Plot y1 with blue color
     plt.xlabel('epsilon')
     plt.ylabel('auroc gap')
