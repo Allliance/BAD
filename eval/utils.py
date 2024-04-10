@@ -33,6 +33,8 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
         'gap': -100,
     }
     
+    target_map = config['target_map']
+    
     eps_lb = config.get('eps_lb')
     if eps_lb is None:
         eps_lb = 0
@@ -45,7 +47,6 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
     if eps_steps is None:
         eps_steps = 10
     
-    target_map = config['target_map']
     
     epsilons = torch.linspace(eps_lb, eps_ub, eps_steps).tolist()
     gaps = []
