@@ -16,7 +16,10 @@ def find_eps_upperbound(evaluator, thresh=0.4, log=False):
         
     return upper_attack_eps
 
-def get_attack_params(attack_eps):
+def get_attack_params(attack_eps=8/255, attack_steps=10):
+    attack_steps = attack_steps
+    attack_alpha = 2.5 * attack_eps / attack_steps
+    
     return {
         'eps': attack_eps,
         'alpha': attack_alpha,
