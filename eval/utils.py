@@ -1,4 +1,5 @@
-from .eval import eval
+import torch
+from ..utils.visualization import plot_process
 
 def find_eps_upperbound(evaluator, thresh=0.4, log=False):
     for j in range(1, 32):
@@ -37,9 +38,8 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
         eps_lb = 0
     eps_ub = config.get('eps_ub')
     if eps_ub is None:
-        eps_ub = find_eps_upperbound(lambda eps: eval(m1, testloader, device,
-                                                      attack=config['attack'](m1, target_map=target_map, **get_attack_params(eps)),
-                                                      progress=False), log=log)
+        eps_ub = find_eps_upperbound(lambda eps: 
+            evaluator(m1, attack=config['attack'](m1, target_map=target_map, **get_attack_params(eps))))
         
     eps_steps = config.get('eps_steps')
     if eps_steps is None:
@@ -61,8 +61,8 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
         
         attack_params = get_attack_params(eps)
         
-        attack1 = attack(clean_model, target_map=target_map, **attack_params)
-        attack2 = attack(bad_model, target_map=target_map, **attack_params)
+        attack1 = attack(m1, target_map=target_map, **attack_params)
+        attack2 = attack(m2, target_map=target_map, **attack_params)
 
         score1 = evaluator(m1, attack1)
         score2 = evaluator(m2, attack2)
