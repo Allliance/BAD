@@ -77,14 +77,23 @@ def get_ood_loader(out='cifar100', sample=True, batch_size=256):
     
     return testloader
 
-
-def get_cls_loader(dataset='cifar10', sample_portion=0.2, batch_size=256):
+def get_transform(dataset):
     if dataset == 'cifar10':
         transform = transforms.Compose(
             [
             transforms.Resize((32, 32)),
             transforms.ToTensor(),
             ])
+    else:
+        raise NotImplementedError
+    return transform
+
+def get_cls_loader(dataset='cifar10', sample_portion=0.2, batch_size=256, transforms_list=None):
+    if transforms_list:
+        transform = transforms.Compose(transforms_list)
+    else:
+        transform = get_transform(dataset)
+    if dataset == 'cifar10':
         test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False, download=True, transform=transform)
     else:
         raise NotImplementedError
