@@ -58,10 +58,10 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
         if log:
             print("Working on epsilon", eps * 255)
         
-        attack_params = get_attack_params(eps)
+        attack_params = get_attack_params(eps) | config['attack_params']
         
-        attack1 = attack_class(m1, target_map=target_map, **attack_params)
-        attack2 = attack_class(m2, target_map=target_map, **attack_params)
+        attack1 = attack_class(m1, **attack_params)
+        attack2 = attack_class(m2, **attack_params)
 
         score1 = evaluator(m1, attack1)
         score2 = evaluator(m2, attack2)
