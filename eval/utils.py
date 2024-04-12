@@ -1,5 +1,5 @@
 import torch
-from ..utils.visualization import plot_process
+from BAD.utils.visualization import plot_process
 
 def find_eps_upperbound(evaluator, thresh=0.4, log=False):
     for j in range(1, 32):
@@ -35,7 +35,7 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
         'gap': -100,
     }
     
-    target_map = config['target_map']
+    attack_class = config['attack']
     
     eps_lb = config.get('eps_lb')
     if eps_lb is None:
@@ -44,7 +44,7 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
     eps_ub = config.get('eps_ub')
     if eps_ub is None:
         eps_ub = find_eps_upperbound(lambda eps: 
-            evaluator(m1, attack=attack_class(m1, target_map=target_map, **(get_attack_params(eps) | config['attack_params']))), log=log)
+            evaluator(m1, attack=attack_class(m1, **(get_attack_params(eps) | config['attack_params']))), log=log)
         
     eps_steps = config.get('eps_steps')
     if eps_steps is None:
@@ -81,5 +81,5 @@ def find_best_gap(m1, m2, evaluator, config, log=False):
             
             print(f"{config['title']} --- Best gap until eps = {eps * 255} is {best_result['gap']}")    
     
-    plot_process(epsilons, gaps, config['title'])
+    plot_process([e*255 for e in epsilons], gaps, config['title'])
     return best_result
