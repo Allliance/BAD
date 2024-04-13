@@ -25,7 +25,7 @@ def get_attack_params(attack_eps=8/255, attack_steps=10):
         'steps': attack_steps
     }
 
-def find_best_gap(m1, m2, evaluator, config, thresh=0.4 log=False):
+def find_best_gap(m1, m2, evaluator, config, thresh=0.4, log=False):
     
     print("Working on config:", config['title'])
     
@@ -44,7 +44,7 @@ def find_best_gap(m1, m2, evaluator, config, thresh=0.4 log=False):
     eps_ub = config.get('eps_ub')
     if eps_ub is None:
         eps_ub = find_eps_upperbound(lambda eps: 
-            evaluator(m1, attack=attack_class(m1, **(get_attack_params(eps) | config['attack_params']))), log=log)
+            evaluator(m1, attack=attack_class(m1, **(get_attack_params(eps) | config['attack_params']))), thresh, log=log)
         
     eps_steps = config.get('eps_steps')
     if eps_steps is None:
