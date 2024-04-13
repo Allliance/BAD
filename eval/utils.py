@@ -51,7 +51,7 @@ def find_best_gap(m1, m2, evaluator, config, thresh=0.4, log=False):
         eps_steps = 10
     
     
-    epsilons = torch.linspace(eps_lb, eps_ub, eps_steps).tolist()
+    epsilons = torch.linspace(eps_lb, eps_ub, eps_steps * 255 * eps_steps).tolist()
     gaps = []
 
     for eps in epsilons:
