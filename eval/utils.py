@@ -1,7 +1,7 @@
 import torch
 from BAD.utils.visualization import plot_process
 
-def find_eps_upperbound(evaluator, thresh=0.4, log=False):
+def find_eps_upperbound(evaluator, thresh, log=False):
     for j in range(1, 32):
         score = evaluator(j/255)
         if score < thresh:
@@ -25,7 +25,7 @@ def get_attack_params(attack_eps=8/255, attack_steps=10):
         'steps': attack_steps
     }
 
-def find_best_gap(m1, m2, evaluator, config, log=False):
+def find_best_gap(m1, m2, evaluator, config, thresh=0.4 log=False):
     
     print("Working on config:", config['title'])
     
