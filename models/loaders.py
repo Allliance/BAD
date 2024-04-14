@@ -1,6 +1,8 @@
 import copy
 import pickle 
 from torchvision import transforms
+from .models import Model
+from .preact import PreActResNet18
 
 def load_preact(record_path, num_classes=10):
     
@@ -14,7 +16,7 @@ def load_preact(record_path, num_classes=10):
 
     load_file['model'] = new_dict
     
-    net = ModelArch(num_classes=num_classes)
+    net = PreActResNet18(num_classes=num_classes)
     net.load_state_dict(load_file['model'])
     
     model = Model(net, device)
