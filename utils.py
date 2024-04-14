@@ -3,6 +3,36 @@ import matplotlib.pyplot as plt
 import torchvision
 import numpy as np
 
+from numpy.linalg import norm
+from tqdm import tqdm
+
+def get_max_diff(model,testloader, use_in=True, progress=False):
+    max_l2 = 0
+    tq = range(10)
+    if progress:
+        tq = tqdm(range(10))
+    for i in tq:
+        v_out_b, v_in_b= get_ood_features(model, testloader, device, attack_features=False, target_class = i)
+        v_out_a, v_in_a = get_ood_features(model, testloader, device, attack_features=True, target_class = i)
+        v_out_b_mean = np.mean(v_out_b, axis=0)
+        v_out_a_mean = np.mean(v_out_a, axis=0)
+        v_in_b_mean = np.mean(v_in_b, axis=0)
+        v_in_a_mean = np.mean(v_in_a, axis=0)
+        if use_in:
+            diff_a = (v_out_a_mean - v_in_a_mean)
+            diff_b = (v_out_b_mean - v_in_b_mean)
+            #cosine = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
+            l2 = norm(diff_a - diff_b)     
+            if l2 > max_l2:
+                max_l2 = l2
+        else:
+            diff = v_out_a_mean - v_out_b_mean
+            l2 = norm(diff)
+            if l2 > max_l2:
+                max_l2 = l2
+                           
+    return max_l2
+
 def get_features(model, loader, DEVICE, attack=None, progress=False):
     features = []
     outputs = []
