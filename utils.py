@@ -55,10 +55,10 @@ def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, 
     attack_config.pop('attack_class')
     best_target = None
     
+    v_out_b, v_in_b= get_features(model, testloader, device, attack=None)
     for i in tq:
         attack_config['target_class'] = i
         attack = attack_class(model, **attack_config)
-        v_out_b, v_in_b= get_features(model, testloader, device, attack=None)
         v_out_a, v_in_a = get_features(model, testloader, device, attack=attack)
         v_out_b_mean = np.mean(v_out_b, axis=0)
         v_out_a_mean = np.mean(v_out_a, axis=0)
