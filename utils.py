@@ -5,6 +5,7 @@ import numpy as np
 
 from numpy.linalg import norm
 from tqdm import tqdm
+from ..BAD.eval.eval import evaluate
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -52,6 +53,7 @@ def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, 
     
     attack_class = attack_config['attack_class']
     attack_config.pop('attack_class')
+    auc = None
     
     for i in tq:
         attack_config['target_class'] = i
@@ -74,6 +76,7 @@ def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, 
             l2 = norm(diff)
             if l2 > max_l2:
                 max_l2 = l2
+                auc = evaluate(model, testloader, metric='auc', device=device, attack=attack, progress=False)
                            
     return max_l2
 
