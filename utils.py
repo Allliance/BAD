@@ -53,7 +53,7 @@ def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, 
     
     attack_class = attack_config['attack_class']
     attack_config.pop('attack_class')
-    auc = None
+    best_target = None
     
     for i in tq:
         attack_config['target_class'] = i
@@ -76,9 +76,9 @@ def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, 
             l2 = norm(diff)
             if l2 > max_l2:
                 max_l2 = l2
-                auc = evaluate(model, testloader, metric='auc', device=device, attack=attack, progress=False)
+                best_target = i
                            
-    return max_l2
+    return best_target
 
 
 def visualize_samples(dataloader, n, title="Sample"):
