@@ -5,7 +5,7 @@ import numpy as np
 
 from numpy.linalg import norm
 from tqdm import tqdm
-from ..BAD.eval.eval import evaluate
+from BAD.eval.eval import evaluate
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
