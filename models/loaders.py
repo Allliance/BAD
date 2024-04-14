@@ -2,7 +2,7 @@ import copy
 import pickle 
 from torchvision import transforms
 
-def load_preact(record_path):
+def load_preact(record_path, num_classes=10):
     
     load_file = torch.load(record_path)
 
