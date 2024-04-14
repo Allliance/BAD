@@ -78,7 +78,7 @@ def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, 
                 max_l2 = l2
                 best_target = i
                            
-    return best_target, diff
+    return best_target, max_l2
 
 
 def visualize_samples(dataloader, n, title="Sample"):
