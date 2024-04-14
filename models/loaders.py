@@ -1,7 +1,8 @@
 import copy
 import pickle 
 from torchvision import transforms
-from .models import Model
+import torch
+from .model import Model
 from .preact import PreActResNet18
 
 def load_preact(record_path, num_classes=10):
