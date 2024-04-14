@@ -5,7 +5,7 @@ import torch
 from .model import Model
 from .preact import PreActResNet18
 
-def load_preact(record_path, num_classes=10):
+def load_preact(record_path, device, num_classes=10):
     
     load_file = torch.load(record_path)
 
