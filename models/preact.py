@@ -95,7 +95,7 @@ class PreActResNet(nn.Module):
         out = self.linear(out)
         return out
 
-    def get_embeds_and_logit_from_forward(self, x):
+    def get_features(self, x):
         out = self.conv1(x)
         out = self.layer1(out)
         out = self.layer2(out)
@@ -104,8 +104,7 @@ class PreActResNet(nn.Module):
         out = self.avgpool(out)
         out = out.view(out.size(0), -1)
         embeds = copy.deepcopy(out)
-        out = self.linear(out)
-        return embeds, out
+        return embeds
 
 
 def PreActResNet18(num_classes=10):

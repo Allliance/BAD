@@ -3,6 +3,41 @@ import matplotlib.pyplot as plt
 import torchvision
 import numpy as np
 
+def get_features(model, loader, DEVICE, attack=None, progress=False):
+    features = []
+    outputs = []
+
+    labels = []
+    
+    model.eval()
+    model.to(device)
+
+    progress_bar = loader
+    if progress:
+        progress_bar = tqdm(loader, unit="batch")
+        
+    for data, label in progress_bar:
+        labels += label.tolist()
+        data, label = data.to(DEVICE), label.to(DEVICE)
+        if attack is not None:
+            data = attack(data, label)
+        feature = model.get_features(data)
+        output = model(data)
+        output = torch.softmax(output, dim=1)
+        c_f = feature.detach().cpu().numpy()
+        c_o = output.detach().cpu().numpy()
+        features.append(c_f)
+        outputs.append(c_o)
+    f = np.concatenate(features)
+    o = np.concatenate(outputs)
+    mask_o = np.array(labels)== 10
+    mask_i = np.array(labels)!= 10
+    gaussian_features = f[mask_o]
+    cifar_features = f[mask_i]
+    selected_out = o[mask_o]
+
+    return gaussian_features, cifar_features
+
 def visualize_samples(dataloader, n, title="Sample"):
     plt.clf()
     normal_samples = []
