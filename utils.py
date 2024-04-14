@@ -6,7 +6,8 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 
-def get_max_diff(model,testloader, use_in=True, progress=False):
+# score in [l2, cosine]
+def get_max_diff(model,testloader, score='l2', use_in=True, progress=False):
     max_l2 = 0
     tq = range(10)
     if progress:
@@ -48,9 +49,9 @@ def get_features(model, loader, DEVICE, attack=None, progress=False):
         
     for data, label in progress_bar:
         labels += label.tolist()
-        data, label = data.to(DEVICE), label.to(DEVICE)
+        data, labels = data.to(DEVICE), label.to(DEVICE)
         if attack is not None:
-            data = attack(data, label)
+            data = attack(data, torch.where(labels == 10, torch.tensor(0), torch.tensor(1)))
         feature = model.get_features(data)
         output = model(data)
         output = torch.softmax(output, dim=1)
