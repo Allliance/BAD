@@ -102,8 +102,7 @@ class PreActResNet(nn.Module):
         out = self.layer3(out)
         out = self.layer4(out)
         out = self.avgpool(out)
-        out = out.view(out.size(0), -1)
-        embeds = copy.deepcopy(out)
+        embeds = out.view(out.size(0), -1)
         return embeds
 
 

@@ -6,15 +6,58 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+def get_features(model, loader, DEVICE, attack=None, progress=False):
+    features = []
+    outputs = []
+
+    labels = []
+    
+    model.eval()
+    model.to(device)
+
+    progress_bar = loader
+    if progress:
+        progress_bar = tqdm(loader, unit="batch")
+        
+    for data, label in progress_bar:
+        labels += label.tolist()
+        data, label = data.to(DEVICE), label.to(DEVICE)
+        if attack is not None:
+            data = attack(data, torch.where(label == 10, torch.tensor(0), torch.tensor(1)))
+        feature = model.get_features(data)
+        output = model(data)
+        output = torch.softmax(output, dim=1)
+        c_f = feature.detach().cpu().numpy()
+        c_o = output.detach().cpu().numpy()
+        features.append(c_f)
+        outputs.append(c_o)
+    f = np.concatenate(features)
+    o = np.concatenate(outputs)
+    mask_o = np.array(labels)== 10
+    mask_i = np.array(labels)!= 10
+    gaussian_features = f[mask_o]
+    cifar_features = f[mask_i]
+    selected_out = o[mask_o]
+
+    return gaussian_features, cifar_features
+
 # score in [l2, cosine]
-def get_max_diff(model,testloader, score='l2', use_in=True, progress=False):
+def get_max_diff(model,testloader, attack_config=None, score='l2', use_in=True, progress=False):
     max_l2 = 0
     tq = range(10)
     if progress:
         tq = tqdm(range(10))
+    
+    attack_class = attack_config['attack_class']
+    attack_config.pop('attack_class')
+    
     for i in tq:
-        v_out_b, v_in_b= get_ood_features(model, testloader, device, attack_features=False, target_class = i)
-        v_out_a, v_in_a = get_ood_features(model, testloader, device, attack_features=True, target_class = i)
+        attack_config['target_class'] = i
+        attack = attack_class(model, **attack_config)
+        v_out_b, v_in_b= get_features(model, testloader, device, attack=None)
+        v_out_a, v_in_a = get_features(model, testloader, device, attack=attack)
         v_out_b_mean = np.mean(v_out_b, axis=0)
         v_out_a_mean = np.mean(v_out_a, axis=0)
         v_in_b_mean = np.mean(v_in_b, axis=0)
@@ -34,40 +77,6 @@ def get_max_diff(model,testloader, score='l2', use_in=True, progress=False):
                            
     return max_l2
 
-def get_features(model, loader, DEVICE, attack=None, progress=False):
-    features = []
-    outputs = []
-
-    labels = []
-    
-    model.eval()
-    model.to(device)
-
-    progress_bar = loader
-    if progress:
-        progress_bar = tqdm(loader, unit="batch")
-        
-    for data, label in progress_bar:
-        labels += label.tolist()
-        data, labels = data.to(DEVICE), label.to(DEVICE)
-        if attack is not None:
-            data = attack(data, torch.where(labels == 10, torch.tensor(0), torch.tensor(1)))
-        feature = model.get_features(data)
-        output = model(data)
-        output = torch.softmax(output, dim=1)
-        c_f = feature.detach().cpu().numpy()
-        c_o = output.detach().cpu().numpy()
-        features.append(c_f)
-        outputs.append(c_o)
-    f = np.concatenate(features)
-    o = np.concatenate(outputs)
-    mask_o = np.array(labels)== 10
-    mask_i = np.array(labels)!= 10
-    gaussian_features = f[mask_o]
-    cifar_features = f[mask_i]
-    selected_out = o[mask_o]
-
-    return gaussian_features, cifar_features
 
 def visualize_samples(dataloader, n, title="Sample"):
     plt.clf()
