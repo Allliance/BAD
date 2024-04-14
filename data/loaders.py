@@ -29,15 +29,17 @@ def sample_dataset(dataset, portion=0.1, balanced=True):
 
 
 
-def get_ood_loader(out='cifar100', sample=True, batch_size=256):
+def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_size=256):
+    assert in_label != out_label
+    assert out_label is not None
     transform = transforms.Compose(
         [
         transforms.Resize((32, 32)),
         transforms.ToTensor(),
         ])
-    
-    in_dataset = SingleLabelDataset(1, 
-                      torchvision.datasets.CIFAR10(root=ROOT, train=False,transform=transform, download=True))
+    in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False,transform=transform, download=True)
+    if in_label is not None:
+        in_dataset = SingleLabelDataset(1, in_dataset)
     if out == 'SVHN':
         out_dataset = SingleLabelDataset(0, torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform))
     elif out == 'mnist':
@@ -46,21 +48,22 @@ def get_ood_loader(out='cifar100', sample=True, batch_size=256):
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor()
         ])
-        out_dataset = SingleLabelDataset(0, torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform_out))
-
+        out_dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform_out)
     elif out=='cifar100':
-        out_dataset = SingleLabelDataset(0, torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=transform))
+        out_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=transform)
     elif out == 'gaussian':
-        out_dataset = GaussianDataset(0)
+        out_dataset = GaussianDataset(out_label)
     elif out == 'fmnist':
         transform_out = transforms.Compose([
         transforms.Resize((32, 32)),
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor() 
         ])
-        out_dataset = SingleLabelDataset(0, torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=transform_out))
+        out_dataset = torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=transform_out)
     else:
         raise NotImplementedError
+
+    out_dataset = SingleLabelDataset(out_label, out_dataset)
 
     if sample:
         in_dataset = sample_dataset(in_dataset)
