@@ -3,12 +3,11 @@ from torch.utils.data import Dataset
 CLEAN_LABEL = 'clean'
 
 class ModelDataset(Dataset):
-    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5):
-        self.classes = ['cleans', 'bads']
+    def __init__(self, cleans_folder, bad_folders, model_loader, sample=False, sample_k=5):
         self.model_paths = []
         self.labels = []
         self.loader = model_loader
-        for attack_folder in attack_folders:
+        for attack_folder in bad_folders:
             ck_folder = os.path.join(bads_folder, attack_folder)
             ck_files = [os.path.join(ck_folder, ck_file) for ck_file in os.listdir(ck_folder)]
             
