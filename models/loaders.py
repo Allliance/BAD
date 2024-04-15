@@ -33,7 +33,7 @@ def load_resnet(record_path, num_classes=10):
     state_dict = torch.load(record_path)
     
     net = resnet18(num_classes=num_classes)
-    net.load_state_dict(state_dict)
+    net.load_state_dict(state_dict['model'])
     
     feature_extractor = torch.nn.Sequential(*list(net.children())[:-1])
     
