@@ -27,7 +27,7 @@ def get_features(model, loader, attack=None, progress=False):
         
     for data, label in progress_bar:
         labels += label.tolist()
-        data, label = data.to(DEVICE), label.to(DEVICE)
+        data, label = data.to(device), label.to(device)
         if attack is not None:
             data = attack(data, torch.where(label == 10, torch.tensor(0), torch.tensor(1)))
         feature = model.get_features(data)
