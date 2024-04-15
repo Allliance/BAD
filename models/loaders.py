@@ -2,7 +2,7 @@ import copy
 import pickle 
 from torchvision import transforms
 import torch
-from .model import Model
+from .base_model import BaseModel as Model
 from .preact import PreActResNet18
 
 def load_preact(record_path, device, num_classes=10):
