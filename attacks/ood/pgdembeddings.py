@@ -1,4 +1,4 @@
-class PGD_embeddings(Attack):
+class PGDEmbeddings(Attack):
     r"""
     PGD in the paper 'Towards Deep Learning Models Resistant to Adversarial Attacks'
     [https://arxiv.org/abs/1706.06083]
@@ -47,14 +47,11 @@ class PGD_embeddings(Attack):
                 torch.empty_like(adv_images).uniform_(-self.eps, self.eps)
             adv_images = torch.clamp(adv_images, min=0, max=1).detach()
 
-        in_multipliers = torch.zeros_like(float_labels)
         out_multipliers = 1-float_labels
         
         for _ in range(self.steps):
             adv_images.requires_grad = True
-            outputs = self.get_logits(adv_images)
             features = self.model.get_embeds_and_logit_from_forward(adv_images)
-            #loss_in = torch.norm(features - self.mean_out)
             loss_out = - torch.norm(features - self.mean_in, dim=1)
             
             
@@ -76,7 +73,6 @@ class PGD_embeddings(Attack):
             # For these samples (inliers), we wish to increase msp
             
             
-            #hend_loss = 1 * (probs.mean(1) - torch.logsumexp(probs, dim=1))
             
             cost =  torch.dot(out_multipliers, loss_out)
             
