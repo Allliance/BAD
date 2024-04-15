@@ -36,5 +36,4 @@ class ModelDataset(Dataset):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        print(self.model_paths[idx], self.labels[idx]) 
         return self.loader(self.model_paths[idx]), self.labels[idx] == CLEAN_LABEL, self.labels[idx]
