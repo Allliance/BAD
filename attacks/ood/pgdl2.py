@@ -80,7 +80,7 @@ class PGD(Attack):
             if self.target_class is not None:
                 out_loss = -loss(outputs, torch.ones_like(labels) * self.target_class)
             else:
-                out_loss = torch.max(probs, dim=1)
+                out_loss = torch.max(probs, dim=1).values
             
             hend_loss = 1 * (probs.mean(1) - torch.logsumexp(probs, dim=1))
             
