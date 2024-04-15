@@ -15,9 +15,9 @@ class ModelDataset(Dataset):
         self.labels = []
         self.loader = model_loader
         
-        attack_folders = [os.path.join(bads_folder, x) for x in os.listdir(bads_folder) if os.path.isdir(os.path.join(bads_folder, x))]
+        attack_folders = [x for x in os.listdir(bads_folder) if os.path.isdir(os.path.join(bads_folder, x))]
         for attack_folder in attack_folders:
-            bad_checkpoints = extract_models_paths(bads_folder)
+            bad_checkpoints = extract_models_paths(os.path.join(bads_folder, attack_folder))
             if sample:
                 bad_checkpoints = random.sample(bad_checkpoints, sample_k)
             self.model_paths += bad_checkpoints
@@ -27,11 +27,14 @@ class ModelDataset(Dataset):
         if sample:
             clean_checkpoints = random.sample(clean_checkpoints, sample_k*4)
         self.model_paths += clean_checkpoints
-        self.labels += [CLEAN_LABEL] * len(clean_checkpoints)
+        
+        random.shuffle(self.model_paths)
+        all_labels = attack_folders + [CLEAN_LABEL]
+        self.labels = [[x for x in all_labels if x in model_path][0] for model_path in self.model_paths]
 
     def __len__(self):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        
-        return self.loader(self.model_paths[idx]), self.labels[idx] == CLEAN_LABEL
+        print(self.model_paths[idx], self.labels[idx]) 
+        return self.loader(self.model_paths[idx]), self.labels[idx] == CLEAN_LABEL, self.labels[idx]
