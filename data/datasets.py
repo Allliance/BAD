@@ -34,3 +34,17 @@ class GaussianDataset(Dataset):
     def __getitem__(self, idx):
         sample = self.to_pil(self.data[idx])
         return self.transform(sample), self.label
+
+class BlankDataset(Dataset):
+    def __init__(self, label, num_samples=3000, size=32, color=0):
+        self.data = torch.ones((num_samples,3,size,size)) * color
+        self.label = label
+        self.transform = transforms.ToTensor()
+        self.to_pil = transforms.ToPILImage()
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        sample = self.to_pil(self.data[idx])
+        return self.transform(sample), self.label
