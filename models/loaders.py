@@ -23,7 +23,7 @@ def load_preact(record_path, num_classes=10):
     net = PreActResNet18(num_classes=num_classes)
     net.load_state_dict(load_file['model'])
     
-    model = Model(net)
+    model = Model(net, feature_extractor=net.get_features)
     model.to(device)
     model.eval()
     
@@ -42,3 +42,22 @@ def load_resnet(record_path, num_classes=10):
     model.eval()
     
     return model
+
+def load_vgg(record_path):
+    init_num_filters = 64
+    inter_fc_dim = 384
+    
+    net = CNNClassifier(init_num_filters=init_num_filters,
+                         inter_fc_dim=inter_fc_dim,nofclasses=num_classes,
+                         nofchannels=3,use_stn=False)
+    
+    model_data = torch.load(record_path)
+    
+    net.load_state_dict(copy.deepcopy(model_data))
+    net.eval()
+    
+    model = Model(net, feature_extractor=net.get_features)
+    model.to(device)
+    model.eval()
+    
+    return net
