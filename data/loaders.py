@@ -2,7 +2,7 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from .datasets import SingleLabelDataset, GaussianDataset
+from .datasets import SingleLabelDataset, GaussianDataset, BlankDataset
 from torch.utils.data import Subset
 from collections import defaultdict
 
@@ -53,6 +53,8 @@ def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_s
         out_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=transform)
     elif out == 'gaussian':
         out_dataset = GaussianDataset(out_label)
+    elif out == 'blank':
+        out_dataset = BlankDataset(out_label, color=0)
     elif out == 'fmnist':
         transform_out = transforms.Compose([
         transforms.Resize((32, 32)),
