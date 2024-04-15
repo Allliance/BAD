@@ -6,6 +6,9 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+import umap
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -264,3 +267,31 @@ def find_best_gap(m1, m2, evaluator, config, thresh=0.4, log=False):
     
     plot_process([e*255 for e in epsilons], gaps, config['title'])
     return best_result
+
+
+def plot_tsne(features, labels):
+    
+    num_classes = len(set(labels))
+    tsne = TSNE(n_components=2).fit_transform(features)
+    plt.figure(figsize=(10, 8))
+    plt.scatter(tsne[:, 0], tsne[:, 1], c=labels, cmap='tab20')  # Adjust the colormap as needed
+    plt.colorbar(boundaries=np.arange(12)-0.5).set_ticks(np.arange(11))
+    plt.title('TSNE Embedding')
+    plt.xlabel('TSNE Dimension 1')
+    plt.ylabel('TSNE Dimension 2')
+    plt.savefig("my_tsne_plot.png")
+
+def plot_umap(features, labels):
+    num_classes = len(set(labels))
+
+    umap_emb = umap.UMAP().fit_transform(features)
+
+    plt.figure(figsize=(10, 8))
+    plt.scatter(umap_emb[:, 0], umap_emb[:, 1], c=labels, cmap='tab20')  # Adjust the colormap as needed
+    plt.colorbar(boundaries=np.arange(12)-0.5).set_ticks(np.arange(11))
+    plt.title('UMAP Embedding')
+    plt.xlabel('UMAP Dimension 1')
+    plt.ylabel('UMAP Dimension 2')
+    plt.savefig("my_umap_plot.png")
+    
+    
