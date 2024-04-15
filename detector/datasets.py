@@ -1,5 +1,5 @@
 import os
-
+from torch.utils.data import Dataset
 CLEAN_LABEL = 'clean'
 
 class ModelDataset(Dataset):
