@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
 
-class Model(nn.Module):
+class BaseModel(nn.Module):
     def __init__(self, backbone, device=None, normalize=True, mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261], input_scalar=None):
-        super(Model, self).__init__()
+        super(BaseModel, self).__init__()
         
         mu = torch.tensor(mean).view(3,1,1)
         std = torch.tensor(std).view(3,1,1)
