@@ -30,7 +30,7 @@ def load_preact(record_path, num_classes=10):
     return model
 
 def load_resnet(record_path, num_classes=10):
-    state_dict = torch.load(record_path)['model']
+    state_dict = torch.load(record_path)
     
     
     net = resnet18(num_classes=num_classes)
