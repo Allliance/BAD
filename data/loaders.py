@@ -41,7 +41,7 @@ def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_s
     if in_label is not None:
         in_dataset = SingleLabelDataset(1, in_dataset)
     if out == 'SVHN':
-        out_dataset = SingleLabelDataset(0, torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform))
+        out_dataset = torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform)
     elif out == 'mnist':
         transform_out = transforms.Compose([
         transforms.Resize((32, 32)),

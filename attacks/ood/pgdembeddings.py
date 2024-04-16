@@ -1,3 +1,8 @@
+import torch
+import torch.nn as nn
+
+from ..attack import Attack
+
 class PGDEmbeddings(Attack):
     r"""
     PGD in the paper 'Towards Deep Learning Models Resistant to Adversarial Attacks'
@@ -33,11 +38,10 @@ class PGDEmbeddings(Attack):
         """
 
         images = images.clone().detach().to(self.device)
-        new_labels = torch.where(labels == 10, torch.tensor(0), torch.tensor(1))
+        # new_labels = torch.where(labels == 10, torch.tensor(0), torch.tensor(1))
 
-        float_labels = new_labels.clone().detach().type(torch.FloatTensor).to(self.device)
-
-        
+        # float_labels = new_labels.clone().detach().type(torch.FloatTensor).to(self.device)
+        # float_labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
         
         adv_images = images.clone().detach()
         
@@ -47,34 +51,14 @@ class PGDEmbeddings(Attack):
                 torch.empty_like(adv_images).uniform_(-self.eps, self.eps)
             adv_images = torch.clamp(adv_images, min=0, max=1).detach()
 
-        out_multipliers = 1-float_labels
+        # out_multipliers = 1-float_labels
         
         for _ in range(self.steps):
             adv_images.requires_grad = True
             features = self.model.get_embeds_and_logit_from_forward(adv_images)
             loss_out = - torch.norm(features - self.mean_in, dim=1)
             
-            
-            
-            
-#             out_loss= -loss(outputs, int_tar)
-            
-#             Calculate loss
-            
-#             First calculate the loss of MSP
-#             For these samples (outliers), we wish to increase msp
-            
-#             probs = torch.softmax(outputs, dim=1)
-#             msp, _ = torch.max(probs, dim=1)
-#             msp_loss = msp
-            
-            
-            # We then use Hendrycks loss here
-            # For these samples (inliers), we wish to increase msp
-            
-            
-            
-            cost =  torch.dot(out_multipliers, loss_out)
+            cost =  torch.dot(labels, loss_out)
             
             # Update adversarial images
             grad = torch.autograd.grad(cost, adv_images,
