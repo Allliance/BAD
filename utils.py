@@ -200,3 +200,17 @@ def find_best_gap(m1, m2, evaluator, config, thresh=0.4, log=False):
     
     plot_process([e*255 for e in epsilons], gaps, config['title'])
     return best_result
+
+def get_mean_features(model, dataloader, target_label):
+    in_features = None
+    for data, labels in dataloader:
+        data = data.to(device)
+        labels = labels.to(device)
+        data_features = model.get_features(data).detach().cpu()
+        new_features = torch.index_select(data_features, 0,
+                                          torch.tensor([i for i, x in enumerate(labels) if x]))
+        if in_features is not None:
+            in_features = torch.cat((in_features, new_features))
+        else:
+            in_features = new_features
+    return torch.mean(in_features, dim=0)
