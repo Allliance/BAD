@@ -40,7 +40,7 @@ class PGDEmbeddings(Attack):
         images = images.clone().detach().to(self.device)
         # new_labels = torch.where(labels == 10, torch.tensor(0), torch.tensor(1))
 
-        # float_labels = new_labels.clone().detach().type(torch.FloatTensor).to(self.device)
+        labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
         # float_labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
         
         adv_images = images.clone().detach()
@@ -55,7 +55,7 @@ class PGDEmbeddings(Attack):
         
         for _ in range(self.steps):
             adv_images.requires_grad = True
-            features = self.model.get_embeds_and_logit_from_forward(adv_images)
+            features = self.model.get_features(adv_images)
             loss_out = - torch.norm(features - self.mean_in, dim=1)
             
             cost =  torch.dot(labels, loss_out)
