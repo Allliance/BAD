@@ -28,53 +28,61 @@ def sample_dataset(dataset, portion=0.1, balanced=True):
     return Subset(dataset, indices)
 
 
-
-def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_size=256):
+def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_size=256, in_source='train'):
     assert in_label != out_label
     assert out_label is not None
-    transform = transforms.Compose(
+    assert in_source in ['train', 'test', None]
+    
+    # Transforms
+    normal_transform = transforms.Compose(
         [
         transforms.Resize((32, 32)),
         transforms.ToTensor(),
         ])
-    in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False,transform=transform, download=True)
-    if in_label is not None:
-        in_dataset = SingleLabelDataset(1, in_dataset)
-    if out == 'SVHN':
-        out_dataset = torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=transform)
-    elif out == 'mnist':
-        transform_out = transforms.Compose([
+    bw_transform = transforms.Compose([
         transforms.Resize((32, 32)),
         transforms.Grayscale(num_output_channels=3),
         transforms.ToTensor()
         ])
-        out_dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform_out)
+    
+    # Out-Distribution Dataset
+    if out == 'SVHN':
+        out_dataset = torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=normal_transform)
+    elif out == 'mnist':
+        out_dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=bw_transform)
     elif out=='cifar100':
-        out_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=transform)
+        out_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=normal_transform)
     elif out == 'gaussian':
         out_dataset = GaussianDataset(out_label)
     elif out == 'blank':
         out_dataset = BlankDataset(out_label, color=0)
     elif out == 'fmnist':
-        transform_out = transforms.Compose([
-        transforms.Resize((32, 32)),
-        transforms.Grayscale(num_output_channels=3),
-        transforms.ToTensor() 
-        ])
-        out_dataset = torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=transform_out)
+        out_dataset = torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=bw_transform)
     else:
         raise NotImplementedError
 
     out_dataset = SingleLabelDataset(out_label, out_dataset)
 
     if sample:
-        in_dataset = sample_dataset(in_dataset)
         out_dataset = sample_dataset(out_dataset)
-
-    merged_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
+    
+    final_dataset = out_dataset
+    
+    # In-Distribution Dataset
+    if in_train is not None:
+        in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=in_source == 'train',transform=normal_transform, download=True)
+        if in_label is not None:
+            in_dataset = SingleLabelDataset(1, in_dataset)
+    
+        if sample:
+            in_dataset = sample_dataset(in_dataset, portion=len(out_dataset)/len(in_dataset))
+    
+        in_dataset = sample_dataset(in_dataset, )
+        
+        final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     
     
-    testloader = torch.utils.data.DataLoader(merged_dataset, batch_size=batch_size,
+    testloader = torch.utils.data.DataLoader(final_dataset, batch_size=batch_size,
                                          shuffle=True)
     
     # Sanity Check
