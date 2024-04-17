@@ -1,7 +1,4 @@
-import torch
-import torch.nn as nn
-
-from ..attack import Attack
+from BAD.attacks.attack import Attack
 
 class PGDEmbeddings(Attack):
     r"""
@@ -23,14 +20,15 @@ class PGDEmbeddings(Attack):
         >>> adv_images = attack(images, labels)
     """
 
-    def __init__(self, model, in_mean, eps=8/255, alpha=2/255, steps=10, random_start=True):
+    def __init__(self, model, mean_in, mean_out, eps=8/255, alpha=2/255, steps=10, random_start=True):
         super().__init__("PGD", model)
         self.eps = eps
         self.alpha = alpha
         self.steps = steps
         self.random_start = random_start
         self.supported_mode = ['default', 'targeted']
-        self.mean_in = in_mean
+        self.mean_in = mean_in
+        self.mean_out = mean_out
 
     def forward(self, images, labels):
         r"""
@@ -38,10 +36,10 @@ class PGDEmbeddings(Attack):
         """
 
         images = images.clone().detach().to(self.device)
-        # new_labels = torch.where(labels == 10, torch.tensor(0), torch.tensor(1))
+        new_labels = torch.where(labels == 10, torch.tensor(0), torch.tensor(1))
+        
+        float_labels = new_labels.clone().detach().type(torch.FloatTensor).to(self.device)
 
-        labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
-        # float_labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
         
         adv_images = images.clone().detach()
         
@@ -51,14 +49,20 @@ class PGDEmbeddings(Attack):
                 torch.empty_like(adv_images).uniform_(-self.eps, self.eps)
             adv_images = torch.clamp(adv_images, min=0, max=1).detach()
 
-        # out_multipliers = 1-float_labels
+        out_multipliers = 1-float_labels
+        in_multipliers = float_labels
         
         for _ in range(self.steps):
             adv_images.requires_grad = True
+            outputs = self.get_logits(adv_images)
             features = self.model.get_features(adv_images)
             loss_out = - torch.norm(features - self.mean_in, dim=1)
+            loss_in = - torch.norm(features - self.mean_out, dim=1)
+
+            loss_out = loss_out.flatten()
+            loss_in = loss_in.flatten()
             
-            cost =  torch.dot(labels, loss_out)
+            cost =  torch.dot(out_multipliers, loss_out) + torch.dot(in_multipliers, loss_in)
             
             # Update adversarial images
             grad = torch.autograd.grad(cost, adv_images,
@@ -70,3 +74,4 @@ class PGDEmbeddings(Attack):
             adv_images = torch.clamp(images + delta, min=0, max=1).detach()
 
         return  adv_images
+    

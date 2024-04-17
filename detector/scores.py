@@ -31,6 +31,35 @@ def epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False)
     
     return current_eps
 
+
+def get_adv_features(model, loader, target, mean_embeddings, attack, progress=False, ):
+    features = []
+    labels = []
+    
+    model.eval()
+    model.to(device)
+
+    
+    progress_bar = loader
+    if progress:
+        progress_bar = tqdm(loader, unit="batch")
+        
+    for data, label in progress_bar:
+        labels += label.tolist()
+        data, label = data.to(device), label.to(device)
+        if attack is not None:
+            data = attack(data, label)
+        feature = model.get_features(data)
+        c_f = feature.detach().cpu().numpy()
+        features.append(c_f)
+    features = np.concatenate(features)
+    
+    labels = np.array(labels)
+    out_features = features[1 - labels]
+    in_features = features[labels]
+
+    return out_features, in_features
+
 # score in [l2, cosine]
 def max_diff(model, testloader, attack_config=None, score='l2', use_in=True, progress=False):
     max_l2 = 0

@@ -54,9 +54,9 @@ def get_ood_loader(out='cifar100', sample=True, sample_num=1000, in_label=1, out
     elif out=='cifar100':
         out_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=False, download=True, transform=normal_transform)
     elif out == 'gaussian':
-        out_dataset = GaussianDataset(out_label)
+        out_dataset = GaussianDataset(out_label, num_samples=sample_num)
     elif out == 'blank':
-        out_dataset = BlankDataset(out_label, color=0)
+        out_dataset = BlankDataset(out_label, color=0, num_samples=sample_num)
     elif out == 'fmnist':
         out_dataset = torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=bw_transform)
     else:
