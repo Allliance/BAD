@@ -69,7 +69,7 @@ def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_s
     final_dataset = out_dataset
     
     # In-Distribution Dataset
-    if in_train is not None:
+    if in_source is not None:
         in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=in_source == 'train',transform=normal_transform, download=True)
         if in_label is not None:
             in_dataset = SingleLabelDataset(1, in_dataset)
