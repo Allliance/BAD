@@ -52,6 +52,5 @@ class ModelDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        return self.loader(self.data[idx]['path']),
-    int(self.data[idx].get('attack') is not None),
-    self.data[idx]
+        return self.loader(self.data[idx]['path']), int(self.data[idx].get('attack') is not None), self.data[idx]
+    
