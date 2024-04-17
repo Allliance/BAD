@@ -48,14 +48,13 @@ def find_eps_upperbound(evaluator, thresh, log=False):
         
     return upper_attack_eps
 
-def get_attack_params(attack_eps=8/255, attack_steps=10):
-    attack_alpha = 2.5 * attack_eps / attack_steps
-    
-    return {
-        'eps': attack_eps,
-        'alpha': attack_alpha,
-        'steps': attack_steps
-    }
+def update_attack_params(attack_dict, eps=None, steps=None):
+    if eps is not None:
+        attack_dict['eps'] = eps
+    if steps is not None:
+        attack_dict['steps'] = steps
+    attack_dict['alpha'] = 2.5 * attack_dict['eps'] / attack_dict['steps']
+    return attack_dict
 
 def find_best_gap(m1, m2, evaluator, config, thresh=0.4, log=False):
     
@@ -129,3 +128,38 @@ def get_mean_features(model, dataloader, target_label):
         else:
             in_features = new_features
     return torch.mean(in_features, dim=0)
+
+def get_features(model, loader, attack=None, progress=False):
+    features = []
+    outputs = []
+
+    labels = []
+    
+    model.eval()
+    model.to(device)
+
+    progress_bar = loader
+    if progress:
+        progress_bar = tqdm(loader, unit="batch")
+        
+    for data, label in progress_bar:
+        labels += label.tolist()
+        data, label = data.to(device), label.to(device)
+        if attack is not None:
+            data = attack(data, torch.where(label == 10, torch.tensor(0), torch.tensor(1)))
+        feature = model.get_features(data)
+        output = model(data)
+        output = torch.softmax(output, dim=1)
+        c_f = feature.detach().cpu().numpy()
+        c_o = output.detach().cpu().numpy()
+        features.append(c_f)
+        outputs.append(c_o)
+    f = np.concatenate(features)
+    o = np.concatenate(outputs)
+    mask_o = np.array(labels)== 10
+    mask_i = np.array(labels)!= 10
+    gaussian_features = f[mask_o]
+    cifar_features = f[mask_i]
+    selected_out = o[mask_o]
+
+    return gaussian_features, cifar_features

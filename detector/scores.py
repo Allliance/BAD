@@ -5,44 +5,34 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
+from BAD.utils import update_attack_params, get_features
 
-def get_features(model, loader, attack=None, progress=False):
-    features = []
-    outputs = []
-
-    labels = []
+def epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False):
+    initial_perf = evaluator(None)
+    eps_lb = eps_config['eps_lb']
+    eps_ub = eps_config['eps_ub']
+    eps_step = eps_config['eps_step']
+    perf_thresh = eps_config['perf_thresh'] * initial_perf
+    print("Initial perf:", initial_perf)
+    current_eps = eps_lb
+    current_step = current_eps
+    back = False
+    while (not back) or current_step > eps_step:
+        attack_params = update_attack_params(attack_params, current_eps)
+        attack = attack_class(**attack_params)
+        perf = evaluator(attack)
+        if perf < perf_thresh:
+            back = True
+            current_step /= 2
+            current_eps -= current_step
+        else:
+            current_step *= 2
+            current_eps += current_step
     
-    model.eval()
-    model.to(device)
-
-    progress_bar = loader
-    if progress:
-        progress_bar = tqdm(loader, unit="batch")
-        
-    for data, label in progress_bar:
-        labels += label.tolist()
-        data, label = data.to(device), label.to(device)
-        if attack is not None:
-            data = attack(data, torch.where(label == 10, torch.tensor(0), torch.tensor(1)))
-        feature = model.get_features(data)
-        output = model(data)
-        output = torch.softmax(output, dim=1)
-        c_f = feature.detach().cpu().numpy()
-        c_o = output.detach().cpu().numpy()
-        features.append(c_f)
-        outputs.append(c_o)
-    f = np.concatenate(features)
-    o = np.concatenate(outputs)
-    mask_o = np.array(labels)== 10
-    mask_i = np.array(labels)!= 10
-    gaussian_features = f[mask_o]
-    cifar_features = f[mask_i]
-    selected_out = o[mask_o]
-
-    return gaussian_features, cifar_features
+    return current_eps
 
 # score in [l2, cosine]
-def get_max_diff(model, testloader, attack_config=None, score='l2', use_in=True, progress=False):
+def max_diff(model, testloader, attack_config=None, score='l2', use_in=True, progress=False):
     max_l2 = 0
     
     attack_class = attack_config['attack_class']
