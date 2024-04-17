@@ -1,5 +1,6 @@
 import os, random, pathlib
 from torch.utils.data import Dataset
+import re
 CLEAN_LABEL = 'clean'
 
 def extract_models_paths(root_dir):
@@ -9,31 +10,48 @@ def extract_models_paths(root_dir):
         paths += new_paths
     return paths
 
+def extract_target(filepath):
+    match = re.search(r'target(\d)', filepath)
+    if match:
+        return int(match.group(1))
+    raise ValueError("The target for the given filepath is not identified.")
+
+def extract_info_from_filepath(filepath):
+    target = extract_target(filepath)
+    return {
+        'path': filepath,
+        'target': target
+    }
+
 class ModelDataset(Dataset):
     def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5):
-        self.model_paths = []
-        self.labels = []
+        self.data = []
         self.loader = model_loader
         
         attack_folders = [x for x in os.listdir(bads_folder) if os.path.isdir(os.path.join(bads_folder, x))]
         for attack_folder in attack_folders:
-            bad_checkpoints = extract_models_paths(os.path.join(bads_folder, attack_folder))
+            bad_data = [extract_info_from_filepath(model_path) for model_path in \
+                extract_models_paths(os.path.join(bads_folder, attack_folder))]
+            
+            for i in range(len(bad_data)):
+                model_data[i]['attack'] = attack_folder
+
             if sample:
-                bad_checkpoints = random.sample(bad_checkpoints, sample_k)
-            self.model_paths += bad_checkpoints
-            self.labels += [attack_folder] * len(bad_checkpoints)
+                bad_data = random.sample(bad_data, sample_k)
+            self.data += bad_data
         
-        clean_checkpoints = extract_models_paths(cleans_folder)
+        cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
+        
         if sample:
-            clean_checkpoints = random.sample(clean_checkpoints, sample_k*4)
-        self.model_paths += clean_checkpoints
+            cleans_data = random.sample(clean_checkpoints, sample_k*4)
+        self.data += cleans_data
         
-        random.shuffle(self.model_paths)
-        all_labels = attack_folders + [CLEAN_LABEL]
-        self.labels = [[x for x in all_labels if x in model_path][0] for model_path in self.model_paths]
+        random.shuffle(self.data)
 
     def __len__(self):
-        return len(self.labels)
+        return len(self.data)
 
     def __getitem__(self, idx):
-        return self.loader(self.model_paths[idx]), self.labels[idx] == CLEAN_LABEL, self.labels[idx]
+        return self.loader(self.data[idx]['path']),
+    int(self.data[idx].get('attack') is not None),
+    self.data[idx]
