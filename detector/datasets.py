@@ -1,6 +1,8 @@
 import os, random, pathlib
 from torch.utils.data import Dataset
 import re
+from copy import copy
+
 CLEAN_LABEL = 'clean'
 
 def extract_models_paths(root_dir):
@@ -14,7 +16,7 @@ def extract_target(filepath):
     match = re.search(r'target(\d)', filepath)
     if match:
         return int(match.group(1))
-    raise ValueError("The target for the given filepath is not identified.")
+    return None
 
 def extract_info_from_filepath(filepath):
     target = extract_target(filepath)
@@ -27,6 +29,8 @@ class ModelDataset(Dataset):
     def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5):
         self.data = []
         self.loader = model_loader
+        self.bads_data = []
+        self.cleans_data = []
         
         attack_folders = [x for x in os.listdir(bads_folder) if os.path.isdir(os.path.join(bads_folder, x))]
         for attack_folder in attack_folders:
@@ -38,14 +42,15 @@ class ModelDataset(Dataset):
 
             if sample:
                 bad_data = random.sample(bad_data, sample_k)
-            self.data += bad_data
+            self.bads_data += bad_data
         
         cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
         
         if sample:
-            cleans_data = random.sample(clean_checkpoints, sample_k*4)
-        self.data += cleans_data
+            cleans_data = random.sample(cleans_data, sample_k*4)
+        self.cleans_data = cleans_data
         
+        self.data = self.bads_data + self.cleans_data
         random.shuffle(self.data)
 
     def __len__(self):
@@ -53,4 +58,3 @@ class ModelDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.loader(self.data[idx]['path']), int(self.data[idx].get('attack') is not None), self.data[idx]
-    
