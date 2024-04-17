@@ -2,14 +2,15 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from .datasets import SingleLabelDataset, GaussianDataset, BlankDataset
+from BAD.data.datasets import SingleLabelDataset, GaussianDataset, BlankDataset
 from torch.utils.data import Subset
 from collections import defaultdict
 
 ROOT = '~/data'
 
 def sample_dataset(dataset, portion=0.1, balanced=True):
-    
+    if portion>1:
+        portion = portion / len(dataset)
     if not balanced:
         indices = random.sample(range(len(dataset)), int(portion * len(dataset)))
     # It is assumed that the dataset has labels
@@ -28,7 +29,7 @@ def sample_dataset(dataset, portion=0.1, balanced=True):
     return Subset(dataset, indices)
 
 
-def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_size=256, in_source='train'):
+def get_ood_loader(out='cifar100', sample=True, sample_num=1000, in_label=1, out_label=0, batch_size=256, in_source='train'):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
@@ -64,7 +65,7 @@ def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_s
     out_dataset = SingleLabelDataset(out_label, out_dataset)
 
     if sample:
-        out_dataset = sample_dataset(out_dataset)
+        out_dataset = sample_dataset(out_dataset, portion=sample_num)
     
     final_dataset = out_dataset
     
@@ -75,9 +76,7 @@ def get_ood_loader(out='cifar100', sample=True, in_label=1, out_label=0, batch_s
             in_dataset = SingleLabelDataset(1, in_dataset)
     
         if sample:
-            in_dataset = sample_dataset(in_dataset, portion=len(out_dataset)/len(in_dataset))
-    
-        in_dataset = sample_dataset(in_dataset, )
+            in_dataset = sample_dataset(in_dataset, portion=len(out_dataset))
         
         final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     
