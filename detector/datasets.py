@@ -34,7 +34,7 @@ class ModelDataset(Dataset):
                 extract_models_paths(os.path.join(bads_folder, attack_folder))]
             
             for i in range(len(bad_data)):
-                model_data[i]['attack'] = attack_folder
+                bad_data[i]['attack'] = attack_folder
 
             if sample:
                 bad_data = random.sample(bad_data, sample_k)
