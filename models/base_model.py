@@ -23,6 +23,7 @@ class BaseModel(nn.Module):
         self.norm = lambda x: ( x - mu ) / std
         self.feature_extractor = feature_extractor
         self.normalize_features = normalize_features
+        print(self.normalize_features)
 
     def get_features(self, x):
         if self.input_scalar is not None:
