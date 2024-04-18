@@ -8,7 +8,7 @@ from torchvision.models import resnet18
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-def load_preact(record_path, num_classes=10):
+def load_preact(record_path, num_classes=10, **model_kwargs):
     
     load_file = torch.load(record_path)
 
@@ -23,13 +23,13 @@ def load_preact(record_path, num_classes=10):
     net = PreActResNet18(num_classes=num_classes)
     net.load_state_dict(load_file['model'])
     
-    model = Model(net, feature_extractor=net.get_features)
+    model = Model(net, feature_extractor=net.get_features, **model_kwargs)
     model.to(device)
     model.eval()
     
     return model
 
-def load_resnet(record_path, num_classes=10):
+def load_resnet(record_path, num_classes=10, **model_kwargs):
     state_dict = torch.load(record_path)
     
     
@@ -38,7 +38,7 @@ def load_resnet(record_path, num_classes=10):
     
     feature_extractor = torch.nn.Sequential(*list(net.children())[:-1])
     
-    model = Model(net, feature_extractor=feature_extractor)
+    model = Model(net, feature_extractor=feature_extractor, **model_kwargs)
     model.to(device)
     model.eval()
     
@@ -57,7 +57,7 @@ def load_vgg(record_path):
     net.load_state_dict(copy.deepcopy(model_data))
     net.eval()
     
-    model = Model(net, feature_extractor=net.get_features)
+    model = Model(net, feature_extractor=net.get_features, **model_kwargs)
     model.to(device)
     model.eval()
     
