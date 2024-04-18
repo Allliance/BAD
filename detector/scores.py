@@ -61,24 +61,21 @@ def get_adv_features(model, loader, target, mean_embeddings, attack, progress=Fa
     return out_features, in_features
 
 # score in [l2, cosine]
-def max_diff(model, testloader, attack_config=None, score='l2', use_in=True, progress=False):
+def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2', use_in=True, progress=False):
     max_l2 = 0
-    
-    attack_class = attack_config['attack_class']
-    attack_config.pop('attack_class')
     
     v_out_b, v_in_b = get_features(model, testloader, attack=None)
     v_in_b_mean = np.mean(v_in_b, axis=0)
     v_out_b_mean = np.mean(v_out_b, axis=0)
-    if attack_config.get('target_class') is not None:
+    if attack_params.get('target_class') is not None:
         best_target = None
         tq = range(10)
         if progress:
             tq = tqdm(range(10))
         for i in tq:
-            attack_config['target_class'] = i
-            attack = attack_class(model, **attack_config)
-            v_out_a, v_in_a = get_features(model, testloader,  attack=attack)
+            attack_params['target_class'] = i
+            attack = attack_class(**attack_params)
+            v_out_a, v_in_a = get_features(model, testloader, attack=attack)
             v_out_a_mean = np.mean(v_out_a, axis=0)
             v_in_a_mean = np.mean(v_in_a, axis=0)
             if use_in:
@@ -96,7 +93,7 @@ def max_diff(model, testloader, attack_config=None, score='l2', use_in=True, pro
                     best_target = i
         return best_target, max_l2
     else:
-        attack = attack_class(model, **attack_config)
+        attack = attack_class(**attack_params)
         v_out_a, v_in_a = get_features(model, testloader,  attack=attack)
         v_out_a_mean = np.mean(v_out_a, axis=0)
         v_in_a_mean = np.mean(v_in_a, axis=0)

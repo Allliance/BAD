@@ -29,7 +29,7 @@ def sample_dataset(dataset, portion=0.1, balanced=True):
     return Subset(dataset, indices)
 
 
-def get_ood_loader(out='cifar100', sample=True, sample_num=1000, in_label=1, out_label=0, batch_size=256, in_source='train'):
+def get_ood_loader(out='cifar100', sample=True, sample_num=2000, in_label=1, out_label=0, batch_size=256, in_source='train'):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
