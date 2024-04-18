@@ -5,7 +5,7 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
-from BAD.utils import update_attack_params, get_features
+from BAD.utils import update_attack_params, get_features_dict
 
 def epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False):
     initial_perf = evaluator(None)
@@ -39,7 +39,6 @@ def get_adv_features(model, loader, target, mean_embeddings, attack, progress=Fa
     model.eval()
     model.to(device)
 
-    
     progress_bar = loader
     if progress:
         progress_bar = tqdm(loader, unit="batch")
@@ -64,9 +63,17 @@ def get_adv_features(model, loader, target, mean_embeddings, attack, progress=Fa
 def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2', use_in=True, progress=False):
     max_l2 = 0
     
-    v_out_b, v_in_b = get_features(model, testloader, attack=None)
-    v_in_b_mean = np.mean(v_in_b, axis=0)
-    v_out_b_mean = np.mean(v_out_b, axis=0)
+    initial_features = get_features_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data))
+    in_features = initial_features[1]
+    out_features = initial_features[0]
+    
+    mean_in_initial_features = np.mean(in_features, axis=0)
+    mean_out_initial_features = np.mean(out_features, axis=0)
+    initial_diff = (mean_out_initial_features - mean_in_initial_features)
+    
+    def get_adv_feature_extractor(attack):
+        return lambda data, targets : model.get_features(attack(data, targets))
+    
     if attack_params.get('target_class') is not None:
         best_target = None
         tq = range(10)
@@ -75,18 +82,19 @@ def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2
         for i in tq:
             attack_params['target_class'] = i
             attack = attack_class(**attack_params)
-            v_out_a, v_in_a = get_features(model, testloader, attack=attack)
-            v_out_a_mean = np.mean(v_out_a, axis=0)
-            v_in_a_mean = np.mean(v_in_a, axis=0)
+            adv_features = get_features_dict(testloader, get_adv_feature_extractor(attack))
+            in_adv_features = adv_features[1]
+            out_adv_features = adv_features[0]
+            mean_in_adv_features = np.mean(in_adv_features, axis=0)
+            mean_out_adv_features = np.mean(out_adv_features, axis=0)
             if use_in:
-                diff_a = (v_out_a_mean - v_in_a_mean)
-                diff_b = (v_out_b_mean - v_in_b_mean)
+                adv_diff = (mean_out_adv_features - mean_in_adv_features)
                 #cosine = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
-                l2 = norm(diff_a - diff_b)     
+                l2 = norm(adv_diff - initial_diff)     
                 if l2 > max_l2:
                     max_l2 = l2
             else:
-                diff = v_out_a_mean - v_out_b_mean
+                diff = mean_out_adv_features - mean_out_initial_features
                 l2 = norm(diff)
                 if l2 > max_l2:
                     max_l2 = l2
@@ -94,16 +102,17 @@ def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2
         return best_target, max_l2
     else:
         attack = attack_class(**attack_params)
-        v_out_a, v_in_a = get_features(model, testloader,  attack=attack)
-        v_out_a_mean = np.mean(v_out_a, axis=0)
-        v_in_a_mean = np.mean(v_in_a, axis=0)
+        adv_features = get_features_dict(testloader, get_adv_feature_extractor(attack))
+        in_adv_features = adv_features[1]
+        out_adv_features = adv_features[0]
+        mean_in_adv_features = np.mean(in_adv_features, axis=0)
+        mean_out_adv_features = np.mean(out_adv_features, axis=0)
         if use_in:
-            diff_a = (v_out_a_mean - v_in_a_mean)
-            diff_b = (v_out_b_mean - v_in_b_mean)
+            adv_diff = (mean_out_adv_features - mean_in_adv_features)
             #score = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
-            score = norm(diff_a - diff_b)
+            score = norm(adv_diff - initial_diff)
         else:
-            diff = v_out_a_mean - v_out_b_mean
+            diff = mean_out_adv_features - mean_out_initial_features
             score = norm(diff)
         return score
     

@@ -129,7 +129,7 @@ def get_mean_features(model, dataloader, target_label):
             in_features = new_features
     return torch.mean(in_features, dim=0)
 
-def get_features_mean(model, loader):
+def get_features_mean_dict(loader, feature_extractor):
     model.eval()
     embeddings_dict = {}
     counts_dict = {}
@@ -138,7 +138,7 @@ def get_features_mean(model, loader):
         for data, target in loader:
             data = data.to(device)
             target = target.to(device)
-            features = model.get_features(data)
+            features = feature_extractor(data, target)
             for i in range(len(target)):
                 label = target[i].item()
                 if label not in embeddings_dict:
@@ -150,6 +150,6 @@ def get_features_mean(model, loader):
     
     mean_embeddings_dict = {}
     for label in embeddings_dict:
-        mean_embeddings_dict[label] = embeddings_dict[label] / counts_dict[label]
+        mean_embeddings_dict[label] = (embeddings_dict[label] / counts_dict[label]).detach().cpu().numpy()
     
     return mean_embeddings_dict
