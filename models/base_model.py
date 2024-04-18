@@ -23,7 +23,6 @@ class BaseModel(nn.Module):
         self.norm = lambda x: ( x - mu ) / std
         self.feature_extractor = feature_extractor
         self.normalize_features = normalize_features
-        print(self.normalize_features)
 
     def get_features(self, x):
         if self.input_scalar is not None:
@@ -35,7 +34,7 @@ class BaseModel(nn.Module):
         if self.normalize_features:
             features = nn.functional.normalize(features, p=2, dim=1)    
             # features = F.normalize(features)
-            print("features before:", torch.min(features).item(), torch.max(features).item(), torch.norm(features).item(), torch.mean(features).item(), torch.std(features).item())
+            print("features after:", torch.min(features).item(), torch.max(features).item(), torch.norm(features).item(), torch.mean(features).item(), torch.std(features).item())
         return features
 
     def forward(self, x):
