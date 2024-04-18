@@ -5,7 +5,7 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
-from BAD.utils import update_attack_params, get_features_dict
+from BAD.utils import update_attack_params, get_features_mean_dict
 
 def epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False):
     initial_perf = evaluator(None)
@@ -63,7 +63,7 @@ def get_adv_features(model, loader, target, mean_embeddings, attack, progress=Fa
 def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2', use_in=True, progress=False):
     max_l2 = 0
     
-    initial_features = get_features_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data))
+    initial_features = get_features_mean_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data))
     in_features = initial_features[1]
     out_features = initial_features[0]
     
@@ -82,7 +82,7 @@ def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2
         for i in tq:
             attack_params['target_class'] = i
             attack = attack_class(**attack_params)
-            adv_features = get_features_dict(testloader, get_adv_feature_extractor(attack))
+            adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
             in_adv_features = adv_features[1]
             out_adv_features = adv_features[0]
             mean_in_adv_features = np.mean(in_adv_features, axis=0)
@@ -102,7 +102,7 @@ def max_diff(model, testloader, attack_class=None, attack_params=None, score='l2
         return best_target, max_l2
     else:
         attack = attack_class(**attack_params)
-        adv_features = get_features_dict(testloader, get_adv_feature_extractor(attack))
+        adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
         in_adv_features = adv_features[1]
         out_adv_features = adv_features[0]
         mean_in_adv_features = np.mean(in_adv_features, axis=0)
