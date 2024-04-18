@@ -30,11 +30,8 @@ class BaseModel(nn.Module):
         if self.do_norm:
             x = self.norm(x)
         features = self.feature_extractor(x)
-        print("features before:", torch.min(features).item(), torch.max(features).item(), torch.norm(features).item(), torch.mean(features).item(), torch.std(features).item())
         if self.normalize_features:
             features = nn.functional.normalize(features, p=2, dim=1)    
-            # features = F.normalize(features)
-            print("features after:", torch.min(features).item(), torch.max(features).item(), torch.norm(features).item(), torch.mean(features).item(), torch.std(features).item())
         return features
 
     def forward(self, x):
