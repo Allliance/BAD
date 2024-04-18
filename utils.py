@@ -130,23 +130,20 @@ def get_mean_features(model, dataloader, target_label):
     return torch.mean(in_features, dim=0)
 
 def get_features_mean_dict(loader, feature_extractor):
-    model.eval()
     embeddings_dict = {}
     counts_dict = {}
-    
-    with torch.no_grad():
-        for data, target in loader:
-            data = data.to(device)
-            target = target.to(device)
-            features = feature_extractor(data, target)
-            for i in range(len(target)):
-                label = target[i].item()
-                if label not in embeddings_dict:
-                    embeddings_dict[label] = features[i]
-                    counts_dict[label] = 1
-                else:
-                    embeddings_dict[label] += features[i]
-                    counts_dict[label] += 1
+    for data, target in loader:
+        data = data.to(device)
+        target = target.to(device)
+        features = feature_extractor(data, target)
+        for i in range(len(target)):
+            label = target[i].item()
+            if label not in embeddings_dict:
+                embeddings_dict[label] = features[i]
+                counts_dict[label] = 1
+            else:
+                embeddings_dict[label] += features[i]
+                counts_dict[label] += 1
     
     mean_embeddings_dict = {}
     for label in embeddings_dict:
