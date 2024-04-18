@@ -135,7 +135,7 @@ def get_features_mean_dict(loader, feature_extractor):
     for data, target in loader:
         data = data.to(device)
         target = target.to(device)
-        features = feature_extractor(data, target)
+        features = feature_extractor(data, target).detach().cpu().numpy()
         for i in range(len(target)):
             label = target[i].item()
             if label not in embeddings_dict:
@@ -147,6 +147,6 @@ def get_features_mean_dict(loader, feature_extractor):
     
     mean_embeddings_dict = {}
     for label in embeddings_dict:
-        mean_embeddings_dict[label] = (embeddings_dict[label] / counts_dict[label]).detach().cpu().numpy()
+        mean_embeddings_dict[label] = (embeddings_dict[label] / counts_dict[label])
     
     return mean_embeddings_dict
