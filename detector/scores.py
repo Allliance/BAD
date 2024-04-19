@@ -61,10 +61,10 @@ def get_adv_features(model, loader, target, mean_embeddings, attack, progress=Fa
 
 # score in [l2, cosine]
 def max_diff(model, testloader, attack_class=None, attack_params=None,
-             score='l2', use_in=True, progress=False, num_classes=10):
+             score='l2', use_in=True, progress=False, num_classes=10, normalize_features=False):
     max_l2 = 0
     
-    initial_features = get_features_mean_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data))
+    initial_features = get_features_mean_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data, normalize_features))
     in_features = initial_features[1]
     out_features = initial_features[0]
     
@@ -73,7 +73,7 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
     initial_diff = (mean_out_initial_features - mean_in_initial_features)
     
     def get_adv_feature_extractor(attack):
-        return lambda data, targets : model.get_features(attack(data, targets))
+        return lambda data, targets : model.get_features(attack(data, targets), normalize_features)
     
     if attack_params.get('target_class') is not None:
         best_target = None

@@ -6,7 +6,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 class BaseModel(nn.Module):
     def __init__(self, backbone, normalize=True,
                  mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261],
-                 input_scalar=None, feature_extractor=None, normalize_features=False):
+                 input_scalar=None, feature_extractor=None):
         super(BaseModel, self).__init__()
         
         mu = torch.tensor(mean).view(3,1,1)
@@ -22,16 +22,15 @@ class BaseModel(nn.Module):
         self.do_norm = normalize
         self.norm = lambda x: ( x - mu ) / std
         self.feature_extractor = feature_extractor
-        self.normalize_features = normalize_features
 
-    def get_features(self, x):
+    def get_features(self, x, normalize=False):
         if self.input_scalar is not None:
             x = x * self.input_scalar
         if self.do_norm:
             x = self.norm(x)
         features = self.feature_extractor(x)
-        if self.normalize_features:
-            features = nn.functional.normalize(features, p=2, dim=1)    
+        if normalize:
+            features = nn.functional.normalize(features)
         return features
 
     def forward(self, x):
