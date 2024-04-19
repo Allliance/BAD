@@ -7,7 +7,7 @@ from tqdm import tqdm
 from BAD.eval.eval import evaluate
 from BAD.utils import update_attack_params, get_features_mean_dict
 
-def epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False):
+def get_epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False):
     initial_perf = evaluator(None)
     eps_lb = eps_config['eps_lb']
     eps_ub = eps_config['eps_ub']
@@ -15,21 +15,18 @@ def epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False)
     perf_thresh = eps_config['perf_thresh'] * initial_perf
     print("Initial perf:", initial_perf)
     current_eps = eps_lb
-    current_step = current_eps
-    back = False
-    while (not back) or current_step > eps_step:
-        attack_params = update_attack_params(attack_params, current_eps)
+    l = eps_lb
+    r = eps_ub
+    while r-l > eps_step:
+        mid = (r+l)/2
+        attack_params = update_attack_params(attack_params, mid)
         attack = attack_class(**attack_params)
         perf = evaluator(attack)
         if perf < perf_thresh:
-            back = True
-            current_step /= 2
-            current_eps -= current_step
+            r = mid
         else:
-            current_step *= 2
-            current_eps += current_step
-    
-    return current_eps
+            l = mid
+    return l
 
 
 def get_adv_features(model, loader, target, mean_embeddings, attack, progress=False, ):
