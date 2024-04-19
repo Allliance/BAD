@@ -99,11 +99,9 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
 
 def get_transform(dataset):
     if dataset == 'cifar10':
-        transform = transforms.Compose(
-            [
-            transforms.Resize((32, 32)),
-            transforms.ToTensor(),
-            ])
+        return normal_transform
+    elif dataset == 'mnist':
+        return bw_transform
     else:
         raise NotImplementedError
     return transform
@@ -116,7 +114,7 @@ def get_cls_loader(dataset='cifar10', sample_portion=0.2, batch_size=256, transf
     if dataset == 'cifar10':
         test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False, download=True, transform=transform)
     elif dataset == 'mnist':
-        dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=bw_transform)
+        test_dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform)
     else:
         raise NotImplementedError
 
