@@ -53,6 +53,12 @@ class ModelDataset(Dataset):
         self.data = self.bads_data + self.cleans_data
         random.shuffle(self.data)
 
+    def get_random_clean_model(self):
+        pass
+    
+    def get_random_bad_model(self, name=None):
+        pass
+
     def __len__(self):
         return len(self.data)
 
