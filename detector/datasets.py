@@ -28,6 +28,7 @@ def extract_info_from_filepath(filepath):
 class ModelDataset(Dataset):
     def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5):
         self.data = []
+        self.model_data_dict = {}
         self.loader = model_loader
         self.bads_data = []
         self.cleans_data = []
@@ -43,6 +44,7 @@ class ModelDataset(Dataset):
             if sample:
                 bad_data = random.sample(bad_data, sample_k)
             self.bads_data += bad_data
+            self.model_data_dict[attack_folder] = bad_data
         
         cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
         
@@ -51,13 +53,18 @@ class ModelDataset(Dataset):
         self.cleans_data = cleans_data
         
         self.data = self.bads_data + self.cleans_data
+        self.model_data_dict[CLEAN_LABEL] = self.cleans_data
+    
         random.shuffle(self.data)
 
     def get_random_clean_model(self):
-        pass
+        model_data = random.sample(self.cleans_data, 1)
+        return self.loader(model_data[0]['path'])
     
     def get_random_bad_model(self, name=None):
-        pass
+        if name is None:
+            return self.loader(random.sample(self.bads_data, 1)[0]['path'])
+        return self.loader(random.sample(self.model_data_dict[name], 1)[0]['path'])
 
     def __len__(self):
         return len(self.data)
