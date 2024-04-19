@@ -8,6 +8,18 @@ from collections import defaultdict
 
 ROOT = '~/data'
 
+# Transforms
+normal_transform = transforms.Compose(
+    [
+    transforms.Resize((32, 32)),
+    transforms.ToTensor(),
+    ])
+bw_transform = transforms.Compose([
+    transforms.Resize((32, 32)),
+    transforms.Grayscale(num_output_channels=3),
+    transforms.ToTensor()
+    ])
+
 def sample_dataset(dataset, portion=0.1, balanced=True):
     if portion>1:
         portion = portion / len(dataset)
@@ -34,17 +46,7 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
     assert out_label is not None
     assert in_source in ['train', 'test', None]
     
-    # Transforms
-    normal_transform = transforms.Compose(
-        [
-        transforms.Resize((32, 32)),
-        transforms.ToTensor(),
-        ])
-    bw_transform = transforms.Compose([
-        transforms.Resize((32, 32)),
-        transforms.Grayscale(num_output_channels=3),
-        transforms.ToTensor()
-        ])
+    
     
     # Out-Distribution Dataset
     if out == 'SVHN':
@@ -113,6 +115,8 @@ def get_cls_loader(dataset='cifar10', sample_portion=0.2, batch_size=256, transf
         transform = get_transform(dataset)
     if dataset == 'cifar10':
         test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False, download=True, transform=transform)
+    elif dataset == 'mnist':
+        dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=bw_transform)
     else:
         raise NotImplementedError
 

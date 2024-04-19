@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import torchvision
 
 def visualize_samples(dataloader, n, title="Sample"):
     plt.clf()
