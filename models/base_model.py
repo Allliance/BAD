@@ -9,6 +9,8 @@ class BaseModel(nn.Module):
                  input_scalar=None, feature_extractor=None, normalize_features=False):
         super(BaseModel, self).__init__()
         
+        print(mean, std)
+        
         mu = torch.tensor(mean).view(3,1,1)
         std = torch.tensor(std).view(3,1,1)
         
