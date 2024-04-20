@@ -47,7 +47,6 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
     assert in_source in ['train', 'test', None]
     
     
-    
     # Out-Distribution Dataset
     if out == 'SVHN':
         out_dataset = torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=normal_transform)
@@ -104,17 +103,16 @@ def get_transform(dataset):
         return bw_transform
     else:
         raise NotImplementedError
-    return transform
 
-def get_cls_loader(dataset='cifar10', sample_portion=0.2, batch_size=256, transforms_list=None):
+def get_cls_loader(dataset='cifar10', train=False, sample_portion=0.2, batch_size=256, transforms_list=None):
     if transforms_list:
         transform = transforms.Compose(transforms_list)
     else:
         transform = get_transform(dataset)
     if dataset == 'cifar10':
-        test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=False, download=True, transform=transform)
+        test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=train, download=True, transform=transform)
     elif dataset == 'mnist':
-        test_dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=transform)
+        test_dataset = torchvision.datasets.MNIST(root=ROOT, train=train, download=True, transform=transform)
     else:
         raise NotImplementedError
 
