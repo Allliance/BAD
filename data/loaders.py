@@ -77,7 +77,7 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
         out_dataset = torchvision.datasets.FashionMNIST(root=ROOT, train=False, download=True, transform=bw_transform)
     elif out == 'rot':
         out_dataset = deepcopy(in_dataset)
-        out_dataset.transform = transforms.Compose([transforms.RandomRotation(90), out_dataset.transform])
+        out_dataset.transform = transforms.Compose([lambda x: rotate(x, 90), out_dataset.transform])
     else:
         raise NotImplementedError
 
