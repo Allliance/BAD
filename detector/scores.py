@@ -14,7 +14,6 @@ def get_epsilon_score(attack_class, attack_params, evaluator, eps_config, log=Fa
     eps_step = eps_config['eps_step']
     perf_thresh = eps_config['perf_thresh'] * initial_perf
     print("Initial perf:", initial_perf)
-    current_eps = eps_lb
     l = eps_lb
     r = eps_ub
     while r-l > eps_step:
