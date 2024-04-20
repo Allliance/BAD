@@ -65,7 +65,7 @@ class ModelDataset(Dataset):
     
     def get_random_bad_model(self, name=None):
         if name is None:
-            model_data = random.sample(self.bads_data, 1)[0]['path']
+            model_data = random.sample(self.bads_data, 1)[0]
         else:
             model_data = random.sample(self.model_data_dict[name], 1)[0]
         return self.load_model(model_data)
