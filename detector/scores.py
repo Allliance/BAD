@@ -5,27 +5,11 @@ import numpy as np
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
-from BAD.utils import update_attack_params, get_features_mean_dict
+from BAD.utils import update_attack_params, get_features_mean_dict, find_min_eps
 
-def get_epsilon_score(attack_class, attack_params, evaluator, eps_config, log=False):
-    initial_perf = evaluator(None)
-    eps_lb = eps_config['eps_lb']
-    eps_ub = eps_config['eps_ub']
-    eps_step = eps_config['eps_step']
-    perf_thresh = eps_config['perf_thresh'] * initial_perf
-    print("Initial perf:", initial_perf)
-    l = eps_lb
-    r = eps_ub
-    while r-l > eps_step:
-        mid = (r+l)/2
-        attack_params = update_attack_params(attack_params, mid)
-        attack = attack_class(**attack_params)
-        perf = evaluator(attack)
-        if perf < perf_thresh:
-            r = mid
-        else:
-            l = mid
-    return l
+def get_epsilon_score(eps_evaluator, eps_config, log=False, proportional=False):
+    return find_min_eps(eps_evaluator, eps_config['thresh'], eps_lb=eps_config['lb'], 
+                        eps_ub=eps_config['ub'], max_error=eps_config['max_error'], proportional=proportional, log=log)
 
 
 def get_adv_features(model, loader, target, mean_embeddings, attack, progress=False, ):
