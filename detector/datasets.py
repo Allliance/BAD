@@ -38,7 +38,7 @@ class ModelDataset(Dataset):
         
         attack_folders = [x for x in os.listdir(bads_folder) if os.path.isdir(os.path.join(bads_folder, x))]
         for attack_folder in attack_folders:
-            if attack in discards:
+            if attack_folder in discards:
                 continue
             bad_data = [extract_info_from_filepath(model_path) for model_path in \
                 extract_models_paths(os.path.join(bads_folder, attack_folder))]
