@@ -26,15 +26,20 @@ def extract_info_from_filepath(filepath):
     }
 
 class ModelDataset(Dataset):
-    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5):
+    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5, discards=None):
         self.data = []
         self.model_data_dict = {}
         self.loader = model_loader
         self.bads_data = []
         self.cleans_data = []
         
+        if discards is None:
+            discards = []
+        
         attack_folders = [x for x in os.listdir(bads_folder) if os.path.isdir(os.path.join(bads_folder, x))]
         for attack_folder in attack_folders:
+            if attack in discards:
+                continue
             bad_data = [extract_info_from_filepath(model_path) for model_path in \
                 extract_models_paths(os.path.join(bads_folder, attack_folder))]
             
@@ -46,11 +51,13 @@ class ModelDataset(Dataset):
             self.bads_data += bad_data
             self.model_data_dict[attack_folder] = bad_data
         
-        cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
-        
-        if sample:
-            cleans_data = random.sample(cleans_data, sample_k*4)
-        self.cleans_data = cleans_data
+        if CLEAN_LABEL not in discards:
+            
+            cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
+            
+            if sample:
+                cleans_data = random.sample(cleans_data, sample_k*4)
+            self.cleans_data = cleans_data
         
         self.data = self.bads_data + self.cleans_data
         self.model_data_dict[CLEAN_LABEL] = self.cleans_data
