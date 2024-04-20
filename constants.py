@@ -14,7 +14,7 @@ BAD_ROOT_DICT = {
             'preact': '/kaggle/input/badset-preact',
             },
     'mnist': {
-            'resnet': '/kaggle/input/backdoored-resnet18-120models-6attack-dataset',
+            'resnet': '/kaggle/input/bad-testset-resnet-mnist/models',
             'preact': '/kaggle/input/backdoored-preactresnet18-mnist-100models-5attack',
             }
            }
