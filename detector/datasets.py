@@ -81,5 +81,5 @@ class ModelDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        return self.load_model(self.data[idx]), int(self.data[idx].get('attack') is not None), self.data[idx]
+        return self.load_model(self.data[idx]), int(self.data[idx].get('attack') is None), self.data[idx]
     
