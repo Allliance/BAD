@@ -2,6 +2,7 @@ from PIL import Image
 from torchvision import transforms
 import torch
 from torch.utils.data import Dataset
+from torchvision.transforms.functional import rotate
 import torchvision
 import os
 
@@ -20,6 +21,7 @@ class SingleLabelDataset(Dataset):
     # Getting data size/length
     def __len__(self):
         return len(self.data)
+
 
 class GaussianDataset(Dataset):
     def __init__(self, label, num_samples=3000, size=32):
