@@ -57,18 +57,22 @@ class ModelDataset(Dataset):
     
         random.shuffle(self.data)
 
+    def load_model(self, model_data):
+        return self.loader(model_data['path'], model_data)
+
     def get_random_clean_model(self):
-        model_data = random.sample(self.cleans_data, 1)
-        return self.loader(model_data[0]['path'])
+        return self.load_model(random.sample(self.cleans_data, 1)[0])
     
     def get_random_bad_model(self, name=None):
         if name is None:
-            return self.loader(random.sample(self.bads_data, 1)[0]['path'])
-        return self.loader(random.sample(self.model_data_dict[name], 1)[0]['path'])
+            model_data = random.sample(self.bads_data, 1)[0]['path']
+        else:
+            model_data = random.sample(self.model_data_dict[name], 1)[0]
+        return self.load_model(model_data)
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
-        return self.loader(self.data[idx]['path'], meta_data=self.data[idx]), int(self.data[idx].get('attack') is not None), self.data[idx]
+        return self.load_model(self.data[idx]), int(self.data[idx].get('attack') is not None), self.data[idx]
     
