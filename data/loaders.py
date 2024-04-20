@@ -104,7 +104,7 @@ def get_transform(dataset):
     else:
         raise NotImplementedError
 
-def get_cls_loader(dataset='cifar10', train=False, sample_portion=0.2, batch_size=256, transforms_list=None):
+def get_cls_loader(dataset='cifar10', train=False, sample_portion=1, batch_size=256, transforms_list=None):
     if transforms_list:
         transform = transforms.Compose(transforms_list)
     else:
