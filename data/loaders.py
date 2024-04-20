@@ -61,9 +61,6 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
             in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=bw_transform)
         else:
             raise NotImplementedError("In Distribution Dataset not implemented")
-        if in_label is not None:
-            in_dataset = SingleLabelDataset(in_label, in_dataset)
-    
     
     # Out-Distribution Dataset
     if out == 'SVHN':
@@ -84,6 +81,9 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
     else:
         raise NotImplementedError
 
+    if in_label is not None:
+        in_dataset = SingleLabelDataset(in_label, in_dataset)
+        
     if out_filter_labels:
         out_dataset = filter_labels(out_dataset, out_filter_labels)
 
