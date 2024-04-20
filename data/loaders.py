@@ -6,6 +6,7 @@ from BAD.data.datasets import SingleLabelDataset, GaussianDataset, BlankDataset
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
+from torchvision.transforms.functional import rotate
 
 ROOT = '~/data'
 
