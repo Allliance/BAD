@@ -48,6 +48,24 @@ def find_eps_upperbound(evaluator, thresh, log=False):
         
     return upper_attack_eps
 
+def find_min_eps(evaluator, thresh, eps_lb=0, eps_ub=1, max_error=1e-3, proportional=False):
+    initial_perf = evaluator(None)
+    if proportional:
+        thresh *= initial_perf
+    
+    l = eps_lb
+    r = eps_ub
+    
+    while r-l > max_error:
+        mid = (r+l)/2
+        auc = evaluator(attack)
+        if auc < thresh:
+            r = mid
+        else:
+            l = mid
+    return l
+
+
 def update_attack_params(attack_dict, eps=None, steps=None):
     if eps is not None:
         attack_dict['eps'] = eps
