@@ -33,21 +33,6 @@ def ood_sanity_check(testloader, adv_check=True, clean_check=True, target=None):
         
     print("End of Sanity Check")
 
-def find_eps_upperbound(evaluator, thresh, log=False):
-    for j in range(1, 32):
-        score = evaluator(j/255)
-        if score < thresh:
-            upper_attack_eps = j/255
-            if log:
-                print("Thresh obtained at epsilon =",f"{j}/255, with score=", score)
-            break
-    else:
-        upper_attack_eps = 10/255
-        if log:
-            print("No good eps found")
-        
-    return upper_attack_eps
-
 def find_min_eps(evaluator, thresh, eps_lb=0, eps_ub=1, max_error=1e-3, proportional=False):
     initial_perf = evaluator(None)
     if proportional:
