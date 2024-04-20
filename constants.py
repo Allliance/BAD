@@ -4,7 +4,7 @@ CLEAN_ROOT_DICT = {
     'preact': '/kaggle/input/cleanset-preact',
 },
 'mnist': {
-    'resnet': '/kaggle/input/clean-resnet18-120models-dataset',
+    'resnet': '/kaggle/input/clean-testset-resnet-mnist/models',
     'preact': '/kaggle/input/clean-preactresnet18-mnist-120models-dataset',
 }}
 
