@@ -36,6 +36,14 @@ def filter_labels(dataset, labels):
     indices = [i for i, (_, y) in enumerate(dataset) if y not in labels]
     return Subset(dataset, indices)
 
+def get_transform(dataset):
+    if dataset in ['cifar10', 'cifar100', 'gtsrb']:
+        return normal_transform
+    elif dataset == 'mnist':
+        return bw_transform
+    else:
+        raise NotImplementedError
+
 
 def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[]):
@@ -45,15 +53,16 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
     
     # In-Distribution Dataset
     if in_source is not None:
+        transform = get_transform(in_dataset)
         use_train = in_source == 'train'
         if in_dataset == 'cifar10':
-            in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=use_train,transform=normal_transform, download=True)
+            in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=use_train,transform=transform, download=True)
         if in_dataset == 'cifar100':
-            in_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=use_train,transform=normal_transform, download=True)
+            in_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=use_train,transform=transform, download=True)
         if in_dataset == 'gtsrb':
-            in_dataset = GTSRB(train=use_train,transform=normal_transform, download=True)
+            in_dataset = GTSRB(train=use_train,transform=transform, download=True)
         elif in_dataset == 'mnist':
-            in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=bw_transform)
+            in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=transform)
         else:
             raise NotImplementedError("In Distribution Dataset not implemented")
     
@@ -104,15 +113,7 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
     
     return testloader
 
-def get_transform(dataset):
-    if dataset == 'cifar10':
-        return normal_transform
-    elif dataset == 'mnist':
-        return bw_transform
-    else:
-        raise NotImplementedError
-
-def get_cls_loader(dataset='cifar10', train=False, sample_portion=0.2, batch_size=256, transforms_list=None):
+def get_cls_loader(dataset, train=False, sample_portion=0.2, batch_size=256, transforms_list=None):
     if transforms_list:
         transform = transforms.Compose(transforms_list)
     else:
@@ -121,6 +122,10 @@ def get_cls_loader(dataset='cifar10', train=False, sample_portion=0.2, batch_siz
         test_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=train, download=True, transform=transform)
     elif dataset == 'mnist':
         test_dataset = torchvision.datasets.MNIST(root=ROOT, train=train, download=True, transform=transform)
+    elif dataset == 'cifar100':
+        test_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=train, download=True, transform=transform)
+    elif dataset == 'gtsrb':
+        test_dataset = GTSRB(train=train,transform=transform, download=True)
     else:
         raise NotImplementedError
 
