@@ -53,7 +53,7 @@ def load_vgg(record_path, num_classes=10, **model_kwargs):
                          inter_fc_dim=inter_fc_dim,nofclasses=num_classes,
                          nofchannels=3,use_stn=False)
     
-    model_data = torch.load(record_path)
+    model_data = torch.load(record_path)['model']
     
     net.load_state_dict(copy.deepcopy(model_data))
     net.eval()
