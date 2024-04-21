@@ -44,7 +44,7 @@ def load_resnet(record_path, num_classes=10, **model_kwargs):
     
     return model
 
-def load_vgg(record_path):
+def load_vgg(record_path, **model_kwargs):
     init_num_filters = 64
     inter_fc_dim = 384
     
