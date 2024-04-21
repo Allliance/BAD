@@ -57,9 +57,9 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
         use_train = in_source == 'train'
         if in_dataset == 'cifar10':
             in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=use_train,transform=transform, download=True)
-        if in_dataset == 'cifar100':
+        elif in_dataset == 'cifar100':
             in_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=use_train,transform=transform, download=True)
-        if in_dataset == 'gtsrb':
+        elif in_dataset == 'gtsrb':
             in_dataset = GTSRB(train=use_train,transform=transform, download=True)
         elif in_dataset == 'mnist':
             in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=transform)
