@@ -9,7 +9,7 @@ class GTSRB(data.Dataset):
     def __init__(self, train, data_root='~/data/gtsrb', transform=None, download=False):
         super(GTSRB, self).__init__()
         if not os.path.exists(data_root):
-            run_download_bash_file('./downloads/download_gtsrb.sh')
+            run_download_bash_file(os.path.join(os.path.dirname(__file__),'downloads/download_gtsrb.sh'))
         if train:
             self.data_folder = os.path.join(data_root, "Train")
             self.images, self.labels = self._get_data_train_list()
