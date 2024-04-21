@@ -2,9 +2,9 @@ import copy
 import pickle 
 from torchvision import transforms
 import torch
-from .base_model import BaseModel as Model
-from .preact import PreActResNet18
-from .vgg_custom import CNNClassifier
+from BAD.models.base_model import BaseModel as Model
+from BAD.models.preact import PreActResNet18
+from BAD.models.vgg_custom import CNNClassifier
 from torchvision.models import resnet18
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -45,7 +45,7 @@ def load_resnet(record_path, num_classes=10, **model_kwargs):
     
     return model
 
-def load_vgg(record_path, **model_kwargs):
+def load_vgg(record_path, num_classes=10, **model_kwargs):
     init_num_filters = 64
     inter_fc_dim = 384
     

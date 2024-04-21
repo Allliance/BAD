@@ -84,7 +84,7 @@ class CNNClassifier(nn.Module):
             nn.MaxPool2d(2,2),
         )
 
-        self.pre_fc = nn.Sequential(
+        self.fc = nn.Sequential(
             nn.Linear(self.init_num_filters_ *4*4, self.inter_fc_dim_),
             nn.BatchNorm1d(self.inter_fc_dim_),
             nn.ReLU(True),
@@ -94,16 +94,16 @@ class CNNClassifier(nn.Module):
             nn.BatchNorm1d(int(self.inter_fc_dim_/2)),
             nn.ReLU(True),
             nn.Dropout(p=.2),
+            nn.Linear(int(self.inter_fc_dim_/2), self.nofclasses_)
         )
 
-        self.fc = nn.Linear(int(self.inter_fc_dim_/2), self.nofclasses_)
 
     def get_features(self, x):
         if self.use_stn:
             x = self.stn(x)
         x = self.features(x)
         x = x.view(-1, self.init_num_filters_ *4*4)
-        x = self.prefc(x)
+        # x = self.pre_fc(x)
         return x
         
 
@@ -112,6 +112,6 @@ class CNNClassifier(nn.Module):
             x = self.stn(x)
         x = self.features(x)
         x = x.view(-1, self.init_num_filters_ *4*4)
-        x = self.prefc(x)
+        # x = self.prefc(x)
         x = self.fc(x)
         return x
