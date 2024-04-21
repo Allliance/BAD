@@ -6,7 +6,11 @@ CLEAN_ROOT_DICT = {
 'mnist': {
     'resnet': '/kaggle/input/clean-testset-resnet-mnist/models',
     'preact': '/kaggle/input/clean-preactresnet18-mnist-120models-dataset',
-}}
+},
+'gtsrb': {
+    'resnet': '/kaggle/input/gtsrb-renset18-all-models/models/clean'
+}
+}
 
 BAD_ROOT_DICT = {
     'cifar10': {
@@ -16,7 +20,10 @@ BAD_ROOT_DICT = {
     'mnist': {
             'resnet': '/kaggle/input/bad-testset-resnet-mnist/models',
             'preact': '/kaggle/input/backdoored-preactresnet18-mnist-100models-5attack',
-            }
+            },
+'gtsrb': {
+    'resnet': '/kaggle/input/gtsrb-renset18-all-models/models'
+}
            }
 
 # Number of classes
