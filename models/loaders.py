@@ -4,6 +4,7 @@ from torchvision import transforms
 import torch
 from .base_model import BaseModel as Model
 from .preact import PreActResNet18
+from .vgg_custom import CNNClassifier
 from torchvision.models import resnet18
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
