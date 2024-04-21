@@ -62,4 +62,4 @@ def load_vgg(record_path, num_classes=10, **model_kwargs):
     model.to(device)
     model.eval()
     
-    return net
+    return model
