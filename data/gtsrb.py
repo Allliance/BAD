@@ -5,8 +5,10 @@ import torch.utils.data as data
 
 from BAD.data.utils import run_download_bash_file
 
+DATA_ROOT = '/data/gtsrb'
+
 class GTSRB(data.Dataset):
-    def __init__(self, train, data_root='~/data/gtsrb', transform=None, download=False):
+    def __init__(self, train, data_root=DATA_ROOT, transform=None, download=False):
         super(GTSRB, self).__init__()
         if not os.path.exists(data_root):
             run_download_bash_file(os.path.join(os.path.dirname(__file__),'downloads/gtsrb_download.sh'))
