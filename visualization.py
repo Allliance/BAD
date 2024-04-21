@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import torchvision
 
-def visualize_samples(dataloader, n, title="Sample"):
+def visualize_samples(dataloader, n, title="Sample", normal_label=1):
     plt.clf()
     normal_samples = []
     abnormal_samples = []
@@ -15,9 +15,9 @@ def visualize_samples(dataloader, n, title="Sample"):
     for images, labels in dataloader:
         for i, l in enumerate(labels):
             image = to_3_channels(images[i])
-            if len(normal_samples) < n * n and l == 0:
+            if len(normal_samples) < n * n and l == normal_label:
                 normal_samples.append(image)
-            elif len(abnormal_samples) < n * n and l != 0:
+            elif len(abnormal_samples) < n * n and l != normal_label:
                 abnormal_samples.append(image)
             if len(normal_samples) == n * n and len(abnormal_samples) == n * n:
                 break

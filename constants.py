@@ -19,15 +19,27 @@ BAD_ROOT_DICT = {
             }
            }
 
+# Number of classes
+num_classes = {
+    'cifar10': 10,
+    'cifar100': 100,
+    'mnist': 10,
+    'fmnist': 10,
+    'gtsrb': 43,
+}
 
 # Normalizations
 NORM_MEAN = {
     'cifar10': (0.4914, 0.4822, 0.4465),
+    'cifar100': (0.5071, 0.4865, 0.4409),
     'mnist': (0.5, 0.5, 0.5),
+    'gtsrb': (0, 0, 0),
 }
 
 NORM_STD = {
     'cifar10': (0.247, 0.243, 0.261),
+    'cifar100': (0.2673, 0.2564, 0.2762),
     'mnist': (0.5, 0.5, 0.5),
+    'gtsrb': (1, 1, 1),
 }
 

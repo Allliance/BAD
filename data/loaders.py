@@ -7,20 +7,9 @@ from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
 from torchvision.transforms.functional import rotate
+from BAD.data.transforms import normal_transform, bw_transform
 
 ROOT = '~/data'
-
-# Transforms
-normal_transform = transforms.Compose(
-    [
-    transforms.Resize((32, 32)),
-    transforms.ToTensor(),
-    ])
-bw_transform = transforms.Compose([
-    transforms.Resize((32, 32)),
-    transforms.Grayscale(num_output_channels=3),
-    transforms.ToTensor()
-    ])
 
 def sample_dataset(dataset, portion=0.1, balanced=True):
     if portion>1:
@@ -57,6 +46,10 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
     if in_source is not None:
         use_train = in_source == 'train'
         if in_dataset == 'cifar10':
+            in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=use_train,transform=normal_transform, download=True)
+        if in_dataset == 'cifar100':
+            in_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=use_train,transform=normal_transform, download=True)
+        if in_dataset == 'gtsrb':
             in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=use_train,transform=normal_transform, download=True)
         elif in_dataset == 'mnist':
             in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=bw_transform)
