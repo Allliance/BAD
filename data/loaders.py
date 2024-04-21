@@ -3,6 +3,7 @@ import torch
 import torchvision
 from torchvision import transforms
 from BAD.data.datasets import SingleLabelDataset, GaussianDataset, BlankDataset
+from BAD.data.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
@@ -50,7 +51,7 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
         if in_dataset == 'cifar100':
             in_dataset = torchvision.datasets.CIFAR100(root=ROOT, train=use_train,transform=normal_transform, download=True)
         if in_dataset == 'gtsrb':
-            in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=use_train,transform=normal_transform, download=True)
+            in_dataset = GTSRB(train=use_train,transform=normal_transform, download=True)
         elif in_dataset == 'mnist':
             in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=bw_transform)
         else:
