@@ -51,6 +51,7 @@ num_classes = {
     'mnist': 10,
     'fmnist': 10,
     'gtsrb': 43,
+    'celeba': 8,
 }
 
 # Normalizations
