@@ -3,25 +3,29 @@ import torchvision
 
 def visualize_samples(dataloader, n, title="Sample", normal_label=1):
     plt.clf()
-    normal_samples = []
-    abnormal_samples = []
 
     def to_3_channels(image):
         if image.shape[0] == 1:
             return image.repeat(3, 1, 1)
         return image
 
+    all_labels = set([y for _, y in dataloader.dataset])
+    labels = list(all_labels)    
+    
+    to_collect_samples = {l:[] for l in range(len(labels))}
+    collected_sample = {}
+    
     # Collect n x n samples
-    for images, labels in dataloader:
-        for i, l in enumerate(labels):
-            image = to_3_channels(images[i])
-            if len(normal_samples) < n * n and l == normal_label:
-                normal_samples.append(image)
-            elif len(abnormal_samples) < n * n and l != normal_label:
-                abnormal_samples.append(image)
-            if len(normal_samples) == n * n and len(abnormal_samples) == n * n:
-                break
-        if len(normal_samples) == n * n and len(abnormal_samples) == n * n:
+    for i, l in dataloader.dataset:
+        image = to_3_channels(images[i])
+        if l in to_collect_samples:
+            to_collect_samples[l].append(image)
+            
+            if len(to_collect_samples[l]) == n:
+                collected_sample[l] = to_collect_samples[l]
+                to_collect_samples.pop(l, None)
+                
+        if len(collected_sample) == len(labels):
             break
 
     
