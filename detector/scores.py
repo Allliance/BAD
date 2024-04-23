@@ -9,6 +9,8 @@ from tqdm import tqdm
 from BAD.eval.eval import evaluate
 from BAD.utils import update_attack_params, get_features_mean_dict, find_min_eps
 from BAD.utils import get_ood_outputs
+from scipy import linalg
+
 
 
 def get_epsilon_score(eps_evaluator, eps_config, log=False, proportional=False):
@@ -109,5 +111,24 @@ def get_kld(model,testloader):
     kl_divergence = F.kl_div(ood_after.log(), ood_clean)
     kld = kl_divergence.numpy()        
     return kld
+
+
+def get_fid(features_adv, features_clean):
+    mean1 = np.mean(features_adv, axis=0)
+    cov1 = np.cov(features_adv, rowvar=False)
+
+    mean2 = np.mean(features_clean, axis=0)
+    cov2 = np.cov(features_clean, rowvar=False)
+
+    mean_diff = mean1 - mean2
+    mean_diff_squared = np.dot(mean_diff, mean_diff)
+
+    cov_product = np.dot(cov1, cov2)
+    cov_sqrt = linalg.sqrtm(cov_product)
+    if np.iscomplexobj(cov_sqrt):
+        cov_sqrt = cov_sqrt.real
+
+    fid = mean_diff_squared + np.trace(cov1 + cov2 - 2 * cov_sqrt)
+    return fid
     
 
