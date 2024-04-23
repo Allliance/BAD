@@ -2,10 +2,14 @@ import torch
 import torchvision
 import numpy as np
 
+import torch.nn.functional as F
+
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
 from BAD.utils import update_attack_params, get_features_mean_dict, find_min_eps
+from BAD.utils import get_ood_outputs
+
 
 def get_epsilon_score(eps_evaluator, eps_config, log=False, proportional=False):
     return find_min_eps(eps_evaluator, eps_config['thresh'], eps_lb=eps_config['lb'], 
@@ -96,5 +100,14 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
             diff = mean_out_adv_features - mean_out_initial_features
             score = norm(diff)
         return score
+
+    
+
+def get_kld(model,testloader):
+    ood_clean= get_ood_outputs(model, testloader, device, attack_features=False, target_class = None)
+    ood_after = get_ood_outputs(model, testloader, device, attack_features=True, target_class = None)
+    kl_divergence = F.kl_div(ood_after.log(), ood_clean)
+    kld = kl_divergence.numpy()        
+    return kld
     
 

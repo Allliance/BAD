@@ -155,3 +155,29 @@ def get_features_mean_dict(loader, feature_extractor):
         mean_embeddings_dict[label] = (embeddings_dict[label] / counts_dict[label])
     
     return mean_embeddings_dict
+
+def get_ood_outputs(model, loader, DEVICE, progress=False, attack_features=True, target_class = None):
+    outputs = []
+
+    labels = []
+    
+    model.eval()
+    model.to(device)
+
+    
+    progress_bar = loader
+    if progress:
+        progress_bar = tqdm(loader, unit="batch")
+        
+    for data, label in progress_bar:
+        data, label = data.to(DEVICE), label.to(DEVICE)
+        if attack_features:
+            attack = PGD(model, target_class=target_class, eps=attack_eps, alpha=attack_alpha, steps=attack_steps)
+            data = attack(data, label)
+        output = model(data)
+        output = output[label==10]
+        output = torch.softmax(output, dim=1)
+        outputs.append(output.detach().cpu())
+    o = torch.cat(outputs, dim=0)
+
+    return o
