@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import torchvision
+from torchvision.transforms.functional import to_pil_image
 
 def plot_images_by_label(image_dict):
     plt.clf()
@@ -47,7 +48,7 @@ def visualize_samples(dataloader, n, title="Samples for each label"):
     for i, l in dataloader.dataset:
         image = to_3_channels(i)
         if l in to_collect_samples:
-            to_collect_samples[l].append(image.numpy())
+            to_collect_samples[l].append(to_pil_image(image))
             
             if len(to_collect_samples[l]) == n:
                 collected_sample[l] = to_collect_samples[l]
@@ -123,5 +124,3 @@ def plot_umap(features, labels):
     plt.xlabel('UMAP Dimension 1')
     plt.ylabel('UMAP Dimension 2')
     plt.savefig("my_umap_plot.png")
-    
-    
