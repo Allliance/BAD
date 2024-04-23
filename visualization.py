@@ -45,7 +45,7 @@ def visualize_samples(dataloader, n, title="Samples for each label"):
     
     # Collect n x n samples
     for i, l in dataloader.dataset:
-        image = to_3_channels(images[i])
+        image = to_3_channels(i)
         if l in to_collect_samples:
             to_collect_samples[l].append(image.numpy())
             
