@@ -1,8 +1,36 @@
 import matplotlib.pyplot as plt
 import torchvision
 
-def visualize_samples(dataloader, n, title="Sample", normal_label=1):
+def plot_images_by_label(image_dict):
     plt.clf()
+    
+    # Determine the number of labels and the maximum number of images in any label
+    num_labels = len(image_dict)
+    max_images = max(len(images) for images in image_dict.values())
+    
+    # Create a figure with subplots
+    fig, axes = plt.subplots(nrows=max_images, ncols=num_labels, figsize=(num_labels * 3, max_images * 3))
+    
+    # Flatten the axes array for easy indexing
+    if num_labels == 1:
+        axes = [[ax] for ax in axes]
+    elif max_images == 1:
+        axes = [axes]
+    
+    # Loop through each label and its corresponding images
+    for col_index, (label, images) in enumerate(image_dict.items()):
+        for row_index, image in enumerate(images):
+            ax = axes[row_index][col_index]
+            ax.imshow(image)  # Display the image
+            ax.axis('off')  # Hide the axes
+            if row_index == 0:
+                ax.set_title(label)  # Set the title for the first image in each column
+
+    # Adjust layout
+    plt.tight_layout()
+    plt.show()
+
+def visualize_samples(dataloader, n, title="Samples for each label"):
 
     def to_3_channels(image):
         if image.shape[0] == 1:
@@ -19,7 +47,7 @@ def visualize_samples(dataloader, n, title="Sample", normal_label=1):
     for i, l in dataloader.dataset:
         image = to_3_channels(images[i])
         if l in to_collect_samples:
-            to_collect_samples[l].append(image)
+            to_collect_samples[l].append(image.numpy())
             
             if len(to_collect_samples[l]) == n:
                 collected_sample[l] = to_collect_samples[l]
@@ -28,23 +56,7 @@ def visualize_samples(dataloader, n, title="Sample", normal_label=1):
         if len(collected_sample) == len(labels):
             break
 
-    
-    normal_grid = torchvision.utils.make_grid(normal_samples, nrow=n)
-    abnormal_grid = torchvision.utils.make_grid(abnormal_samples, nrow=n)
-
-    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(18, 8))
-    fig.patch.set_alpha(0)
-    fig.suptitle(title, fontsize=16)
-
-    axs[0].imshow(normal_grid.permute(1, 2, 0))
-    axs[0].set_title('Normal', fontsize=14)
-    axs[0].axis('off')
-
-    axs[1].imshow(abnormal_grid.permute(1, 2, 0))
-    axs[1].set_title('Abnormal', fontsize=14)
-    axs[1].axis('off')
-
-    plt.show()
+    plot_images_by_label(collected_sample)
     
 
 
