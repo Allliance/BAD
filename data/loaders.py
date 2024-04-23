@@ -46,7 +46,8 @@ def get_transform(dataset):
 
 
 def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_label=1,
-                   out_label=0, batch_size=256, in_source='train', out_filter_labels=[]):
+                   out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
+                   custom_ood_dataset=None):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
@@ -67,7 +68,9 @@ def get_ood_loader(in_dataset, out='cifar100', sample=True, sample_num=2000, in_
             raise NotImplementedError("In Distribution Dataset not implemented")
     
     # Out-Distribution Dataset
-    if out == 'SVHN':
+    if custom_ood_dataset is not None:
+        out_dataset = custom_ood_dataset
+    elif out == 'SVHN':
         out_dataset = torchvision.datasets.SVHN(root=ROOT, split='test', download=True, transform=normal_transform)
     elif out == 'mnist':
         out_dataset = torchvision.datasets.MNIST(root=ROOT, train=False, download=True, transform=bw_transform)
