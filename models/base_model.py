@@ -15,7 +15,9 @@ class BaseModel(nn.Module):
         if input_channels == 3:
             mu = mu.view(3,1,1)
             std= std.view(3,1,1)
-            
+        else:
+            mu = mu.view(1,1,1)
+            std= std.view(1,1,1)
         self.meta_data = meta_data
         if self.meta_data is None:
             self.meta_data = {}
