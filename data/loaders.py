@@ -37,14 +37,16 @@ def filter_labels(dataset, labels):
     return Subset(dataset, indices)
 
 def get_transform(dataset):
-    if dataset in ['cifar10', 'cifar100', 'gtsrb']:
-        return normal_transform
-    elif dataset == 'mnist':
-        return bw_transform
-    else:
-        raise NotImplementedError
+  if dataset in ['rot']:
+    return []
+  if dataset in ['cifar10', 'cifar100', 'gtsrb']:
+      return normal_transform
+  elif dataset == 'mnist':
+      return bw_transform
+  else:
+      raise NotImplementedError
 
-def get_ood_dataset(dataset, out_transform, in_dataset=None):
+def get_ood_dataset(dataset, out_transform, in_dataset=None, out_label=None, sample_num=1000):
     if out_transform is None:
         out_transform = get_transform(dataset)
         
@@ -96,7 +98,8 @@ def get_ood_loader(in_dataset, out_dataset='cifar100', sample=True, sample_num=2
     
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
-        out_dataset = get_ood_dataset(out_dataset, out_transform, in_dataset)
+        out_dataset = get_ood_dataset(out_dataset, out_transform,
+         in_dataset, out_label=out_label, sample_num=sample_num)
     else:
         out_dataset = custom_ood_dataset
 
