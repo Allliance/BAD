@@ -6,12 +6,16 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 class BaseModel(nn.Module):
     def __init__(self, backbone, normalize=True,
                  mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261],
-                 input_scalar=None, feature_extractor=None, meta_data=None):
+                 input_scalar=None, feature_extractor=None, meta_data=None,
+                 input_channels=3):
         super(BaseModel, self).__init__()
+        mu = torch.tensor(mean)
+        std = torch.tensor(std)
         
-        mu = torch.tensor(mean).view(3,1,1)
-        std = torch.tensor(std).view(3,1,1)
-        
+        if input_channels == 3:
+            mu = mu.view(3,1,1)
+            std= std.view(3,1,1)
+            
         self.meta_data = meta_data
         if self.meta_data is None:
             self.meta_data = {}
