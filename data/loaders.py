@@ -95,7 +95,7 @@ def get_ood_loader(in_dataset, out_dataset='cifar100', sample=True, sample_num=2
         in_dataset = get_id_dataset(in_dataset, in_source == 'train', in_transform)
     
     # Out-Distribution Dataset
-    if custom_ood_dataset is not None:
+    if custom_ood_dataset is None:
         out_dataset = get_ood_dataset(out_dataset, out_transform, in_dataset)
     else:
         out_dataset = custom_ood_dataset
