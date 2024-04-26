@@ -5,7 +5,7 @@ CLEAN_ROOT_DICT = {
 },
 'cifar100': {
     'resnet': '/kaggle/input/cifar100-renset18-all-models/models/clean',
-    'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/clean',
+    'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/models/clean',
 },
 'mnist': {
     'resnet': '/kaggle/input/clean-testset-resnet-mnist/models',
@@ -32,7 +32,7 @@ BAD_ROOT_DICT = {
 },
 'cifar100': {
     'resnet': '/kaggle/input/cifar100-renset18-all-models/models',
-    'preact': '/kaggle/input/cifar100-preactresnet18-allmodels',
+    'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/models',
 },
 'gtsrb': {
     'resnet': '/kaggle/input/gtsrb-renset18-all-models/models',
