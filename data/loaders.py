@@ -81,6 +81,8 @@ def get_id_dataset(dataset, use_train, transform):
         in_dataset = GTSRB(train=use_train,transform=transform, download=True)
     elif dataset == 'mnist':
         in_dataset = torchvision.datasets.MNIST(root=ROOT, train=use_train, download=True, transform=transform)
+    elif dataset == 'fmnist':
+        in_dataset = torchvision.datasets.FashionMNIST(root=ROOT, train=use_train, download=True, transform=transform)
     else:
         raise NotImplementedError("In Distribution Dataset not implemented")
     return in_dataset
