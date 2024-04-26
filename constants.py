@@ -13,7 +13,7 @@ CLEAN_ROOT_DICT = {
 },
 'gtsrb': {
     'resnet': '/kaggle/input/gtsrb-renset18-all-models/models/clean',
-    'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/clean',
+    'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/models/clean',
 },
 'celeba': {
     'resnet': '',
@@ -36,7 +36,7 @@ BAD_ROOT_DICT = {
 },
 'gtsrb': {
     'resnet': '/kaggle/input/gtsrb-renset18-all-models/models',
-    'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads',
+    'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/models',
 },
 'celeba': {
     'resnet': '',
