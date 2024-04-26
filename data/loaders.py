@@ -87,12 +87,13 @@ def get_id_dataset(dataset, use_train, transform):
         raise NotImplementedError("In Distribution Dataset not implemented")
     return in_dataset
 
-def get_ood_loader(in_dataset, out_dataset='cifar100', sample=True, sample_num=2000, in_label=1,
+def get_ood_loader(in_dataset='cifar10', out_dataset='cifar100', sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
                    custom_in_dataset=None, custom_ood_dataset=None, in_transform=None, out_transform=None):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
+    
     # In-Distribution Dataset
     if custom_in_dataset is not None:
         in_dataset = custom_in_dataset
