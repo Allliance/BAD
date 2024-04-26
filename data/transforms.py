@@ -13,7 +13,7 @@ celeba_transform = transforms.Compose([
     ])
 
 bw_transform = transforms.Compose([
-    transforms.Resize((28, 28)),
-    transforms.Grayscale(num_output_channels=3),
+    # transforms.Resize((28, 28)),
+    # transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
     ])
