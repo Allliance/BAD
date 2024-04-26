@@ -89,14 +89,16 @@ def get_id_dataset(dataset, use_train, transform):
 
 def get_ood_loader(in_dataset, out_dataset='cifar100', sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
-                   custom_ood_dataset=None, in_transform=None, out_transform=None):
+                   custom_in_dataset=None, custom_ood_dataset=None, in_transform=None, out_transform=None):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
-    
     # In-Distribution Dataset
-    if in_source is not None:
-        in_dataset = get_id_dataset(in_dataset, in_source == 'train', in_transform)
+    if custom_in_dataset is not None:
+        in_dataset = custom_in_dataset
+    else:
+        if in_source is not None:
+            in_dataset = get_id_dataset(in_dataset, in_source == 'train', in_transform)
     
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
@@ -139,9 +141,10 @@ def get_cls_loader(dataset, train=False, sample_portion=0.2, batch_size=256, tra
     transform = None
     if transforms_list:
         transform = transforms.Compose(transforms_list)
-        
-    test_dataset = get_id_dataset(dataset, train, transform)
-
+    if type(dataset) == str:
+        test_dataset = get_id_dataset(dataset, train, transform)
+    else:
+        test_dataset = dataset
     if sample_portion < 1:
         test_dataset = sample_dataset(test_dataset, portion=sample_portion)
     
