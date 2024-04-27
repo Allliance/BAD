@@ -12,6 +12,10 @@ from BAD.utils import get_ood_outputs
 from scipy import linalg
 
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+
+
 
 def get_epsilon_score(eps_evaluator, eps_config, log=False, proportional=False):
     return find_min_eps(eps_evaluator, eps_config['thresh'], eps_lb=eps_config['lb'], 
@@ -105,9 +109,9 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
 
     
 
-def get_kld(model,testloader):
-    ood_clean= get_ood_outputs(model, testloader, device, attack_features=False, target_class = None)
-    ood_after = get_ood_outputs(model, testloader, device, attack_features=True, target_class = None)
+def get_kld(model,testloader, attack):
+    ood_clean= get_ood_outputs(model, testloader, device, attack=None)
+    ood_after = get_ood_outputs(model, testloader, device, attack)
     kl_divergence = F.kl_div(ood_after.log(), ood_clean)
     kld = kl_divergence.numpy()        
     return kld

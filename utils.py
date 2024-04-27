@@ -9,6 +9,8 @@ from BAD.eval.eval import evaluate
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import umap
+from BAD.attacks.ood.pgdlinf import PGD
+
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -134,7 +136,7 @@ def get_features_mean_dict(loader, feature_extractor):
     
     return mean_embeddings_dict
 
-def get_ood_outputs(model, loader, DEVICE, progress=False, attack_features=True, target_class = None):
+def get_ood_outputs(model, loader, DEVICE, progress=False, attack=None):
     outputs = []
 
     labels = []
@@ -149,8 +151,7 @@ def get_ood_outputs(model, loader, DEVICE, progress=False, attack_features=True,
         
     for data, label in progress_bar:
         data, label = data.to(DEVICE), label.to(DEVICE)
-        if attack_features:
-            attack = PGD(model, target_class=target_class, eps=attack_eps, alpha=attack_alpha, steps=attack_steps)
+        if attack:     
             data = attack(data, label)
         output = model(data)
         output = output[label==10]
