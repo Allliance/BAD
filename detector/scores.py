@@ -54,12 +54,10 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
              score='l2', use_in=True, progress=False, num_classes=10, normalize_features=False):
     max_l2 = 0
     
-    initial_features = get_features_mean_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data, normalize_features))
-    in_features = initial_features[1]
-    out_features = initial_features[0]
-    
-    mean_in_initial_features = np.mean(in_features, axis=0)
-    mean_out_initial_features = np.mean(out_features, axis=0)
+    mean_initial_features = get_features_mean_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data, normalize_features))
+    mean_in_initial_features = mean_initial_features[1]
+    mean_out_initial_features = mean_initial_features[0]
+
     initial_diff = (mean_out_initial_features - mean_in_initial_features)
     
     def get_adv_feature_extractor(attack):
@@ -68,16 +66,15 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
     if attack_params.get('target_class') is not None:
         best_target = None
         tq = range(10)
+
         if progress:
             tq = tqdm(range(10))
         for i in tq:
             attack_params['target_class'] = i
             attack = attack_class(**attack_params)
-            adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
-            in_adv_features = adv_features[1]
-            out_adv_features = adv_features[0]
-            mean_in_adv_features = np.mean(in_adv_features, axis=0)
-            mean_out_adv_features = np.mean(out_adv_features, axis=0)
+            mean_adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
+            mean_in_adv_features = mean_adv_features[1]
+            mean_out_adv_features = mean_adv_features[0]
             if use_in:
                 adv_diff = (mean_out_adv_features - mean_in_adv_features)
                 #cosine = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
@@ -93,11 +90,9 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
         return best_target, max_l2
     else:
         attack = attack_class(**attack_params)
-        adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
-        in_adv_features = adv_features[1]
-        out_adv_features = adv_features[0]
-        mean_in_adv_features = np.mean(in_adv_features, axis=0)
-        mean_out_adv_features = np.mean(out_adv_features, axis=0)
+        mean_adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
+        mean_in_adv_features = mean_adv_features[1]
+        mean_out_adv_features = mean_adv_features[0]
         if use_in:
             adv_diff = (mean_out_adv_features - mean_in_adv_features)
             #score = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
@@ -109,12 +104,13 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
 
     
 
-def get_kld(model,testloader, attack):
-    ood_clean= get_ood_outputs(model, testloader, device, attack=None)
-    ood_after = get_ood_outputs(model, testloader, device, attack)
-    kl_divergence = F.kl_div(ood_after.log(), ood_clean)
-    kld = kl_divergence.numpy()        
-    return kld
+def compute_kl_divergence(pdf_p, pdf_q):
+    # Compute KL divergence between two distributions.
+    # Add a small number to probability distributions to avoid log(0)
+    epsilon = 1e-10
+    pdf_p = pdf_p + epsilon
+    pdf_q = pdf_q + epsilon
+    return entropy(pdf_p, pdf_q)
 
 
 def get_fid(features_adv, features_clean):
