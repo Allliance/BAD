@@ -3,7 +3,7 @@ import torch
 import torchvision
 from torchvision import transforms
 from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
-from BAD.data.gtsrb import GTSRB
+from BAD.data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
