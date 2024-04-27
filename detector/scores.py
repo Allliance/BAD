@@ -110,7 +110,7 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
     
 
 def get_kld(model,testloader, attack):
-    ood_clean= get_ood_outputs(model, testloader, device, attack)
+    ood_clean= get_ood_outputs(model, testloader, device, attack=None)
     ood_after = get_ood_outputs(model, testloader, device, attack)
     kl_divergence = F.kl_div(ood_after.log(), ood_clean)
     kld = kl_divergence.numpy()        
