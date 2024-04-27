@@ -138,7 +138,7 @@ def get_cls_loader(dataset, train=False, sample_portion=0.2, batch_size=256, tra
     transform = None
     if transforms_list:
         transform = transforms.Compose(transforms_list)
-    if type(dataset) == str:
+    if isinstance(dataset, str):
         test_dataset = get_dataset(dataset, transform, train)
     else:
         test_dataset = dataset

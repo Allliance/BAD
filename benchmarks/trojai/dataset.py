@@ -26,9 +26,8 @@ def image_loader(fn):
     # convert image to a gpu tensor
     return torch.from_numpy(img)[0]
 
-class TrojAIDataset(Dataset):
-    def __init__(self, root_dir='/kaggle/working/example_data/id-00000069',
-                       size=224, use_bgr=False):
+class ExampleDataset(Dataset):
+    def __init__(self, root_dir, size=224, use_bgr=False):
         self.transform = transforms.Compose([
         transforms.Resize(size),
         transforms.ToTensor(),
