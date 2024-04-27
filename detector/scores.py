@@ -12,6 +12,10 @@ from BAD.utils import get_ood_outputs
 from scipy import linalg
 
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+
+
 
 def get_epsilon_score(eps_evaluator, eps_config, log=False, proportional=False):
     return find_min_eps(eps_evaluator, eps_config['thresh'], eps_lb=eps_config['lb'], 
