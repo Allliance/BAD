@@ -10,6 +10,11 @@ from BAD.eval.eval import evaluate
 from BAD.utils import update_attack_params, get_features_mean_dict, find_min_eps
 from BAD.utils import get_ood_outputs
 from scipy import linalg
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.neighbors import KernelDensity
+from scipy.stats import entropy
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -22,7 +27,7 @@ def get_epsilon_score(eps_evaluator, eps_config, log=False, proportional=False):
                         eps_ub=eps_config['ub'], max_error=eps_config['max_error'], proportional=proportional, log=log)
 
 
-def get_adv_features(model, loader, target, mean_embeddings, attack, progress=False, ):
+def get_features(model, loader, attack, progress=False, ):
     features = []
     labels = []
     
@@ -44,10 +49,9 @@ def get_adv_features(model, loader, target, mean_embeddings, attack, progress=Fa
     features = np.concatenate(features)
     
     labels = np.array(labels)
-    out_features = features[1 - labels]
-    in_features = features[labels]
+    
 
-    return out_features, in_features
+    return features, labels
 
 # score in [l2, cosine]
 def max_diff(model, testloader, attack_class=None, attack_params=None,
@@ -130,5 +134,60 @@ def get_fid(features_adv, features_clean):
 
     fid = mean_diff_squared + np.trace(cov1 + cov2 - 2 * cov_sqrt)
     return fid
+
+
+def KLD_TSNE_probs(all_embeddings, labels):
+
+
+    # Apply t-SNE to the PCA-reduced combined embeddings
+    tsne = TSNE(n_components=2, perplexity=30, n_iter=600)
+    all_embeddings_tsne = tsne.fit_transform(all_embeddings)
+
+    out_embeddings_tsne = all_embeddings_tsne[1 - labels]
+    in_embeddings_tsne = all_embeddings_tsne[labels]
+
+    
+
+    kde_original = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(in_embeddings_tsne)
+
+    # Compute the density of the original embedding space
+    pdf_original = np.exp(kde_original.score_samples(in_embeddings_tsne))
+
+
+
+
+    pdf_out = np.exp(kde_original.score_samples(out_embeddings_tsne))
+
+        # Compute KL divergence
+    kl_div = compute_kl_divergence(pdf_original, pdf_out)
+
+    return kl_divergences
+
+
+def KLD_score_points(all_embeddings, labels):
+    tsne = TSNE(n_components=2, perplexity=30, n_iter=600)
+    all_embeddings_tsne = tsne.fit_transform(all_embeddings)
+    
+    out_embeddings_tsne = all_embeddings_tsne[1 - labels]
+    in_embeddings_tsne = all_embeddings_tsne[labels]
+
+    kde_in = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(in_embeddings_tsne)
+    kde_out = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(out_embeddings_tsne)
+
+# Generate grid for evaluation
+    x = np.linspace(min(all_embeddings_tsne[:, 0]), max(all_embeddings_tsne[:, 0]), 100)
+    y = np.linspace(min(all_embeddings_tsne[:, 1]), max(all_embeddings_tsne[:, 1]), 100)
+    X, Y = np.meshgrid(x, y)
+    xy = np.vstack((X.ravel(), Y.ravel())).T
+
+    pdf_in = np.exp(kde_in.score_samples(xy))
+    pdf_out = np.exp(kde_out.score_samples(xy))
+    kld = compute_kl_divergence(pdf_in, pdf_out)
+    return kld
+
+
+
+
+
     
 
