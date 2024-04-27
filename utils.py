@@ -9,6 +9,8 @@ from BAD.eval.eval import evaluate
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import umap
+from BAD.attacks.ood.pgdlinf import PGD
+
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
