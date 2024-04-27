@@ -60,7 +60,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}):
     - 'uniform'
     '''
     if transform is None:
-        transform = get_transform(dataset)
+        transform = get_transform(name)
 
     if name == 'SVHN':
         return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=True, transform=transform)
