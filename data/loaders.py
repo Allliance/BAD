@@ -92,7 +92,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         in_dataset = custom_in_dataset
     else:
         if in_source is not None:
-            in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', custom_label=in_label, **kwargs)
+            in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', **kwargs)
     
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
