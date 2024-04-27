@@ -2,7 +2,7 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets import SingleLabelDataset, GaussianDataset, BlankDataset
+from BAD.data.datasets.custom_datasets import SingleLabelDataset, GaussianDataset, BlankDataset
 from BAD.data.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
