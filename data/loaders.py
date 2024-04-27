@@ -2,7 +2,7 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets.custom_datasets import SingleLabelDataset, GaussianDataset, BlankDataset
+from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
 from BAD.data.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
@@ -46,42 +46,53 @@ def get_transform(dataset):
   else:
       raise NotImplementedError
 
-def get_dataset(name, transform=None, train=False, custom_label=None, sample_num=3000):
+def get_dataset(name, transform=None, train=False, dummy_params={}):
+    '''
+    Available datasets:
+    - 'cifar10'c
+    - 'cifar100'
+    - 'gtsrb'
+    - 'mnist'
+    - 'fmnist'
+    - 'SVHN'
+    - 'gaussian'
+    - 'blank'
+    - 'uniform'
+    '''
     if transform is None:
         transform = get_transform(dataset)
 
-    if dataset == 'SVHN':
+    if name == 'SVHN':
         return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=True, transform=transform)
-    elif dataset == 'mnist':
+    elif name == 'mnist':
         return torchvision.datasets.MNIST(root=ROOT, train=train, download=True, transform=transform)
-    elif dataset == 'fmnist':
+    elif name == 'fmnist':
         return torchvision.datasets.FashionMNIST(root=ROOT, train=train, download=True, transform=transform)
-    elif dataset == 'cifar10':
-        in_dataset = torchvision.datasets.CIFAR10(root=ROOT, train=train,transform=transform, download=True)
+    elif name == 'cifar10':
+        return torchvision.datasets.CIFAR10(root=ROOT, train=train,transform=transform, download=True)
     elif dataset =='cifar100':
         return torchvision.datasets.CIFAR100(root=ROOT, train=train, download=True, transform=transform)
-    elif dataset == 'gtsrb':
-        in_dataset = GTSRB(train=train,transform=transform, download=True)
-    elif dataset == 'gaussian':
-        return GaussianDataset(out_label, num_samples=sample_num)
-    elif dataset == 'blank':
-        return BlankDataset(out_label, color=0, num_samples=sample_num)
+    elif name == 'gtsrb':
+        return GTSRB(train=train,transform=transform, download=True)
+    elif name in ['gaussina', 'blank', 'uniform']:
+        return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
     else:
         raise NotImplementedError
 
-def get_ood_loader(in_dataset='cifar10', out_dataset='cifar100', sample=True, sample_num=2000, in_label=1,
+def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
-                   custom_in_dataset=None, custom_ood_dataset=None, in_transform=None, out_transform=None):
+                   in_transform=None, out_transform=None, **kwargs):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
+    assert in_dataset is None or custom_in_dataset is None or custom_ood_dataset is None or out_dataset is None
     
     # In-Distribution Dataset
     if custom_in_dataset is not None:
         in_dataset = custom_in_dataset
     else:
         if in_source is not None:
-            in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', custom_label=in_label)
+            in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', custom_label=in_label, **kwargs)
     
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
@@ -89,8 +100,7 @@ def get_ood_loader(in_dataset='cifar10', out_dataset='cifar100', sample=True, sa
             out_dataset = deepcopy(in_dataset)
             out_dataset.transform = transforms.Compose([lambda x: rotate(x, 90), out_dataset.transform])    
         else:
-            out_dataset = get_ood_dataset(out_dataset, out_transform,
-            in_dataset, out_label=out_label, sample_num=sample_num)
+            out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:
         out_dataset = custom_ood_dataset
 
