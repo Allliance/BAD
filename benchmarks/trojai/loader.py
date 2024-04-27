@@ -1,5 +1,6 @@
 import random
 import torch
+import pandas as pd
 
 from BAD.models.base_model import BaseModel as Model
 from BAD.benchmarks.trojai.dataset import ExampleDataset
@@ -15,6 +16,14 @@ class TrojAIDataset(Dataset):
         self.round = round
         
         self.model_data = []
+        
+        if isinstance(data_csv, str):
+            data_csv = pd.read_csv(data_csv)
+        
+        data_csv.set_index('model_name', inplace=True)
+
+        data = data_csv.to_dict(orient='index')
+        
         for name in names:
             model_path = os.path.join(root_dir, name, 'model.pt')
             self.model_data.append({
