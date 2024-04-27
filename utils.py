@@ -134,7 +134,7 @@ def get_features_mean_dict(loader, feature_extractor):
     
     return mean_embeddings_dict
 
-def get_ood_outputs(model, loader, DEVICE, progress=False, attack_features=True, target_class = None):
+def get_ood_outputs(model, loader, DEVICE, , attack_eps, attack_alpha, attack_steps, progress=False, attack_features=True, target_class = None):
     outputs = []
 
     labels = []
