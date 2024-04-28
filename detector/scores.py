@@ -100,11 +100,20 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
         if use_in:
             adv_diff = (mean_out_adv_features - mean_in_adv_features)
             #score = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
-            score = norm(adv_diff - initial_diff)
+            score1 = norm(adv_diff - initial_diff)
+            score2 = cosine_similaruty(adv_diff,initial_diff)
+            return score1, score2
         else:
             diff = mean_out_adv_features - mean_out_initial_features
             score = norm(diff)
         return score
+
+
+def cosine_similaruty(A,B):
+    cosine = np.dot(A,B)/(norm(A)*norm(B))
+    return cosine
+
+
 
     
 
