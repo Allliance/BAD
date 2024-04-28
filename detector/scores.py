@@ -170,7 +170,7 @@ def KLD_TSNE_probs(all_embeddings, labels):
         # Compute KL divergence
     kl_div = compute_kl_divergence(pdf_original, pdf_out)
 
-    return kl_divergences
+    return kl_div
 
 
 def KLD_score_points(all_embeddings, labels):
