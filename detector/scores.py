@@ -44,7 +44,7 @@ def get_features(model, loader, attack, progress=False, ):
         if attack is not None:
             data = attack(data, label)
         feature = model.get_features(data)
-        c_f = feature.detach().cpu().numpy()
+        c_f = feature.squeeze().detach().cpu().numpy()
         features.append(c_f)
     features = np.concatenate(features)
     
