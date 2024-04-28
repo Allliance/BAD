@@ -179,6 +179,9 @@ def KLD_score_points(all_embeddings, labels):
     
     out_embeddings_tsne = all_embeddings_tsne[1 - labels]
     in_embeddings_tsne = all_embeddings_tsne[labels]
+    print('inembeddings', in_embeddings_tsne)
+    print('out', out_embeddings_tsne)
+    print(in_embeddings_tsne.shape)
 
     kde_in = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(in_embeddings_tsne)
     kde_out = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(out_embeddings_tsne)
