@@ -70,7 +70,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}):
         return torchvision.datasets.FashionMNIST(root=ROOT, train=train, download=True, transform=transform)
     elif name == 'cifar10':
         return torchvision.datasets.CIFAR10(root=ROOT, train=train,transform=transform, download=True)
-    elif dataset =='cifar100':
+    elif name =='cifar100':
         return torchvision.datasets.CIFAR100(root=ROOT, train=train, download=True, transform=transform)
     elif name == 'gtsrb':
         return GTSRB(train=train,transform=transform, download=True)
