@@ -14,7 +14,7 @@ def get_auc(model, dataloader, attack=None, progress=False):
     
     return evaluate(model=model, loader=dataloader, device=device, attack=attack, metric='auc', progress=progress)
 
-def get_l2(model, dataloader, attack=None,use_in=True, progress=False, normalize_features=False):
+def get_l2(model, dataloader, attack=None, use_in=True, progress=False, normalize_features=False):
     
     mean_initial_features = get_features_mean_dict(dataloader,
                                                    feature_extractor=lambda data, targets: model.get_features(data, normalize_features),

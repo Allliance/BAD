@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import torchvision
 import numpy as np
 from tqdm import tqdm
-
+from collections import defaultdict
 from numpy.linalg import norm
 from tqdm import tqdm
 from BAD.eval.eval import evaluate
