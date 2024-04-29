@@ -9,32 +9,9 @@ from collections import defaultdict
 from copy import deepcopy
 from torchvision.transforms.functional import rotate
 from BAD.data.transforms import normal_transform, bw_transform
+from BAD.data.utils.utils import sample_dataset, filter_labels
 
 ROOT = '~/data'
-
-def sample_dataset(dataset, portion=0.1, balanced=True):
-    if portion>1:
-        portion = portion / len(dataset)
-    if not balanced:
-        indices = random.sample(range(len(dataset)), int(portion * len(dataset)))
-    # It is assumed that the dataset has labels
-    else:
-        indices = []
-        labels = [y for _, y in dataset]
-        unique_labels = list(set(labels))
-        labels_indices = defaultdict(lambda : [])
-        
-        for i, label in enumerate(labels):
-            labels_indices[label].append(i)
-            
-        for label in unique_labels:
-            indices += random.sample(labels_indices[label], int(portion * len(labels_indices[label])))
-        
-    return Subset(dataset, indices)
-
-def filter_labels(dataset, labels):
-    indices = [i for i, (_, y) in enumerate(dataset) if y not in labels]
-    return Subset(dataset, indices)
 
 def get_transform(dataset):
   if dataset in ['cifar10', 'cifar100', 'gtsrb', 'SVHN']:
