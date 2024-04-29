@@ -75,7 +75,11 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     if custom_ood_dataset is None:
         if out_dataset == 'rot':
             out_dataset = deepcopy(in_dataset)
-            out_dataset.transform = transforms.Compose([lambda x: rotate(x, 90), out_dataset.transform])    
+            if isinstance(out_dataset, Subset):
+                transform = out_dataset.dataset.transform
+            else:
+                transform = out_dataset.transform
+            out_dataset.transform = transforms.Compose([lambda x: rotate(x, 90), transform])    
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:
