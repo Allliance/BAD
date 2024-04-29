@@ -9,7 +9,7 @@ from collections import defaultdict
 from copy import deepcopy
 from torchvision.transforms.functional import rotate
 from BAD.data.transforms import normal_transform, bw_transform
-from BAD.data.utils.utils import sample_dataset, filter_labels
+from BAD.data.utils import sample_dataset, filter_labels
 
 ROOT = '~/data'
 
