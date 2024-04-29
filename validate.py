@@ -62,7 +62,7 @@ def get_auc_on_models_scores(model_dataset,
     return roc_auc_score(labels, scores)
 
 
-def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3, partition=10, verbose=False):
+def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3, partition=10, progress=False, verbose=False):
     '''
     [eps_lb, eps_ub]: determines the search space for epsilon
     eps_step: step size for epsilon, for example when eps_lb = 0, eps_ub = 0.4, eps_step = 0.1, the search space is [0, 0.1, 0.2, 0.3]
@@ -80,8 +80,9 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
     current_eps = eps_lb
     all_scores = []
     while current_eps < eps_ub:
-        new_score = validation_function(current_eps, progress=False)
-        print(f"Testing on eps={current_eps * 255}/255 finished{'' if not verbose else f' with score {new_score}'}")
+        new_score = validation_function(current_eps, progress=progress)
+        if progress:
+            print(f"Testing on eps={current_eps * 255}/255 finished{'' if not verbose else f' with score {new_score}'}")
         all_scores.append((new_score, current_eps))
         current_eps += eps_step
     
