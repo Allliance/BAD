@@ -14,6 +14,30 @@ from BAD.attacks.ood.pgdlinf import PGD
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
+def get_best_acc_and_thresh(labels, scores):
+    pairs = sorted(list(zip(scores, labels)))
+    best_thresh = None
+    best_acc = 0
+    
+    cnt = [defaultdict(lambda: 0), defaultdict(lambda: 0)]
+    for score, label in pairs:
+        cnt[label][score] += 1
+    
+    # we keep threshold under the lowes
+    correct = sum(labels)
+    scores = sorted(scores)
+    
+    best_thresh = 0
+    best_acc = correct / len(scores)
+    
+    for current_thresh in scores:
+        correct += cnt[0][current_thresh] - cnt[1][current_thresh]
+        new_acc = correct / len(scores)
+        if new_acc > best_acc:
+            best_acc = new_acc
+            best_thresh = current_thresh
+    return best_acc, best_thresh
+
 def find_min_eps(evaluator, thresh, eps_lb=0, eps_ub=1, max_error=1e-3, proportional=False, log=False):
     initial_perf = evaluator(None)
     if proportional:

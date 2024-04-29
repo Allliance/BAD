@@ -3,31 +3,6 @@ from collections import defaultdict
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-def get_best_acc_and_thresh(labels, scores):
-    pairs = sorted(list(zip(scores, labels)))
-    best_thresh = None
-    best_acc = 0
-    
-    cnt = [defaultdict(lambda: 0), defaultdict(lambda: 0)]
-    for score, label in pairs:
-        cnt[label][score] += 1
-    
-    # we keep threshold under the lowes
-    correct = sum(labels)
-    scores = sorted(scores)
-    
-    best_thresh = 0
-    best_acc = correct / len(scores)
-    
-    for current_thresh in scores:
-        correct += cnt[0][current_thresh] - cnt[1][current_thresh]
-        new_acc = correct / len(scores)
-        if new_acc > best_acc:
-            best_acc = new_acc
-            best_thresh = current_thresh
-    return best_acc, best_thresh
-
-
 def get_scores(model_dataset,
                score_function,
                progress):
@@ -94,5 +69,4 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
                              partition=partition)
     
     return best_eps
-    
-best_eps = find_best_eps(0, 0.4/255, 0.1/255, get_auc_on_auc)
+
