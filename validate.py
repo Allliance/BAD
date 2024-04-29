@@ -97,7 +97,6 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
     best_eps = all_scores[-1][-1]
     
     if eps_step > max_error:
-        max_error /= partition
         new_eps_step = eps_step/partition
         if progress:
             print(f"Best epsilon is {best_eps * 255}/255 with a score of {all_scores[-1][0]}")
