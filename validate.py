@@ -1,9 +1,7 @@
 import torch
 from collections import defaultdict
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
-def get_scores(model_dataset,
+def get_models_scores(model_dataset,
                score_function,
                progress):
     '''
