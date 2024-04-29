@@ -26,12 +26,14 @@ def extract_info_from_filepath(filepath):
     }
 
 class ModelDataset(Dataset):
-    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5, discards=None):
+    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5, discards=None, version=None):
         self.data = []
         self.model_data_dict = {}
         self.loader = model_loader
         self.bads_data = []
         self.cleans_data = []
+        
+        self.version = version
         
         if discards is None:
             discards = []
@@ -81,5 +83,12 @@ class ModelDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        return self.load_model(self.data[idx]), int(self.data[idx].get('attack') is None), self.data[idx]
+        model = self.load_model(self.data[idx])
+        label = int(self.data[idx].get('attack') is None)
+        data = copy(self.data[idx])
+        
+        if self.version is not None:
+            return model, label
+        else:
+            return model, label, data
     
