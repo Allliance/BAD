@@ -101,6 +101,7 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
                              validation_function=validation_function,
                              max_error=max_error,
                              partition=partition,
+                             progress=progress,
                              verbose=verbose)
     
     return best_eps
