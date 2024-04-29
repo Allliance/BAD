@@ -31,6 +31,12 @@ def get_best_acc_and_thresh(labels, scores):
 def get_scores(model_dataset,
                score_function,
                progress):
+    '''
+    This is a general function for getting scores from a model dataset.
+    model_dataset: an iterable that contains models
+    score_function: a function that takes a model as input and returns a score
+    progress: if True, it will print the progress of the function
+    '''
     labels = []
     scores = []
 
@@ -38,14 +44,7 @@ def get_scores(model_dataset,
     tq = tqdm(tq)
     
     for i in tq:
-        model, _, _ = model_dataset[i]
-        
-        name = model.meta_data.get('attack')
-        
-        if name is None:
-            label = 1
-        else:
-            label = 0
+        model, label = model_dataset[i]
 
         score = score_function(model)
 
