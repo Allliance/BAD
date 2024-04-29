@@ -77,15 +77,17 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
     When doing the recursive call, the new step size will be eps_step/partition.
     '''
     
+    if progress:
+        print(f"Searching for the best epsilon in the range [{eps_lb * 255}/255, {eps_ub * 255}/255] with step size {eps_step * 255}/255")
+    
     current_eps = eps_lb
     all_scores = []
     while current_eps < eps_ub:
         used_reversed = False
         new_score = validation_function(current_eps, progress=False)
-        if use_reverse:
-            if new_score < 0.5:
-                new_score = 1 - new_score
-                used_reversed = True
+        if use_reverse and new_score < 0.5:
+            new_score = 1 - new_score
+            used_reversed = True
         if progress:
             print(f"Testing on eps={current_eps * 255}/255 finished{'' if not verbose else f' with score {new_score}'} {'reversed' if used_reversed else ''}")
         all_scores.append((new_score, current_eps))
