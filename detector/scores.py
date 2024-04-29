@@ -109,13 +109,9 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
         return score
 
 
-def cosine_similaruty(A,B):
-    cosine = np.dot(A,B)/(norm(A)*norm(B))
+def cosine_similaruty(A, B):
+    cosine = np.dot(A, B)/(norm(A)*norm(B))
     return cosine
-
-
-
-    
 
 def compute_kl_divergence(pdf_p, pdf_q):
     # Compute KL divergence between two distributions.

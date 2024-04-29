@@ -2,6 +2,7 @@ import torch
 import matplotlib.pyplot as plt
 import torchvision
 import numpy as np
+from tqdm import tqdm
 
 from numpy.linalg import norm
 from tqdm import tqdm
@@ -138,9 +139,17 @@ def get_mean_features(model, dataloader, target_label):
             in_features = new_features
     return torch.mean(in_features, dim=0)
 
-def get_features_mean_dict(loader, feature_extractor):
+
+def cosine_similaruty(A, B):
+    cosine = np.dot(A, B)/(norm(A)*norm(B))
+    return cosine
+
+def get_features_mean_dict(loader, feature_extractor, progress=False):
     embeddings_dict = {}
     counts_dict = {}
+    if progress:
+        loader = tqdm(loader)
+        
     for data, target in loader:
         data = data.to(device)
         target = target.to(device)
