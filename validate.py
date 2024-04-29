@@ -80,7 +80,7 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
     current_eps = eps_lb
     all_scores = []
     while current_eps < eps_ub:
-        new_score = validation_function(current_eps, progress=progress)
+        new_score = validation_function(current_eps, progress=False)
         if progress:
             print(f"Testing on eps={current_eps * 255}/255 finished{'' if not verbose else f' with score {new_score}'}")
         all_scores.append((new_score, current_eps))
