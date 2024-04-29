@@ -100,14 +100,15 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
         if progress:
             print(f"Best epsilon is {best_eps * 255}/255 with a score of {all_scores[-1][0]}")
             print(f"Recursively calling the function with new step size {new_eps_step*255}/255")
-        return find_best_eps(eps_lb=max(best_eps - eps_step + new_eps_step, 0),
-                             eps_ub=best_eps + eps_step - new_eps_step,
+        return find_best_eps(eps_lb=max(best_eps - 3 * new_eps_step, 0),
+                             eps_ub=best_eps + 3 * new_eps_step,
                              eps_step=new_eps_step,
                              validation_function=validation_function,
                              max_error=max_error,
                              partition=partition,
                              progress=progress,
-                             verbose=verbose)
+                             verbose=verbose,
+                             use_reverse=use_reverse)
     
     return best_eps
 
