@@ -1,13 +1,16 @@
 import torch
 from collections import defaultdict
+from sklearn.metrics import roc_auc_score
 
+# this is a general function for getting scores from a model dataset
+# Don't care about it
 def get_models_scores(model_dataset,
-               score_function,
+               model_score_function,
                progress):
     '''
     This is a general function for getting scores from a model dataset.
     model_dataset: an iterable that contains models
-    score_function: a function that takes a model as input and returns a score
+    model_score_function: a function that takes a model as input and returns a score
     progress: if True, it will print the progress of the function
     '''
     labels = []
@@ -19,7 +22,7 @@ def get_models_scores(model_dataset,
     for i in tq:
         model, label = model_dataset[i]
 
-        score = score_function(model)
+        score = model_score_function(model)
 
         if progress:
             print(label, score)
@@ -28,6 +31,34 @@ def get_models_scores(model_dataset,
         labels.append(label)
     
     return scores, labels
+
+# All it does is that it iterates over the model dataset, calculate some score bease on the model and the dataloader
+# and finally returns auc on the scores
+def get_auc_on_models_scores(model_dataset,
+                           score_function,
+                           dataloader,
+                           other_score_function_params={},
+                           dataloader_func=None,
+                           progress=False):
+    '''
+    This function calculates the AUC of the model on the given model dataset.
+    model_dataset: an iterable that contains models
+    score_function: a function that takes a model as input and returns a score
+    progress: if True, it will print the progress of the function
+    '''
+    assert dataloader is not None or dataloader_func is not None
+
+    # this is a function that just calls the score function on the model
+    # the purpose of this function is to be compatible with get_models_scores
+    
+    def model_score_function(model):
+        final_dataloader = dataloader_func(model) if dataloader_func is not None else dataloader
+        
+        return score_function(model, final_dataloader, progress=progress, **other_score_function_params)
+    
+    scores, labels = get_models_scores(model_dataset, model_score_function, progress)
+    
+    return roc_auc_score(labels, scores)
 
 
 def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3, partition=10):
@@ -68,3 +99,21 @@ def find_best_eps(eps_lb, eps_ub, eps_step, validation_function, max_error=1e-3,
     
     return best_eps
 
+
+# Example of usage
+# Assume all we have is validation model set --> val_modelset
+# Assume score function is get_l2
+# Assume we have testloader
+# def validation_function(eps):
+#     attack_eps = eps
+#     attack_steps = 10
+#     attack_alpha = 2.5 * attack_eps / attack_steps
+    
+#     def score_function(model, dataloader, progress, **kwargs):
+#         attack = Attack(model, eps=attack_eps, steps=attack_steps, alpha=attack_alpha)
+#         return get_l2(model, dataloader, attack=attack, progress=progress, **kwargs)
+    
+#     return get_auc_on_models_scores(val_modelset, score_function, testloader, progress=False)
+
+# best_eps = find_best_eps(0, 8/255, 1/255, validation_function, max_error=1e-3, partition=10)
+# print("Best epsilon is:", best_eps * 255)
