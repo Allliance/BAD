@@ -1,6 +1,7 @@
 import torch
 from collections import defaultdict
 from sklearn.metrics import roc_auc_score
+from tqdm import tqdm
 
 # this is a general function for getting scores from a model dataset
 # Don't care about it
