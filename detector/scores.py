@@ -59,10 +59,10 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
     max_l2 = 0
     
     mean_initial_features = get_features_mean_dict(testloader, feature_extractor=lambda data, targets: model.get_features(data, normalize_features))
-    mean_in_initial_features = mean_initial_features[1]
     mean_out_initial_features = mean_initial_features[0]
-
-    initial_diff = (mean_out_initial_features - mean_in_initial_features)
+    if use_in:
+        mean_in_initial_features = mean_initial_features[1]
+        initial_diff = (mean_out_initial_features - mean_in_initial_features)
     
     def get_adv_feature_extractor(attack):
         return lambda data, targets : model.get_features(attack(data, targets), normalize_features)
@@ -95,9 +95,9 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
     else:
         attack = attack_class(**attack_params)
         mean_adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
-        mean_in_adv_features = mean_adv_features[1]
         mean_out_adv_features = mean_adv_features[0]
         if use_in:
+            mean_in_adv_features = mean_adv_features[1]
             adv_diff = (mean_out_adv_features - mean_in_adv_features)
             #score = np.dot(diff_a, diff_b)/(norm(diff_a)*norm(diff_b))
             score1 = norm(adv_diff - initial_diff)
