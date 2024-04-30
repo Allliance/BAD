@@ -63,7 +63,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
-    assert in_dataset is None or custom_in_dataset is None or custom_ood_dataset is None or out_dataset is None
+    assert in_dataset is not None or custom_in_dataset is not None or custom_ood_dataset is not None or out_dataset is not None
     
     # In-Distribution Dataset
     if custom_in_dataset is not None:
@@ -88,7 +88,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
 
     # Sampling
 
-    if in_label is not None:
+    if in_label is not None and in_source is not None:
         in_dataset = SingleLabelDataset(in_label, in_dataset)
         
     if out_filter_labels:
