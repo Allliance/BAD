@@ -77,7 +77,8 @@ def max_diff(model, testloader, attack_class=None, attack_params=None,
             attack_params['target_class'] = i
             attack = attack_class(**attack_params)
             mean_adv_features = get_features_mean_dict(testloader, get_adv_feature_extractor(attack))
-            mean_in_adv_features = mean_adv_features[1]
+            if use_in:
+                mean_in_adv_features = mean_adv_features[1]
             mean_out_adv_features = mean_adv_features[0]
             if use_in:
                 adv_diff = (mean_out_adv_features - mean_in_adv_features)
