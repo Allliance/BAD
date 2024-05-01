@@ -86,15 +86,16 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     else:
         out_dataset = custom_ood_dataset
 
-    # Sampling
-
-    if in_label is not None and in_source is not None:
+    # Labeling
+    
+    if in_label is not None and in_dataset is not None:
         in_dataset = SingleLabelDataset(in_label, in_dataset)
+    if out_dataset is not None and out_label is not None:
+        out_dataset = SingleLabelDataset(out_label, out_dataset)
+    # Sampling
         
     if out_filter_labels:
         out_dataset = filter_labels(out_dataset, out_filter_labels)
-
-    out_dataset = SingleLabelDataset(out_label, out_dataset)
 
     if sample:
         out_dataset = sample_dataset(out_dataset, portion=sample_num)
