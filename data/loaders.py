@@ -73,6 +73,14 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         if in_source is not None:
             in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', **kwargs)
     
+    # Labeling - ID
+    if in_label is not None and in_dataset is not None:
+        in_dataset = SingleLabelDataset(in_label, in_dataset)
+
+    # Sampling - ID
+    if in_dataset is not None and sample:
+        in_dataset = sample_dataset(in_dataset, portion=sample_num, balanced=balanced_sample)
+
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
         if out_dataset == 'rot':
@@ -88,9 +96,6 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         out_dataset = custom_ood_dataset
 
     # Labeling
-    
-    if in_label is not None and in_dataset is not None:
-        in_dataset = SingleLabelDataset(in_label, in_dataset)
     if out_dataset is not None and out_label is not None:
         out_dataset = SingleLabelDataset(out_label, out_dataset)
     # Sampling
@@ -100,16 +105,16 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
 
     if sample:
         out_dataset = sample_dataset(out_dataset, portion=sample_num, balanced=balanced_sample)
-    
-    final_dataset = out_dataset
-    
-    # Concat Dataset
-    if in_source is not None:
-        if sample:
-            in_dataset = sample_dataset(in_dataset, portion=len(out_dataset), balanced=balanced_sample)
-        
+
+    if in_dataset is not None and out_dataset is not None:
         final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
-    
+    elif in_dataset is not None:
+        final_dataset = in_dataset
+    elif out_dataset is not None:
+        final_dataset = out_dataset
+    else:
+        raise ValueError("Empty dataset error occured")
+        
     testloader = torch.utils.data.DataLoader(final_dataset, batch_size=batch_size,
                                          shuffle=True)
     
