@@ -59,7 +59,8 @@ def get_dataset(name, transform=None, train=False, dummy_params={}):
 
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
-                   in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None, **kwargs):
+                   in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None,
+                    balanced_sample=True, **kwargs):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
@@ -98,14 +99,14 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         out_dataset = filter_labels(out_dataset, out_filter_labels)
 
     if sample:
-        out_dataset = sample_dataset(out_dataset, portion=sample_num)
+        out_dataset = sample_dataset(out_dataset, portion=sample_num, balanced=balanced_sample)
     
     final_dataset = out_dataset
     
     # Concat Dataset
     if in_source is not None:
         if sample:
-            in_dataset = sample_dataset(in_dataset, portion=len(out_dataset))
+            in_dataset = sample_dataset(in_dataset, portion=len(out_dataset), balanced=balanced_sample)
         
         final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     
