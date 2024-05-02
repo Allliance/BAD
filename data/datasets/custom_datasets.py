@@ -10,14 +10,16 @@ class SingleLabelDataset(Dataset):
     # defining values in the constructor
     def __init__(self, label, dataset, transform = None, lim=None):
         self.dataset = dataset
-        self.len = min(lim, len(dataset))
+        self.len = len(dataset)
+        if lim is not None:
+            self.len = min(lim, self.len)
 
         self.label = label
 
     # Getting the data samples
     def __getitem__(self, idx):
         image, _ = self.dataset[idx]
-        
+
         return image, self.label
 
     # Getting data size/length
