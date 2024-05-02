@@ -73,9 +73,6 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         if in_source is not None:
             in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', **kwargs)
     
-    # Labeling - ID
-    if in_label is not None and in_dataset is not None:
-        in_dataset = SingleLabelDataset(in_label, in_dataset)
 
     # Sampling - ID
     if in_dataset is not None and sample:
@@ -95,9 +92,14 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     else:
         out_dataset = custom_ood_dataset
 
-    # Labeling
+    # Labeling - ID
+    if in_label is not None and in_dataset is not None:
+        in_dataset = SingleLabelDataset(in_label, in_dataset)
+
+    # Labeling - OOD
     if out_dataset is not None and out_label is not None:
         out_dataset = SingleLabelDataset(out_label, out_dataset)
+    
     # Sampling
         
     if out_filter_labels:
