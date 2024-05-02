@@ -9,18 +9,20 @@ import os
 class SingleLabelDataset(Dataset):
     # defining values in the constructor
     def __init__(self, label, dataset, transform = None, lim=None):
-        self.data = [dataset[i][0] for i in range(len(dataset) if lim is None else min(lim, len(dataset)))]
-        
+        self.dataset = dataset
+        self.len = min(lim, len(dataset))
+
         self.label = label
 
     # Getting the data samples
     def __getitem__(self, idx):
-        image = self.data[idx]
+        image, _ = self.dataset[idx]
+        
         return image, self.label
 
     # Getting data size/length
     def __len__(self):
-        return len(self.data)
+        return self.len
 
 class DummyDataset(Dataset):
     def __init__(self, label, pattern, pattern_args={}, transform=None):
