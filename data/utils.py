@@ -11,7 +11,7 @@ def run_download_bash_file(script_path):
     subprocess.run(['bash', script_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     
 
-def sample_dataset(dataset, portion=0.1, balanced=True):
+def sample_dataset(dataset, portion=0.1, balanced=False):
     if portion>1:
         portion = portion / len(dataset)
     if not balanced:
