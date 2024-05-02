@@ -15,9 +15,11 @@ class SingleLabelDataset(Dataset):
             self.len = min(lim, self.len)
 
         self.label = label
+        self.transform = dataset.transform
 
     # Getting the data samples
     def __getitem__(self, idx):
+        self.dataset.transform = self.transform
         image, _ = self.dataset[idx]
 
         return image, self.label
