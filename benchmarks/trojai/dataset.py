@@ -3,6 +3,7 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 import skimage.io
+import os
 
 # /kaggle/working/example_data/id-00000069/class_1_example_3.png
 
