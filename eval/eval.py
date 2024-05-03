@@ -8,7 +8,6 @@ def evaluate(model, loader, device, metric='acc', attack=None, progress=False):
     torch.cuda.empty_cache()
     gc.collect()
     
-    model.to(device)
     model.eval()
     correct = 0
     all_scores = []
