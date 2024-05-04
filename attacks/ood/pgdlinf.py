@@ -86,5 +86,7 @@ class PGD(Attack):
 
         if not self.attack_in:
             final_adv_images = images.clone().detach()
-            final_adv_images[labels == 0] = adv_images
+            final_adv_images[labels == 0, ...] = adv_images
+
+            adv_images = final_adv_images
         return adv_images
