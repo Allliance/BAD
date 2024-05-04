@@ -39,6 +39,7 @@ class PGD(Attack):
         """
 
         images = images.clone().detach().to(self.device)
+        all_images = images.clone()
         float_labels = labels.clone().detach().type(torch.FloatTensor).to(self.device)
         
         loss = nn.CrossEntropyLoss(reduction='none')
@@ -55,6 +56,7 @@ class PGD(Attack):
         
         if not self.attack_in:
             adv_images = adv_images[labels == 0]
+            images = images[labels == 0]
 
         for _ in range(self.steps):
             adv_images.requires_grad = True
