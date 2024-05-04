@@ -60,7 +60,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}):
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
                    in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None,
-                    balanced_sample=True, **kwargs):
+                    balanced_sample=Fales, **kwargs):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
