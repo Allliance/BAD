@@ -24,7 +24,7 @@ def get_transform(dataset):
   else:
       raise NotImplementedError
 
-def get_dataset(name, transform=None, train=False, dummy_params={}):
+def get_dataset(name, transform=None, train=False, dummy_params={}, download=False):
     '''
     Available datasets:
     - 'cifar10'c
@@ -39,23 +39,28 @@ def get_dataset(name, transform=None, train=False, dummy_params={}):
     '''
     if transform is None:
         transform = get_transform(name)
-
-    if name == 'SVHN':
-        return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=True, transform=transform)
-    elif name == 'mnist':
-        return torchvision.datasets.MNIST(root=ROOT, train=train, download=True, transform=transform)
-    elif name == 'fmnist':
-        return torchvision.datasets.FashionMNIST(root=ROOT, train=train, download=True, transform=transform)
-    elif name == 'cifar10':
-        return torchvision.datasets.CIFAR10(root=ROOT, train=train,transform=transform, download=True)
-    elif name =='cifar100':
-        return torchvision.datasets.CIFAR100(root=ROOT, train=train, download=True, transform=transform)
-    elif name == 'gtsrb':
-        return GTSRB(train=train,transform=transform, download=True)
-    elif name in ['gaussina', 'blank', 'uniform']:
-        return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
-    else:
-        raise NotImplementedError
+    try:
+        if name == 'SVHN':
+            return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
+        elif name == 'mnist':
+            return torchvision.datasets.MNIST(root=ROOT, train=train, download=download, transform=transform)
+        elif name == 'fmnist':
+            return torchvision.datasets.FashionMNIST(root=ROOT, train=train, download=download, transform=transform)
+        elif name == 'cifar10':
+            return torchvision.datasets.CIFAR10(root=ROOT, train=train,transform=transform, download=download)
+        elif name =='cifar100':
+            return torchvision.datasets.CIFAR100(root=ROOT, train=train, download=download, transform=transform)
+        elif name == 'gtsrb':
+            return GTSRB(train=train,transform=transform, download=download)
+        elif name in ['gaussina', 'blank', 'uniform']:
+            return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
+        else:
+            raise NotImplementedError
+    except Exception as e:
+        if not download:
+            get_dataset(name, transform, train, dummy_params, download=True)
+        else:
+            raise ValueError("Error occured during loading datasets")
 
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
