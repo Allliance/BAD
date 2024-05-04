@@ -85,8 +85,8 @@ class PGD(Attack):
             adv_images = torch.clamp(images + delta, min=0, max=1).detach()
 
         if not self.attack_in:
-            final_adv_images = images.clone().detach()
-            final_adv_images[labels == 0, ...] = adv_images
+            final_adv_images = all_images.clone()
+            final_adv_images[labels == 0] = adv_images
 
             adv_images = final_adv_images
         return adv_images
