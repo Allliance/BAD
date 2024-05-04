@@ -111,8 +111,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
 
     if sample:
         out_dataset = sample_dataset(out_dataset, portion=sample_num, balanced=balanced_sample)
-    if balanced and len(ood_dataset) > len(in_dataset):
-        out_dataset = sample_dataset(out_dataset, portion=len(in_dataset)/len(ood_dataset), balanced=balanced_sample)
+    if balanced and len(out_dataset) > len(in_dataset):
+        out_dataset = sample_dataset(out_dataset, portion=len(in_dataset)/len(out_dataset), balanced=balanced_sample)
     if in_dataset is not None and out_dataset is not None:
         final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     elif in_dataset is not None:
