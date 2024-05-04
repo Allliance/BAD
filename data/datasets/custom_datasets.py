@@ -26,6 +26,31 @@ class SingleLabelDataset(Dataset):
     def __len__(self):
         return self.len
 
+class MixedDataset(torch.utils.data.Dataset):
+    def __init__(self, base_dataset, imagenet_dataset, mixup_alpha=0.2):
+        self.base_dataset = base_dataset
+        self.imagenet_dataset = imagenet_dataset
+        self.mixup_alpha = mixup_alpha
+        self.transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))  # Imagenet normalization
+        ])
+
+    def __len__(self):
+        return len(self.base_dataset)
+
+    def __getitem__(self, idx):
+        base_img, base_label = self.base_dataset[idx]
+
+        # Select a random image from the ImageNet dataset
+        imagenet_idx = np.random.randint(len(self.imagenet_dataset))
+        imagenet_img, _ = self.imagenet_dataset[imagenet_idx]
+
+        # Apply Mixup augmentation
+        mixed_img = (1 - self.mixup_alpha) * base_img + self.mixup_alpha * imagenet_img
+
+        return self.transform(mixed_img), base_label
+
 class DummyDataset(Dataset):
     def __init__(self, label, pattern, pattern_args={}, transform=None):
         num_samples = pattern_args.get('num_samples', 1000)
