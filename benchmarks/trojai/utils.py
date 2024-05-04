@@ -7,6 +7,8 @@ import os
 from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
 archs_batch_sizes = {
     'resnet50': 32,
     'densenet121': 32,
