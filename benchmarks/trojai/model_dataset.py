@@ -11,7 +11,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 class TrojAIDataset(Dataset):
     def __init__(self, root_dir, rnd, model_loader, shuffle=True, data_csv=None,
-                 size=224, use_bgr=False, sample=False, sample_portion=0.2):
+                 size=224, use_bgr=False, sample=False, sample_portion=0.2, custom_arch=None):
         names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]        
         self.bgr = rnd in [0, 1]
         self.model_loader = model_loader
@@ -28,7 +28,7 @@ class TrojAIDataset(Dataset):
         data = data_csv.to_dict(orient='index')
         
         for name in names:
-            if data[name]['model_architecture'] != target_arch:
+            if custom_arch and data[name]['model_architecture'] != custom_arch:
                 continue
             model_path = os.path.join(root_dir, name, 'model.pt')
             self.model_data.append({
