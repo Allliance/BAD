@@ -3,6 +3,7 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 import skimage.io
+import os
 
 def image_loader(fn):
     img = skimage.io.imread(fn)
