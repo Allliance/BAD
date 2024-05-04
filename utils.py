@@ -49,9 +49,11 @@ def find_min_eps(evaluator, thresh, eps_lb=0, eps_ub=1, max_error=1e-3, proporti
     
     while r-l > max_error:
         if log:
-            print(l, r)
+            print(f"l: {l}, r: {r}")
         mid = (r+l)/2
         auc = evaluator(mid)
+        if log:
+            print(f"eps: {mid}, auc: {auc}")
         if auc < thresh:
             r = mid
         else:
