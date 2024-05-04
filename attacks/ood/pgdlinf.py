@@ -23,7 +23,7 @@ class PGD(Attack):
         >>> adv_images = attack(images, labels)
     """
 
-    def __init__(self, model, target_class=None, eps=8/255, alpha=2/255, steps=10, random_start=True):
+    def __init__(self, model, target_class=None, eps=8/255, alpha=2/255, steps=10, random_start=True, attack_in=True):
         super().__init__("PGD", model)
         self.eps = eps
         self.alpha = alpha
@@ -31,6 +31,7 @@ class PGD(Attack):
         self.random_start = random_start
         self.supported_mode = ['default', 'targeted']
         self.target_class = target_class
+        self.attack_in = attack_in
 
     def forward(self, images, labels):
         r"""
@@ -52,6 +53,9 @@ class PGD(Attack):
         hend_multipliers = float_labels
         out_multipliers = 1-float_labels
         
+        if not self.attack_in:
+            adv_images = adv_images[labels == 0]
+
         for _ in range(self.steps):
             adv_images.requires_grad = True
             outputs = self.get_logits(adv_images)
@@ -62,9 +66,11 @@ class PGD(Attack):
             else:
                 out_loss = torch.max(probs, dim=1).values
             
-            hend_loss = 1 * (probs.mean(1) - torch.logsumexp(probs, dim=1))
-            
-            cost = torch.dot(hend_multipliers, hend_loss) + torch.dot(out_multipliers, out_loss)
+            cost = torch.dot(out_multipliers, out_loss)
+
+            if self.attack_in:
+                hend_loss = 1 * (probs.mean(1) - torch.logsumexp(probs, dim=1))
+                cost = cost + torch.dot(hend_multipliers, hend_loss)
             
             # Update adversarial images
             grad = torch.autograd.grad(cost, adv_images,
@@ -75,4 +81,7 @@ class PGD(Attack):
                                 min=-self.eps, max=self.eps)
             adv_images = torch.clamp(images + delta, min=0, max=1).detach()
 
-        return  adv_images
+        if not self.attack_in:
+            final_adv_images = images.clone().detach()
+            final_adv_images[labels == 0] = adv_images
+        return adv_images
