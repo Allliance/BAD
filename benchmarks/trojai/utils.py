@@ -8,6 +8,7 @@ from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
 from torch.utils.data import DataLoader
 from BAD.benchmarks.trojai.dataset import ExampleDataset
+from BAD.data.loaders import get_ood_loader
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
