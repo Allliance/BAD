@@ -136,7 +136,7 @@ def get_cls_loader(dataset, train=False, sample_portion=0.2, batch_size=256, tra
     if sample_portion < 1:
         test_dataset = sample_dataset(test_dataset, portion=sample_portion)
     
-    testloader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    testloader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
     
     # Sanity Check
     next(iter(testloader))
