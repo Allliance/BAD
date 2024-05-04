@@ -48,6 +48,8 @@ def get_dataset_trojai(model):
 
 
 def get_sanityloader_trojai(model, batch_size=None):
+    if batch_size is None:
+        batch_size = archs_batch_sizes[model.meta_data['arch']]
     return DataLoader(get_dataset_trojai(model), shuffle=True, batch_size=batch_size)
 
 
