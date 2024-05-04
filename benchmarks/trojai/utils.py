@@ -11,6 +11,7 @@ from BAD.models.base_model import BaseModel as Model
 from torch.utils.data import DataLoader
 from BAD.benchmarks.trojai.dataset import ExampleDataset
 from BAD.data.loaders import get_ood_loader
+from BAD.data.utils import sample_dataset
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -54,10 +55,13 @@ def get_sanityloader_trojai(model, batch_size=None):
     return DataLoader(get_dataset_trojai(model), shuffle=True, batch_size=batch_size)
 
 
-def get_oodloader_trojai(model, out_dataset, batch_size=None):
+def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None):
     if batch_size is None:
         batch_size = archs_batch_sizes[model.meta_data['arch']]
     dataset = get_dataset_trojai(model)
+    if sample_num:
+        dataset = sample_dataset(dataset, portion=sample_num)
+    
     return get_ood_loader(custom_in_dataset=dataset,
                           out_dataset=out_dataset,
                           out_transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]),
