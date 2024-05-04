@@ -5,6 +5,7 @@ from torchvision import transforms
 import skimage.io
 import os
 import numpy as np
+import torch
 
 def image_loader(fn):
     img = skimage.io.imread(fn)
