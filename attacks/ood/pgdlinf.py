@@ -65,9 +65,10 @@ class PGD(Attack):
                 out_loss = -loss(outputs, torch.ones_like(labels) * self.target_class)
             else:
                 out_loss = torch.max(probs, dim=1).values
-            
-            cost = torch.dot(out_multipliers, out_loss)
-
+            if self.attack_in:
+                cost = torch.dot(out_multipliers, out_loss)
+            else:
+                cost = torch.dot(torch.ones_like(out_loss), out_loss)
             if self.attack_in:
                 hend_loss = 1 * (probs.mean(1) - torch.logsumexp(probs, dim=1))
                 cost = cost + torch.dot(hend_multipliers, hend_loss)
