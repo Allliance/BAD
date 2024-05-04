@@ -6,6 +6,7 @@ import os
 
 from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
+from torch.utils.data import DataLoader
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
