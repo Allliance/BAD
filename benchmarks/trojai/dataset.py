@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 import skimage.io
 import os
+import numpy as np
 
 def image_loader(fn):
     img = skimage.io.imread(fn)
