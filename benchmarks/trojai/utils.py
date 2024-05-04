@@ -57,4 +57,4 @@ def get_oodloader_trojai(model, out_dataset, batch_size=None):
     if batch_size is None:
         batch_size = archs_batch_sizes[model.meta_data['arch']]
     dataset = get_dataset_trojai(model)
-    return get_ood_loader(custom_in_dataset=dataset, out_dataset=out_dataset, shuffle=True, batch_size=batch_size, sample=False)
+    return get_ood_loader(custom_in_dataset=dataset, out_dataset=out_dataset, batch_size=batch_size, sample=False)
