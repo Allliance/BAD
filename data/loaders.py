@@ -14,7 +14,6 @@ from BAD.data.utils import sample_dataset, filter_labels
 ROOT = '~/data'
 
 def get_transform(dataset):
-  print(dataset)
   if dataset in ['cifar10', 'cifar100', 'gtsrb', 'SVHN']:
       return normal_transform
   elif dataset in ['fmnist', 'mnist']:
