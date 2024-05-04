@@ -7,6 +7,7 @@ import os
 from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
 from torch.utils.data import DataLoader
+from BAD.benchmarks.trojai.dataset import ExampleDataset
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -39,26 +40,6 @@ def load_model(model_data, **model_kwargs):
     model.eval()
     
     return model
-
-def image_loader(fn):
-    img = skimage.io.imread(fn)
-    img = img.astype(dtype=np.float32)
-
-    # perform center crop to what the CNN is expecting 224x224
-    h, w, c = img.shape
-    dx = int((w - 224) / 2)
-    dy = int((w - 224) / 2)
-    img = img[dy:dy + 224, dx:dx + 224, :]
-
-    # convert to CHW dimension ordering
-    img = np.transpose(img, (2, 0, 1))
-    # convert to NCHW dimension ordering
-    img = np.expand_dims(img, 0)
-    # normalize the image matching pytorch.transforms.ToTensor()
-    img = img / 255.0
-
-    # convert image to a gpu tensor
-    return torch.from_numpy(img)[0]
 
 
 def get_dataset_trojai(model):
