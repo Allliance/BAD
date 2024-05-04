@@ -5,6 +5,7 @@ import warnings
 import os
 from copy import deepcopy
 
+from torchvision import transforms
 from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
 from torch.utils.data import DataLoader
@@ -57,4 +58,7 @@ def get_oodloader_trojai(model, out_dataset, batch_size=None):
     if batch_size is None:
         batch_size = archs_batch_sizes[model.meta_data['arch']]
     dataset = get_dataset_trojai(model)
-    return get_ood_loader(custom_in_dataset=dataset, out_dataset=out_dataset, batch_size=batch_size, sample=False)
+    return get_ood_loader(custom_in_dataset=dataset,
+                          out_dataset=out_dataset,
+                          out_transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]),
+                          batch_size=batch_size, sample=False)
