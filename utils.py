@@ -43,6 +43,10 @@ def find_min_eps(evaluator, thresh, eps_lb=0, eps_ub=1, max_error=1e-3, proporti
     initial_perf = evaluator(None)
     if proportional:
         thresh *= initial_perf
+        
+        if log:
+            print(f"Initial perf: {initial_perf}")
+            print(f"Proportional threshold: {thresh}")
     
     l = eps_lb
     r = eps_ub
