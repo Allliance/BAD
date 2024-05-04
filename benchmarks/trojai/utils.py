@@ -3,6 +3,7 @@ import torch
 import pandas as pd
 import warnings
 import os
+from copy import deepcopy
 
 from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
@@ -33,9 +34,7 @@ def load_model(model_data, **model_kwargs):
     feature_extractor = torch.nn.Sequential(*list(net.children())[:-1])
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
-        # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
         net = torch.nn.DataParallel(net)
-#     net = torch.nn.DataParallel(net, device_ids = [0,1]).to(device)
     model = Model(net, feature_extractor=feature_extractor, **model_kwargs)
     model.to(device)
     model.eval()
