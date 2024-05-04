@@ -3,26 +3,7 @@ import pandas as pd
 from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 import skimage.io
-
-def image_loader(fn):
-    img = skimage.io.imread(fn)
-    img = img.astype(dtype=np.float32)
-
-    # perform center crop to what the CNN is expecting 224x224
-    h, w, c = img.shape
-    dx = int((w - 224) / 2)
-    dy = int((w - 224) / 2)
-    img = img[dy:dy + 224, dx:dx + 224, :]
-
-    # convert to CHW dimension ordering
-    img = np.transpose(img, (2, 0, 1))
-    # convert to NCHW dimension ordering
-    img = np.expand_dims(img, 0)
-    # normalize the image matching pytorch.transforms.ToTensor()
-    img = img / 255.0
-
-    # convert image to a gpu tensor
-    return torch.from_numpy(img)[0]
+from BAD.benchmarks.trojai.utils import image_loader
 
 class ExampleDataset(Dataset):
     def __init__(self, root_dir, size=224, use_bgr=False):
