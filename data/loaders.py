@@ -55,9 +55,9 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
             return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
         else:
             raise NotImplementedError
-    except Exception as e:
+    except Exception as _:
         if not download:
-            get_dataset(name, transform, train, dummy_params, download=True)
+            return get_dataset(name, transform, train, dummy_params, download=True)
         else:
             raise ValueError("Error occured during loading datasets")
 
