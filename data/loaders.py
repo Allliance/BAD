@@ -89,7 +89,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         if out_dataset == 'rot':
             out_dataset = RotationDataset(in_dataset, out_label, transform=None)
         elif out_dataset == 'mixup':
-            out_dataset = MixedDataset(in_dataset, imagenet_root, out_label, transform=None)
+            out_dataset = MixedDataset(in_dataset, label=out_label, transform=None, **kwargs)
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:
