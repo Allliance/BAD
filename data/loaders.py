@@ -2,7 +2,7 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
+from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset, RotationDataset, MixedDataset
 from BAD.data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
@@ -28,7 +28,7 @@ def get_transform(dataset):
 def get_dataset(name, transform=None, train=False, dummy_params={}, download=False):
     '''
     Available datasets:
-    - 'cifar10'c
+    - 'cifar10'
     - 'cifar100'
     - 'gtsrb'
     - 'mnist'
@@ -87,12 +87,9 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
         if out_dataset == 'rot':
-            out_dataset = deepcopy(in_dataset)
-            if isinstance(out_dataset, Subset):
-                out_dataset.dataset.transform = transforms.Compose([lambda x: rotate(x, 90), out_dataset.dataset.transform])
-            else:
-                out_dataset.transform = transforms.Compose([lambda x: rotate(x, 90), out_dataset.transform])
-                
+            out_dataset = RotationDataset(in_dataset, out_label, transform=None)
+        elif out_dataset == 'mixup':
+            out_dataset = MixedDataset(in_dataset, imagenet_root, out_label, transform=None)
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:
