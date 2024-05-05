@@ -34,7 +34,7 @@ def load_model(model_data, **model_kwargs):
     try:
         net = torch.load(model_path, map_location=device)
     except Exception as e:
-        print("facing problems in while loading this model")
+        print("facing problems while loading this model", str(e))
         return None
     
     
