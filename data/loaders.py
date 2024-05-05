@@ -2,9 +2,9 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
+from BAD.data.datasets.custom_datasets import MixedDataset, SingleLabelDataset, DummyDataset
 from BAD.data.neg_transformations.rotation import RotationDataset
-from BAD.data.neg_transformations.mixup import MixedDataset
+from BAD.data.neg_transformations.mixup import MixupDataset
 from BAD.data.neg_transformations.cutpaste import CutPasteDataset
 from BAD.data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
@@ -15,6 +15,7 @@ from BAD.data.transforms import normal_transform, bw_transform
 from BAD.data.utils import sample_dataset, filter_labels
 
 ROOT = '~/data'
+negatives = ['rot', 'mixup', 'cutpaste']
 
 def get_transform(dataset):
   if dataset in ['cifar10', 'cifar100', 'gtsrb', 'SVHN']:
@@ -66,6 +67,16 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
         else:
             raise ValueError("Error occured during loading datasets")
 
+def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
+    if name == 'rot':
+        return RotationDataset(dataset, label, transform=transform, **kwargs)
+    elif name == 'mixup':
+        return MixupDataset(dataset, label, transform=transform, **kwargs)
+    elif name == 'cutpaste':
+        return CutPasteDataset(dataset, label, transform=transform, **kwargs)
+    else:
+        raise NotImplementedError
+
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
                    in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None,
@@ -89,12 +100,16 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
 
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
-        if out_dataset == 'rot':
-            out_dataset = RotationDataset(in_dataset, out_label, transform=None)
-        elif out_dataset == 'mixup':
-            out_dataset = MixedDataset(in_dataset, label=out_label, transform=None, **kwargs)
-        elif out_dataset == 'cutpaste':
-            out_dataset = CutPasteDataset(in_dataset, out_label, transform=None, **kwargs)
+        if isinstance(out_dataset, list):
+            out_datasets = []
+            for out in out_dataset:
+                if out in negatives:
+                    out_datasets.append(get_negative_augmentation(out, in_dataset, out_label, transform=out_transform, **kwargs))
+                else:
+                    out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
+            out_dataset = MixedDataset(out_datasets, label=out_label, length=len(in_dataset),transform=out_transform)
+        elif out_dataset in negatives:
+            out_dataset = get_negative_augmentation(out_dataset, in_dataset, out_label, transform=out_transform, **kwargs)
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:

@@ -9,6 +9,35 @@ import os
 import random
 import numpy as np
 
+
+class MixedDataset(Dataset):
+    def __init__(self, datasets, label, length, transform=None, datasets_probs=None):
+        '''
+        prob_dist is a probability distribution, according to which, a sample from datasets is selected
+        '''
+        self.datasets = datasets
+        self.transform = transform
+        self.length = length
+        self.label = label
+        
+        self.datasets_probs = None
+        if datasets_probs is not None:
+            assert len(datasets_probs) == len(datasets)
+            self.datasets_probs = datasets_probs
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, idx):
+        target_dataset = self.datasets[np.random.choice(len(self.datasets), p=self.datasets_probs)]
+        sample_idx = np.random.randint(len(target_dataset))
+        sample, _ = target_dataset[imagenet_idx]
+        
+        if self.transform is not None:
+            sample = self.transform(sample)
+        
+        return sample, self.label
+
 class SingleLabelDataset(Dataset):
     # defining values in the constructor
     def __init__(self, label, dataset, transform = None, lim=None):

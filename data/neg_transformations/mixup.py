@@ -9,7 +9,7 @@ import os
 import random
 import numpy as np
 
-class MixedDataset(Dataset):
+class MixupDataset(Dataset):
     def __init__(self, base_dataset, imagenet_root, label, transform=None, mixup_alpha=0.2):
         self.base_dataset = base_dataset
         self.imagenet_dataset = ImageFolder(imagenet_root,
