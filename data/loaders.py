@@ -69,11 +69,11 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
 
 def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
     if name == 'rot':
-        return RotationDataset(dataset, label, transform=transform, **kwargs)
+        return RotationDataset(dataset, label=label, transform=transform, **kwargs)
     elif name == 'mixup':
-        return MixupDataset(dataset, label, transform=transform, **kwargs)
+        return MixupDataset(dataset, label=label, transform=transform, **kwargs)
     elif name == 'cutpaste':
-        return CutPasteDataset(dataset, label, transform=transform, **kwargs)
+        return CutPasteDataset(dataset, label=label, transform=transform, **kwargs)
     else:
         raise NotImplementedError
 
