@@ -44,8 +44,8 @@ class CutPasteNormal(CutPaste):
         #TODO: we might want to use the pytorch implementation to calculate the patches from https://pytorch.org/vision/stable/_modules/torchvision/transforms/transforms.html#RandomErasing
         print(f"type(img): {type(img)}")
         print(f"img.size(): {img.size()}")
-        h = img.size[0]
-        w = img.size[1]
+        h = img.size()[0]
+        w = img.size()[1]
 
         # ratio between area_ratio[0] and area_ratio[1]
         ratio_area = random.uniform(self.area_ratio[0], self.area_ratio[1]) * w * h
