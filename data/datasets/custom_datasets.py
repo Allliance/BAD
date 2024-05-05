@@ -7,6 +7,7 @@ import torchvision
 from torchvision.datasets import ImageFolder
 import os
 import random
+import numpy as np
 
 class SingleLabelDataset(Dataset):
     # defining values in the constructor
