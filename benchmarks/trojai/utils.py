@@ -27,8 +27,11 @@ def load_model(model_data, **model_kwargs):
     model_path = model_data['model_path']
     arch = model_data['arch']
     num_classes = model_data['num_classes']
+    try:
+        net = torch.load(model_path, map_location=device)
+    except Exception as e:
+        print("facing problems in while loading this model")
     
-    net = torch.load(model_path, map_location=device)
     
     if arch == 'inceptionv3':
         new_net = inception_v3(num_classes=num_classes)
