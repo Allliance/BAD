@@ -17,3 +17,7 @@ bw_transform = transforms.Compose([
     # transforms.Grayscale(num_output_channels=1),
     transforms.ToTensor()
     ])
+hr_transform = transforms.Compose([
+    transforms.Resize((256, 256)),
+    transforms.ToTensor()
+    ])
