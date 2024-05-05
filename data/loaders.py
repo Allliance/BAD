@@ -2,7 +2,9 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset, RotationDataset, MixedDataset
+from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
+from BAD.data.neg_transformations.rotation import RotationDataset
+from BAD.data.neg_transformations.mixup import MixedDataset
 from BAD.data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
