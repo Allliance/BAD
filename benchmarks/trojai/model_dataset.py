@@ -27,15 +27,16 @@ class TrojAIDataset(Dataset):
         data_csv.set_index('model_name', inplace=True)
 
         data = data_csv.to_dict(orient='index')
-        
         for name in names:
             if custom_arch and data[name]['model_architecture'] != custom_arch:
                 continue
             model_path = os.path.join(root_dir, name, 'model.pt')
+            with open(os.path.join(root_dir, name, 'ground_truth.csv'), 'r') as f:
+                label = f.read()
             self.model_data.append({
                 'name': name,
                 'bgr': self.bgr,
-                'label': 1 - int(data[name]['ground_truth']),
+                'label': 1 - int(label),
                 'model_path': model_path,
                 'num_classes': data[name]['number_classes'],
                 'arch': data[name]['model_architecture'],
