@@ -12,7 +12,8 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 class TrojAIDataset(Dataset):
     def __init__(self, root_dir, rnd, model_loader, shuffle=True, data_csv=None,
-                 size=224, use_bgr=False, sample=False, sample_portion=0.2, custom_arch=None):
+                 size=224, use_bgr=False, sample=False, sample_portion=0.2, custom_arch=None,
+                load_check=False):
         names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]        
         self.bgr = rnd in [0, 1]
         self.model_loader = model_loader
@@ -42,6 +43,13 @@ class TrojAIDataset(Dataset):
                 'arch': data[name]['model_architecture'],
                 'data': data,
             })
+            if load_check:
+                model = model_loader(self.model_data[-1])
+                if model is None:
+                    self.model_data = self.model_data[:-1]
+                else:
+                    del model
+                    
         
         random.shuffle(self.model_data)
         if sample:
