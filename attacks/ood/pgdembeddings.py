@@ -1,4 +1,4 @@
-from BAD.attacks.attack import Attack
+from attacks.attack import Attack
 
 class PGDEmbeddings(Attack):
     r"""

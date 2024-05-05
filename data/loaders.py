@@ -2,14 +2,16 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset, RotationDataset, MixedDataset
-from BAD.data.datasets.gtsrb import GTSRB
+from data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
+from data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
 from torchvision.transforms.functional import rotate
-from BAD.data.transforms import normal_transform, bw_transform
-from BAD.data.utils import sample_dataset, filter_labels
+
+from data.datasets.negative_transformations.CutPaste import CutPasteUnion
+from data.transforms import normal_transform, bw_transform
+from data.utils import sample_dataset, filter_labels
 
 ROOT = '~/data'
 
@@ -28,7 +30,7 @@ def get_transform(dataset):
 def get_dataset(name, transform=None, train=False, dummy_params={}, download=False):
     '''
     Available datasets:
-    - 'cifar10'
+    - 'cifar10'c
     - 'cifar100'
     - 'gtsrb'
     - 'mnist'

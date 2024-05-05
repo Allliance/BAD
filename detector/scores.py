@@ -6,9 +6,9 @@ import torch.nn.functional as F
 
 from numpy.linalg import norm
 from tqdm import tqdm
-from BAD.eval.eval import evaluate
-from BAD.utils import update_attack_params, get_features_mean_dict, find_min_eps
-from BAD.utils import get_ood_outputs
+from eval.eval import evaluate
+from utils import update_attack_params, get_features_mean_dict, find_min_eps
+from utils import get_ood_outputs
 from scipy import linalg
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA

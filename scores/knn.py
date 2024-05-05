@@ -1,6 +1,6 @@
 import faiss
 import torch
-from BAD.attacks.ood.pgdknn import PGD_KNN_ADVANCED
+from attacks.ood.pgdknn import PGD_KNN_ADVANCED
 
 normalizer =  lambda x: x / np.linalg.norm(x, axis=-1, keepdims=True) + 1e-10
 def get_features(model, loader, after_attack, attack, normalize=False):
