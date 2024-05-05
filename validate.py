@@ -18,7 +18,8 @@ def get_models_scores(model_dataset,
     scores = []
 
     tq = range(len(model_dataset))
-    tq = tqdm(tq)
+    if progress is False:
+        tq = tqdm(tq)
     
     for i in tq:
         model, label = model_dataset[i]
