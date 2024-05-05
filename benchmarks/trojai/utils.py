@@ -61,7 +61,10 @@ def get_sanityloader_trojai(model, batch_size=None):
 
 def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None):
     if batch_size is None:
-        batch_size = archs_batch_sizes[model.meta_data['arch']]
+        arch = model.meta_data['arch']
+        if arch not in archs_batch_sizes:
+            arch = 'default'
+        batch_size = archs_batch_sizes[arch]
     dataset = get_dataset_trojai(model)
     if sample_num:
         dataset = sample_dataset(dataset, portion=sample_num)
