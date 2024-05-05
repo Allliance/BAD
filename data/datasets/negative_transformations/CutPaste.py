@@ -168,6 +168,7 @@ class CutPasteDataset(Dataset):
 
     def __getitem__(self, idx):
         base_img, _ = self.base_dataset[idx]
+        print(f"type(base_img): {type(base_img)}")
 
         cut_paste_img = self.transform(base_img)
 
