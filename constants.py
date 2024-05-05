@@ -19,6 +19,10 @@ CLEAN_ROOT_DICT = {
 'celeba': {
     'resnet': '',
     'preact': '',
+},
+'pubfig': {
+    'resnet': '/kaggle/input/pubfig-resnet-allmodels/models/clean',
+    'preact': '',
 }
 }
 
@@ -42,6 +46,10 @@ BAD_ROOT_DICT = {
 },
 'celeba': {
     'resnet': '',
+    'preact': '',
+},
+'pubfig': {
+    'resnet': '/kaggle/input/pubfig-resnet-allmodels/models',
     'preact': '',
 }
 }
