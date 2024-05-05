@@ -21,6 +21,8 @@ archs_batch_sizes = {
     'inceptionv3': 64,
     'default': 32,
     'wideresnet101': 16,
+    'resnet152': 16,
+
 }
 
 def load_model(model_data, **model_kwargs):
