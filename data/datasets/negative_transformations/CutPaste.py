@@ -42,6 +42,7 @@ class CutPasteNormal(CutPaste):
 
     def __call__(self, img):
         #TODO: we might want to use the pytorch implementation to calculate the patches from https://pytorch.org/vision/stable/_modules/torchvision/transforms/transforms.html#RandomErasing
+        print(f"type(img): {type(img)}")
         h = img.size[0]
         w = img.size[1]
 
