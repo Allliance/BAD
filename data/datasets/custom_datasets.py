@@ -55,6 +55,22 @@ class MixedDataset(Dataset):
         
         return mixed_img, self.label
 
+class MixedDataset(Dataset):
+    def __init__(self, base_dataset, label, transform=None):
+        self.base_dataset = base_dataset
+        self.label = label
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.base_dataset)
+
+    def __getitem__(self, idx):
+        image, _ = self.base_dataset[idx]
+        
+        image = torch.rot90(image, k=1, dims=(1, 2))
+
+        return image, self.label
+
 class DummyDataset(Dataset):
     def __init__(self, label, pattern, pattern_args={}, transform=None):
         num_samples = pattern_args.get('num_samples', 1000)
