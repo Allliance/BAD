@@ -1,3 +1,6 @@
+# For OOD Data: 1 is for ID, 0 is for OOD
+# For Model Dataset: 1 is for Clean, 0 is for Bad
+
 CLEAN_ROOT_DICT = {
 'cifar10': {
     'resnet': '/kaggle/input/clean-resnet18-120models-dataset',
