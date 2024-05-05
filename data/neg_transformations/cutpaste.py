@@ -2,6 +2,7 @@ import random
 import math
 from torchvision import transforms
 import torch
+from torch.utils.data import Dataset
 
 def cut_paste_collate_fn(batch):
     # cutPaste return 2 tuples of tuples we convert them into a list of tuples
