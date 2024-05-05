@@ -22,6 +22,8 @@ archs_batch_sizes = {
     'default': 32,
     'wideresnet101': 16,
     'resnet152': 16,
+    'densenet201': 16,
+    'densenet161': 8,
 
 }
 
@@ -33,7 +35,7 @@ def load_model(model_data, **model_kwargs):
     try:
         net = torch.load(model_path, map_location=device)
     except Exception as e:
-        print("facing problems in while loading this model")
+        print("facing problems while loading this model", str(e))
         return None
     
     
@@ -75,6 +77,7 @@ def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None, *
         batch_size = archs_batch_sizes[arch]
     dataset = get_dataset_trojai(model)
     if sample_num:
+        sample_num = min(sample_num, len(dataset))
         dataset = sample_dataset(dataset, portion=sample_num)
     
     return get_ood_loader(custom_in_dataset=dataset,
