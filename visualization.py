@@ -45,8 +45,8 @@ def visualize_samples(dataloader, n, title="Samples for each label", max_batches
     collected_sample = {}
     
     # Collect n x n samples
-    for images, labels in dataloader:
-        for i, l in zip(images, labels):
+    for images, targets in dataloader:
+        for i, l in zip(images, targets):
             image = to_3_channels(i)
             if l in to_collect_samples:
                 to_collect_samples[l].append(to_pil_image(image))
