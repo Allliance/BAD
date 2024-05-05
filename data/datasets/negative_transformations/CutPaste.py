@@ -4,6 +4,7 @@ from torchvision import transforms
 import torch
 from torchvision.datasets import ImageFolder
 from torch.utils.data import Dataset
+import torchvision.transforms as transforms
 import numpy as np
 
 def cut_paste_collate_fn(batch):
@@ -43,9 +44,9 @@ class CutPasteNormal(CutPaste):
     def __call__(self, img):
         #TODO: we might want to use the pytorch implementation to calculate the patches from https://pytorch.org/vision/stable/_modules/torchvision/transforms/transforms.html#RandomErasing
         print(f"type(img): {type(img)}")
-        print(f"img.size(): {img.size()}")
-        h = img.size()[0]
-        w = img.size()[1]
+        print(f"img.size: {img.size}")
+        h = img.size[0]
+        w = img.size[1]
 
         # ratio between area_ratio[0] and area_ratio[1]
         ratio_area = random.uniform(self.area_ratio[0], self.area_ratio[1]) * w * h
@@ -154,7 +155,8 @@ class CutPasteDataset(Dataset):
     def __init__(self, base_dataset, label, transform=None, mixup_alpha=0.2):
         self.base_dataset = base_dataset
         self.transform = transforms.Compose([
-            CutPasteUnion(transform=transform),
+            transform,
+            CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
         ])
         self.label = label
 
@@ -168,7 +170,9 @@ class CutPasteDataset(Dataset):
 
     def __getitem__(self, idx):
         base_img, _ = self.base_dataset[idx]
-        print(f"type(base_img): {type(base_img)}")
+        # Convert PyTorch tensor to PIL Image
+        to_pil = transforms.ToPILImage()
+        base_img = to_pil(base_img)
 
         cut_paste_img = self.transform(base_img)
 
