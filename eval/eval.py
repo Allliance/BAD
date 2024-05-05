@@ -31,7 +31,9 @@ def evaluate(model, loader, device, metric='acc', attack=None, progress=False):
         scores = get_msp(model, data)
         all_scores += scores.tolist()
         all_labels += target.tolist()
-
+        
+        torch.cuda.empty_cache()
+        gc.collect()
 
     if metric == 'acc':
         return correct / len(loader.dataset)
