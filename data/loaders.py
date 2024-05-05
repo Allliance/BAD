@@ -2,14 +2,14 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
+from data.datasets.custom_datasets import SingleLabelDataset, DummyDataset, RotationDataset, MixedDataset
 from data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
 from torchvision.transforms.functional import rotate
 
-from data.datasets.negative_transformations.CutPaste import CutPasteUnion
+from data.datasets.negative_transformations.CutPaste import CutPasteUnion, CutPasteDataset
 from data.transforms import normal_transform, bw_transform
 from data.utils import sample_dataset, filter_labels
 
@@ -92,6 +92,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
             out_dataset = RotationDataset(in_dataset, out_label, transform=None)
         elif out_dataset == 'mixup':
             out_dataset = MixedDataset(in_dataset, label=out_label, transform=None, **kwargs)
+        elif out_dataset == 'cutpaste':
+            out_dataset = CutPasteDataset(in_dataset, label=out_label, transform=None, **kwargs)
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:

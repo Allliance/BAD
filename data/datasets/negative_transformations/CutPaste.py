@@ -2,6 +2,9 @@ import random
 import math
 from torchvision import transforms
 import torch
+from torchvision.datasets import ImageFolder
+from torch.utils.data import Dataset
+import numpy as np
 
 def cut_paste_collate_fn(batch):
     # cutPaste return 2 tuples of tuples we convert them into a list of tuples
@@ -143,3 +146,28 @@ class CutPaste3Way(object):
         _, cutpaste_scar = self.scar(img)
 
         return org, cutpaste_normal, cutpaste_scar
+
+
+class CutPasteDataset(Dataset):
+    def __init__(self, base_dataset, label, transform=None, mixup_alpha=0.2):
+        self.base_dataset = base_dataset
+        self.transform = transforms.Compose([
+            CutPasteUnion(transform=transform),
+        ])
+        self.label = label
+
+    #         self.transform = transforms.Compose([
+    #             transforms.ToTensor(),
+    #             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))  # Imagenet normalization
+    #         ])
+
+    def __len__(self):
+        return len(self.base_dataset)
+
+    def __getitem__(self, idx):
+        base_img, _ = self.base_dataset[idx]
+
+        if self.transform:
+            cut_paste_img = self.transform(base_img)
+
+        return cut_paste_img, self.label
