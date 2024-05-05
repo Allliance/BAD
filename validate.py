@@ -27,7 +27,7 @@ def get_models_scores(model_dataset,
         score = model_score_function(model)
 
         if progress:
-            print(label, score)
+            print('No.', i, label, score)
         
         scores.append(score)
         labels.append(label)
