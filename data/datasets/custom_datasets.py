@@ -29,51 +29,6 @@ class SingleLabelDataset(Dataset):
     def __len__(self):
         return self.len
 
-class MixedDataset(Dataset):
-    def __init__(self, base_dataset, imagenet_root, label, transform=None, mixup_alpha=0.2):
-        self.base_dataset = base_dataset
-        self.imagenet_dataset = ImageFolder(imagenet_root,
-                               transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]))
-        self.mixup_alpha = mixup_alpha
-        self.label = label
-        self.transform = transform
-#         self.transform = transforms.Compose([
-#             transforms.ToTensor(),
-#             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))  # Imagenet normalization
-#         ])
-
-    def __len__(self):
-        return len(self.base_dataset)
-
-    def __getitem__(self, idx):
-        base_img, _ = self.base_dataset[idx]
-
-        imagenet_idx = np.random.randint(len(self.imagenet_dataset))
-        imagenet_img, _ = self.imagenet_dataset[imagenet_idx]
-
-        mixed_img = (1 - self.mixup_alpha) * base_img + self.mixup_alpha * imagenet_img
-
-        if self.transform:
-            mixed_img = self.transform(mixed_img)
-        
-        return mixed_img, self.label
-
-class RotationDataset(Dataset):
-    def __init__(self, base_dataset, label, transform=None):
-        self.base_dataset = base_dataset
-        self.label = label
-        self.transform = transform
-
-    def __len__(self):
-        return len(self.base_dataset)
-
-    def __getitem__(self, idx):
-        image, _ = self.base_dataset[idx]
-        
-        image = torch.rot90(image, k=random.randint(1, 3), dims=(1, 2))
-
-        return image, self.label
-
 class DummyDataset(Dataset):
     def __init__(self, label, pattern, pattern_args={}, transform=None):
         num_samples = pattern_args.get('num_samples', 1000)
