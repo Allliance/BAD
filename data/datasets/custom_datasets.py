@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import Dataset
 from torchvision.transforms.functional import rotate
 import torchvision
+from torchvision.datasets import ImageFolder
 import os
 import random
 
