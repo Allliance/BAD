@@ -19,6 +19,7 @@ archs_batch_sizes = {
     'resnet50': 32,
     'densenet121': 32,
     'inceptionv3': 64,
+    'default': 32,
 }
 
 def load_model(model_data, **model_kwargs):
@@ -51,7 +52,10 @@ def get_dataset_trojai(model):
 
 def get_sanityloader_trojai(model, batch_size=None):
     if batch_size is None:
-        batch_size = archs_batch_sizes[model.meta_data['arch']]
+        arch = model.meta_data['arch']
+        if arch not in archs_batch_sizes:
+            arch = 'default'
+        batch_size = archs_batch_sizes[arch]
     return DataLoader(get_dataset_trojai(model), shuffle=True, batch_size=batch_size)
 
 
