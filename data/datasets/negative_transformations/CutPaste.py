@@ -155,7 +155,6 @@ class CutPasteDataset(Dataset):
     def __init__(self, base_dataset, label, transform=None, mixup_alpha=0.2):
         self.base_dataset = base_dataset
         self.transform = transforms.Compose([
-            transform,
             CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
         ])
         self.label = label
