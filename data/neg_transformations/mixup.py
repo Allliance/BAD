@@ -33,7 +33,7 @@ class MixupDataset(Dataset):
 
         mixed_img = (1 - self.mixup_alpha) * base_img + self.mixup_alpha * imagenet_img
 
-        if self.transform:
-            mixed_img = self.transform(mixed_img)
+        # if self.transform:
+        #     mixed_img = self.transform(mixed_img)
         
         return mixed_img, self.label
