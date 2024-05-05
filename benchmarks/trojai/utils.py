@@ -67,7 +67,7 @@ def get_sanityloader_trojai(model, batch_size=None):
     return DataLoader(get_dataset_trojai(model), shuffle=True, batch_size=batch_size)
 
 
-def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None):
+def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None, **kwargs):
     if batch_size is None:
         arch = model.meta_data['arch']
         if arch not in archs_batch_sizes:
@@ -80,4 +80,4 @@ def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None):
     return get_ood_loader(custom_in_dataset=dataset,
                           out_dataset=out_dataset,
                           out_transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]),
-                          batch_size=batch_size, sample=False)
+                          batch_size=batch_size, sample=False, **kwargs)
