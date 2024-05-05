@@ -26,11 +26,13 @@ archs_batch_sizes = {
 def load_model(model_data, **model_kwargs):
     model_path = model_data['model_path']
     arch = model_data['arch']
+    print(arch)
     num_classes = model_data['num_classes']
     try:
         net = torch.load(model_path, map_location=device)
     except Exception as e:
         print("facing problems in while loading this model")
+        return None
     
     
     if arch == 'inceptionv3':
