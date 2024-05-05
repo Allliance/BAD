@@ -31,7 +31,7 @@ class MixedDataset(Dataset):
     def __getitem__(self, idx):
         target_dataset = self.datasets[np.random.choice(len(self.datasets), p=self.datasets_probs)]
         sample_idx = np.random.randint(len(target_dataset))
-        sample, _ = target_dataset[imagenet_idx]
+        sample, _ = target_dataset[sample_idx]
         
         if self.transform is not None:
             sample = self.transform(sample)
