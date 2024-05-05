@@ -146,7 +146,7 @@ class CutPaste3Way(object):
         return org, cutpaste_normal, cutpaste_scar
     
 class CutPasteDataset(Dataset):
-    def __init__(self, base_dataset, label, transform=None):
+    def __init__(self, base_dataset, label, transform=None, **kwargs):
         self.base_dataset = base_dataset
         self.transform = transforms.Compose([
             CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
