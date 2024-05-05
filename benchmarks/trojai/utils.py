@@ -20,6 +20,7 @@ archs_batch_sizes = {
     'densenet121': 32,
     'inceptionv3': 64,
     'default': 32,
+    'wideresnet101': 16,
 }
 
 def load_model(model_data, **model_kwargs):
