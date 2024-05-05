@@ -143,3 +143,24 @@ class CutPaste3Way(object):
         _, cutpaste_scar = self.scar(img)
 
         return org, cutpaste_normal, cutpaste_scar
+    
+class CutPasteDataset(Dataset):
+    def __init__(self, base_dataset, label, transform=None):
+        self.base_dataset = base_dataset
+        self.transform = transforms.Compose([
+            CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ])),
+        ])
+        self.label = label
+
+    def __len__(self):
+        return len(self.base_dataset)
+
+    def __getitem__(self, idx):
+        base_img, _ = self.base_dataset[idx]
+        # Convert PyTorch tensor to PIL Image
+        to_pil = transforms.ToPILImage()
+        base_img = to_pil(base_img)
+
+        cut_paste_img = self.transform(base_img)
+
+        return cut_paste_img, self.label

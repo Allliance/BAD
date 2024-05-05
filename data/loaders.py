@@ -5,6 +5,7 @@ from torchvision import transforms
 from BAD.data.datasets.custom_datasets import SingleLabelDataset, DummyDataset
 from BAD.data.neg_transformations.rotation import RotationDataset
 from BAD.data.neg_transformations.mixup import MixedDataset
+from BAD.data.neg_transformations.cutpaste import CutPasteDataset
 from BAD.data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
@@ -92,6 +93,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
             out_dataset = RotationDataset(in_dataset, out_label, transform=None)
         elif out_dataset == 'mixup':
             out_dataset = MixedDataset(in_dataset, label=out_label, transform=None, **kwargs)
+        elif out_dataset == 'cutpaste':
+            out_dataset = CutPasteDataset(in_dataset, out_label, transform=None, **kwargs)
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:
