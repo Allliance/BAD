@@ -31,7 +31,7 @@ def plot_images_by_label(image_dict):
     plt.tight_layout()
     plt.show()
 
-def visualize_samples(dataloader, n, title="Samples for each label"):
+def visualize_samples(dataloader, n, title="Samples for each label", max_batches=None):
 
     def to_3_channels(image):
         if image.shape[0] == 1:
@@ -45,15 +45,16 @@ def visualize_samples(dataloader, n, title="Samples for each label"):
     collected_sample = {}
     
     # Collect n x n samples
-    for i, l in dataloader.dataset:
-        image = to_3_channels(i)
-        if l in to_collect_samples:
-            to_collect_samples[l].append(to_pil_image(image))
-            
-            if len(to_collect_samples[l]) == n:
-                collected_sample[l] = to_collect_samples[l]
-                to_collect_samples.pop(l, None)
+    for images, labels in dataloader:
+        for i, l in zip(images, labels):
+            image = to_3_channels(i)
+            if l in to_collect_samples:
+                to_collect_samples[l].append(to_pil_image(image))
                 
+                if len(to_collect_samples[l]) == n:
+                    collected_sample[l] = to_collect_samples[l]
+                    to_collect_samples.pop(l, None)
+                    
         if len(collected_sample) == len(labels):
             break
 
