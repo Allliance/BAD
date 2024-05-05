@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 import random
 
 class RotationDataset(Dataset):
-    def __init__(self, base_dataset, label, transform=None):
+    def __init__(self, base_dataset, label, transform=None, **kwargs):
         self.base_dataset = base_dataset
         self.label = label
         self.transform = transform
