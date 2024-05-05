@@ -5,6 +5,7 @@ from torch.utils.data import Dataset
 from torchvision.transforms.functional import rotate
 import torchvision
 import os
+import random
 
 class SingleLabelDataset(Dataset):
     # defining values in the constructor
@@ -55,7 +56,7 @@ class MixedDataset(Dataset):
         
         return mixed_img, self.label
 
-class MixedDataset(Dataset):
+class RotationDataset(Dataset):
     def __init__(self, base_dataset, label, transform=None):
         self.base_dataset = base_dataset
         self.label = label
@@ -67,7 +68,7 @@ class MixedDataset(Dataset):
     def __getitem__(self, idx):
         image, _ = self.base_dataset[idx]
         
-        image = torch.rot90(image, k=1, dims=(1, 2))
+        image = torch.rot90(image, k=random.randint(1, 3), dims=(1, 2))
 
         return image, self.label
 
