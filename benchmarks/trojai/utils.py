@@ -76,6 +76,7 @@ def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None, *
         batch_size = archs_batch_sizes[arch]
     dataset = get_dataset_trojai(model)
     if sample_num:
+        sample_num = min(sample_num, len(dataset))
         dataset = sample_dataset(dataset, portion=sample_num)
     
     return get_ood_loader(custom_in_dataset=dataset,
