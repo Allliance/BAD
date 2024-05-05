@@ -34,6 +34,10 @@ class MixedDataset(Dataset):
         sample, _ = target_dataset[sample_idx]
         
         if self.transform is not None:
+                
+            to_pil = transforms.ToPILImage()
+            sample = to_pil(sample)
+    
             sample = self.transform(sample)
         
         return sample, self.label
