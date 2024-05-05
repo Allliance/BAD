@@ -167,7 +167,6 @@ class CutPasteDataset(Dataset):
     def __getitem__(self, idx):
         base_img, _ = self.base_dataset[idx]
 
-        if self.transform:
-            cut_paste_img = self.transform(base_img)
+        cut_paste_img = self.transform(base_img)
 
         return cut_paste_img, self.label
