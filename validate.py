@@ -22,15 +22,19 @@ def get_models_scores(model_dataset,
         tq = tqdm(tq)
     
     for i in tq:
-        model, label = model_dataset[i]
+        try:
+            model, label = model_dataset[i]
 
-        score = model_score_function(model)
+            score = model_score_function(model)
 
-        if progress:
-            print('No.', i, label, score)
-        
-        scores.append(score)
-        labels.append(label)
+            if progress:
+                print('No.', i, label, score)
+            
+            scores.append(score)
+            labels.append(label)
+        except Exception as e:
+            print(f"The following error occured during the evaluation of a model with name {model.meta_data.get('name')}: {str(e)}")
+            print("Skipping this model")
     
     return scores, labels
 
