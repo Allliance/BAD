@@ -11,9 +11,17 @@ from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import umap
 from BAD.attacks.ood.pgdlinf import PGD
-
+from torch.utils.data import Subset
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+def split_dataset_by_arch(dataset):
+    indices = defaultdict(lambda : [])
+    for i, model_data in enumerate(dataset.model_data):
+        indices[model_data['arch']].append(i)
+    return {
+        arch: Subset(dataset, arch_indices) for arch, arch_indices in indices.items()
+    }
 
 def get_best_acc_and_thresh(labels, scores):
     pairs = sorted(list(zip(scores, labels)))
