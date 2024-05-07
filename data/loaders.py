@@ -6,6 +6,8 @@ from BAD.data.datasets.custom_datasets import MixedDataset, SingleLabelDataset, 
 from BAD.data.neg_transformations.rotation import RotationDataset
 from BAD.data.neg_transformations.mixup import MixupDataset
 from BAD.data.neg_transformations.cutpaste import CutPasteDataset
+from BAD.data.neg_transformations.distort import DistortDataset
+from BAD.data.neg_transformations.elastic import ElasticDataset
 from BAD.data.datasets.gtsrb import GTSRB
 from torch.utils.data import Subset
 from collections import defaultdict
@@ -15,7 +17,7 @@ from BAD.data.transforms import normal_transform, bw_transform
 from BAD.data.utils import sample_dataset, filter_labels
 
 ROOT = '~/data'
-negatives = ['rot', 'mixup', 'cutpaste']
+negatives = ['rot', 'mixup', 'cutpaste', 'distort', 'elastic']
 
 def get_transform(dataset):
   if dataset in ['cifar10', 'cifar100', 'gtsrb', 'SVHN']:
@@ -74,6 +76,10 @@ def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
         return MixupDataset(dataset, label=label, transform=transform, **kwargs)
     elif name == 'cutpaste':
         return CutPasteDataset(dataset, label=label, transform=transform, **kwargs)
+    elif name == 'distort':
+        return DistortDataset(dataset, label=label, transform=transform, **kwargs)
+    elif name == 'elastic':
+        return ElasticDataset(dataset, label=label, transform=transform, **kwargs)
     else:
         raise NotImplementedError
 
