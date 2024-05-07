@@ -17,7 +17,7 @@ def get_auc(model, dataloader, attack=None, progress=False):
 
 
 def get_aucs(model_dataset, eps, get_dataloader, score='final_auc', attack_class=None, attack_in=False,
-             progress=False, verbose=False, score_progress=False, **kwargs):
+             progress=False, verbose=False, score_progress=False, multi_eps=False, eps2=0, **kwargs):
     attack_eps = eps
     attack_steps = 10
     attack_alpha = 2.5 * attack_eps / attack_steps
@@ -34,6 +34,14 @@ def get_aucs(model_dataset, eps, get_dataloader, score='final_auc', attack_class
         else:
             attack = attack_class(model, eps=attack_eps, steps=attack_steps, alpha=attack_alpha, attack_in=attack_in)
         adv_perf = get_auc(model, dataloader, attack, progress=progress)
+        
+        if multi_eps:
+            attack_eps = eps
+            attack_steps = 10
+            attack_alpha = 2.5 * attack_eps / attack_steps
+            attack = attack_class(model, eps=attack_eps, steps=attack_steps, alpha=attack_alpha, attack_in=attack_in)
+            new_adv_perf = get_auc(model, dataloader, attack, progress=progress)
+            return adv_perf / new_adv_perf
         
         if score == 'final_auc':
             return adv_perf

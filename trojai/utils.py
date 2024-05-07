@@ -29,9 +29,9 @@ archs_batch_sizes = {
     'wideresnet101': 16,
     'wideresnet50': 32,
     'resnet152': 16,
-    'densenet201': 8,
-    'densenet161': 8,
-    'densenet169':8,
+    'densenet201': 20,
+    'densenet161': 10,
+    'densenet169':16,
 }
 
 def load_model(model_data, **model_kwargs):
