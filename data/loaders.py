@@ -136,6 +136,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         out_dataset = filter_labels(out_dataset, out_filter_labels)
 
     if sample and sample_out:
+        print("salam")
         out_dataset = sample_dataset(out_dataset, portion=sample_num, balanced=balanced_sample)
     if balanced and len(out_dataset) > len(in_dataset):
         out_dataset = sample_dataset(out_dataset, portion=len(in_dataset)/len(out_dataset), balanced=balanced_sample)
