@@ -14,6 +14,7 @@ import os
 import gc
 from tqdm import tqdm
 
+
 # Model Dataset
 from .detector.datasets import ModelDataset
 
@@ -38,8 +39,8 @@ from .trojai.utils import get_sanityloader_trojai, get_oodloader_trojai, load_mo
 from .validate import get_models_scores, find_best_eps, get_auc_on_models_scores
 
 # Utils
-from .utils import find_min_eps, get_best_acc_and_thresh
+from .utils import find_min_eps, get_best_acc_and_thresh, clear_memory
 
 # Scores
-from .score_functions import get_auc, get_l2
+from .score_functions import get_aucs, get_l2
 

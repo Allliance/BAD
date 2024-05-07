@@ -145,6 +145,12 @@ def get_mean_features(model, dataloader, target_label):
             in_features = new_features
     return torch.mean(in_features, dim=0)
 
+def clear_memory():
+    for i in range(torch.cuda.device_count()):
+        torch.cuda.set_device(i)
+        torch.cuda.empty_cache()
+        gc.collect()
+
 
 def cosine_similaruty(A, B):
     cosine = np.dot(A, B)/(norm(A)*norm(B))
