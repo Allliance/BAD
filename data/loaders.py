@@ -86,7 +86,7 @@ def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
                    in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None,
-                    balanced=True, balanced_sample=False, **kwargs):
+                    balanced=True, balanced_sample=False, out_portion=1, **kwargs):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
@@ -113,7 +113,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
                     out_datasets.append(get_negative_augmentation(out, in_dataset, out_label, transform=out_transform, **kwargs))
                 else:
                     out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
-            out_dataset = MixedDataset(out_datasets, label=out_label, length=len(in_dataset),transform=out_transform)
+            length = int(out_portion * len(in_dataset))
+            out_dataset = MixedDataset(out_datasets, label=out_label, length=length,transform=out_transform)
         elif out_dataset in negatives:
             out_dataset = get_negative_augmentation(out_dataset, in_dataset, out_label, transform=out_transform, **kwargs)
         else:
