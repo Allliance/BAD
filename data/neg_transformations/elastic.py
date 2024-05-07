@@ -14,7 +14,6 @@ from albumentations.pytorch import ToTensorV2
 class ElasticDataset(Dataset):
     def __init__(self, base_dataset, imagenet_root, label, transform=None, alpha_affine=100, sigma=50, alpha=100, p=1.0,**kwargs):
         self.base_dataset = base_dataset
-        self.mixup_alpha = mixup_alpha
         self.label = label
         self.transform = transform
         self.elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),

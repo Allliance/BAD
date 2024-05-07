@@ -14,7 +14,6 @@ from albumentations.pytorch import ToTensorV2
 class DistortDataset(Dataset):
     def __init__(self, base_dataset, imagenet_root, label, transform=None, num_steps=10, distort_limit=1, p=1.0,**kwargs):
         self.base_dataset = base_dataset
-        self.mixup_alpha = mixup_alpha
         self.label = label
         self.transform = transform
         self.distort = A.Compose([A.GridDistortion(num_steps=10, distort_limit=1, p=1.0),
