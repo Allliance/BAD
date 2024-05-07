@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import umap
 from BAD.attacks.ood.pgdlinf import PGD
 from torch.utils.data import Subset
+import gc
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
