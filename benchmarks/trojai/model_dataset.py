@@ -14,7 +14,7 @@ class TrojAIDataset(Dataset):
     def __init__(self, root_dirs, rnd, model_loader, shuffle=True, data_csv=None,
                  size=224, use_bgr=False, sample=False, sample_portion=0.2, custom_arch=None,
                 load_check=False):
-        if isinstance(root_dirs, list):
+        if isinstance(root_dirs, str):
             root_dirs = [root_dirs]
         self.bgr = rnd in [0, 1]
         self.round = rnd
