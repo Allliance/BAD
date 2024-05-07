@@ -25,10 +25,10 @@ class TrojAIDataset(Dataset):
             
             self.model_data = []
             
-            data_csv = pd.read_csv(os.path.join(root_dir, data_csv))
-            data_csv.set_index('model_name', inplace=True)
+            data = pd.read_csv(os.path.join(root_dir, data_csv))
+            data.set_index('model_name', inplace=True)
 
-            data = data_csv.to_dict(orient='index')
+            data = data.to_dict(orient='index')
             for name in names:
                 if custom_arch and data[name]['model_architecture'] != custom_arch:
                     continue
