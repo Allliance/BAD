@@ -1,6 +1,23 @@
 # For OOD Data: 1 is for ID, 0 is for OOD
 # For Model Dataset: 1 is for Clean, 0 is for Bad
 
+TROJAI_ROOT_DICT = {
+    0: {
+    'val': ['/kaggle/input/trojai-r0-train-p0/root/models'],
+    'test': ['/kaggle/input/trojai-r0-train-p1/models'],
+    },
+    1: {
+    'val': ['/kaggle/input/trojai-r1-train/models'],
+    'test': ['/kaggle/input/trojai-r1-test/models'],
+    },
+    2: {
+    'val': ['/kaggle/input/trojai-r2-train-p0/models', '/kaggle/input/trojai-r2-train-1/models'],
+    'test': ['/kaggle/input/trojai-r2-test-p0/models', '/kaggle/input/trojai-r2-train-p1/models'],
+    },
+    3: [],
+    4: [],
+}
+
 CLEAN_ROOT_DICT = {
 'cifar10': {
     'resnet': '/kaggle/input/clean-resnet18-120models-dataset',
