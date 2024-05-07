@@ -1,6 +1,6 @@
 from BAD.eval.eval import evaluate
 import torch
-from BAD.utils import cosine_similaruty
+from BAD.utils import cosine_similaruty, clear_memory
 from BAD.validate import get_models_scores
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -36,6 +36,7 @@ def get_aucs(model_dataset, eps, get_dataloader, score='final_auc', attack_class
         adv_perf = get_auc(model, dataloader, attack, progress=progress)
         
         if multi_eps:
+            clear_memory()
             new_eps = eps
             new_steps = 10
             new_alpha = 2.5 * new_eps / new_steps
