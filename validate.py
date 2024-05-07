@@ -47,7 +47,7 @@ def get_models_scores(model_dataset,
             if strict:
                 raise e
             failed_models += 1
-            print(f"The following error occured during the evaluation of a model with name {model.meta_data.get('name')}: {str(e)}")
+            print(f"The following error occured during the evaluation of a model with name {model.meta_data.get('name') if model else 'NaN'}: {str(e)}")
             print("Skipping this model")
     print("No. of failed models:", failed_models)
     return scores, labels
