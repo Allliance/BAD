@@ -11,45 +11,45 @@ warnings.simplefilter("ignore")
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 class TrojAIDataset(Dataset):
-    def __init__(self, root_dir, rnd, model_loader, shuffle=True, data_csv=None,
+    def __init__(self, root_dirs, rnd, model_loader, shuffle=True, data_csv=None,
                  size=224, use_bgr=False, sample=False, sample_portion=0.2, custom_arch=None,
                 load_check=False):
-        names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]        
+        if isinstance(root_dirs, list):
+            root_dirs = [root_dirs]
         self.bgr = rnd in [0, 1]
-        self.model_loader = model_loader
-        self.root_dir = root_dir
         self.round = rnd
+        self.model_loader = model_loader
         
-        self.model_data = []
-        
-        if isinstance(data_csv, str):
-            data_csv = pd.read_csv(data_csv)
-        
-        data_csv.set_index('model_name', inplace=True)
+        for root_dir in root_dirs:
+            names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]
+            
+            self.model_data = []
+            
+            data_csv = pd.read_csv(os.path.join(root_dir, data_csv))
+            data_csv.set_index('model_name', inplace=True)
 
-        data = data_csv.to_dict(orient='index')
-        for name in names:
-            if custom_arch and data[name]['model_architecture'] != custom_arch:
-                continue
-            model_path = os.path.join(root_dir, name, 'model.pt')
-            with open(os.path.join(root_dir, name, 'ground_truth.csv'), 'r') as f:
-                label = f.read()
-            self.model_data.append({
-                'name': name,
-                'bgr': self.bgr,
-                'label': 1 - int(label),
-                'model_path': model_path,
-                'num_classes': data[name]['number_classes'],
-                'arch': data[name]['model_architecture'],
-                'data': data,
-            })
-            if load_check:
-                model = model_loader(self.model_data[-1])
-                if model is None:
-                    self.model_data = self.model_data[:-1]
-                else:
-                    del model
-                    
+            data = data_csv.to_dict(orient='index')
+            for name in names:
+                if custom_arch and data[name]['model_architecture'] != custom_arch:
+                    continue
+                model_path = os.path.join(root_dir, name, 'model.pt')
+                with open(os.path.join(root_dir, name, 'ground_truth.csv'), 'r') as f:
+                    label = f.read()
+                self.model_data.append({
+                    'name': name,
+                    'bgr': self.bgr,
+                    'label': 1 - int(label),
+                    'model_path': model_path,
+                    'num_classes': data[name]['number_classes'],
+                    'arch': data[name]['model_architecture'],
+                    'data': data,
+                })
+                if load_check:
+                    model = model_loader(self.model_data[-1])
+                    if model is None:
+                        self.model_data = self.model_data[:-1]
+                    else:
+                        del model
         
         random.shuffle(self.model_data)
         if sample:
@@ -60,5 +60,5 @@ class TrojAIDataset(Dataset):
 
     def __getitem__(self, idx):
         model = self.model_loader(self.model_data[idx], meta_data=self.model_data[idx], normalize=False)
-        return model, model.meta_data['label']
+        return model, model.meta_data['label'] if model is not None else None
     
