@@ -20,10 +20,10 @@ class TrojAIDataset(Dataset):
         self.round = rnd
         self.model_loader = model_loader
         
+        self.model_data = []
+        
         for root_dir in root_dirs:
             names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]
-            
-            self.model_data = []
             
             data = pd.read_csv(os.path.join(root_dir, data_csv))
             data.set_index('model_name', inplace=True)
