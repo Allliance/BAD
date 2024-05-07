@@ -19,7 +19,7 @@ archs_batch_sizes = {
     'resnet50': 32,
     'densenet121': 32,
     'inceptionv3': 64,
-    'default': 32,
+    'default': 128,
     'wideresnet101': 16,
     'resnet152': 16,
     'densenet201': 8,
