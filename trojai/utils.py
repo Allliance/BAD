@@ -9,7 +9,7 @@ from torchvision import transforms
 from torchvision.models import inception_v3
 from BAD.models.base_model import BaseModel as Model
 from torch.utils.data import DataLoader
-from BAD.benchmarks.trojai.dataset import ExampleDataset
+from BAD.trojai.dataset import ExampleDataset
 from BAD.data.loaders import get_ood_loader
 from BAD.data.utils import sample_dataset
 
