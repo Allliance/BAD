@@ -25,6 +25,7 @@ def get_models_scores(model_dataset,
     
     if live:
         seen_labels = set()
+    failed_models = 0
     
     for i in tq:
         try:
@@ -45,9 +46,10 @@ def get_models_scores(model_dataset,
         except Exception as e:
             if strict:
                 raise e
+            failed_models += 1
             print(f"The following error occured during the evaluation of a model with name {model.meta_data.get('name')}: {str(e)}")
             print("Skipping this model")
-    
+    print("No. of failed models:", failed_models)
     return scores, labels
 
 # All it does is that it iterates over the model dataset, calculate some score bease on the model and the dataloader
