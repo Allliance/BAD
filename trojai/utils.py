@@ -29,8 +29,8 @@ archs_batch_sizes = {
     'wideresnet101': 16,
     'wideresnet50': 32,
     'resnet152': 16,
-    'densenet201': 20,
-    'densenet161': 10,
+    'densenet201': 16,
+    'densenet161': 8,
     'densenet169':16,
 }
 
