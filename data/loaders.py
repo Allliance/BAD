@@ -114,6 +114,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
                 else:
                     out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
             length = int(out_portion * len(in_dataset))
+            print(length)
             out_dataset = MixedDataset(out_datasets, label=out_label, length=length,transform=out_transform)
         elif out_dataset in negatives:
             out_dataset = get_negative_augmentation(out_dataset, in_dataset, out_label, transform=out_transform, **kwargs)
