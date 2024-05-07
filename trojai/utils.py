@@ -24,7 +24,7 @@ archs_batch_sizes = {
     'inceptionv3': 64,
     'vgg19bn': 32,
     'vgg16bn': 32,
-    'vgg13bn': 32,
+    'vgg13bn': 16,
     'vgg11bn': 32,
     'wideresnet101': 16,
     'wideresnet50': 32,
