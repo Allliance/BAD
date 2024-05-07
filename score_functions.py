@@ -16,7 +16,7 @@ def get_auc(model, dataloader, attack=None, progress=False):
     return evaluate(model=model, loader=dataloader, device=device, attack=attack, metric='auc', progress=progress)
 
 
-def get_aucs(model_dataset, eps, get_dataloader, progress=False, verbose=False, score_progress=False, **kwargs):
+def get_aucs(model_dataset, eps, get_dataloader, score='final_auc', progress=False, verbose=False, score_progress=False, **kwargs):
     attack_eps = eps
     attack_steps = 10
     attack_alpha = 2.5 * attack_eps / attack_steps
