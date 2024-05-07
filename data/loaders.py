@@ -148,7 +148,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         final_dataset = out_dataset
     else:
         raise ValueError("Empty dataset error occured")
-        
+    print(len(out_dataset))
     testloader = torch.utils.data.DataLoader(final_dataset, batch_size=batch_size,
                                          shuffle=True)
     
