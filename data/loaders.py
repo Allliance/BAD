@@ -86,7 +86,7 @@ def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
                    in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None,
-                    balanced=True, balanced_sample=False, out_portion=1, **kwargs):
+                    balanced=True, balanced_sample=False, out_portion=1, sample_out=True, sample_in=True, **kwargs):
     assert in_label != out_label
     assert out_label is not None
     assert in_source in ['train', 'test', None]
@@ -101,7 +101,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     
 
     # Sampling - ID
-    if in_dataset is not None and sample:
+    if in_dataset is not None and sample and sample_in:
         in_dataset = sample_dataset(in_dataset, portion=sample_num, balanced=balanced_sample)
 
     # Out-Distribution Dataset
@@ -114,9 +114,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
                 else:
                     out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
             length = int(out_portion * len(in_dataset))
-            print(length)
             out_dataset = MixedDataset(out_datasets, label=out_label, length=length,transform=out_transform)
-            print(len(out_dataset))
         elif out_dataset in negatives:
             out_dataset = get_negative_augmentation(out_dataset, in_dataset, out_label, transform=out_transform, **kwargs)
         else:
@@ -137,7 +135,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     if out_filter_labels:
         out_dataset = filter_labels(out_dataset, out_filter_labels)
 
-    if sample:
+    if sample and sample_out:
         out_dataset = sample_dataset(out_dataset, portion=sample_num, balanced=balanced_sample)
     if balanced and len(out_dataset) > len(in_dataset):
         out_dataset = sample_dataset(out_dataset, portion=len(in_dataset)/len(out_dataset), balanced=balanced_sample)
