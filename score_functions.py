@@ -1,6 +1,7 @@
 from BAD.eval.eval import evaluate
 import torch
 from BAD.utils import cosine_similaruty
+from BAD.validate import get_models_scores
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
