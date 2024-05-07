@@ -17,14 +17,17 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 archs_batch_sizes = {
     'default': 64,
-    'resnet18': 256,
+    'resnet18': 128,
     'resnet50': 32,
     'resnet101': 32,
     'densenet121': 32,
     'inceptionv3': 64,
+    'vgg19bn': 32,
     'vgg16bn': 32,
     'vgg13bn': 32,
+    'vgg11bn': 32,
     'wideresnet101': 16,
+    'wideresnet50': 32,
     'resnet152': 16,
     'densenet201': 8,
     'densenet161': 8,
