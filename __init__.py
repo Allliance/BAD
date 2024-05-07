@@ -32,7 +32,7 @@ from .visualization import visualize_samples
 from .attacks.ood.pgdlinf import PGD as Attack
 
 # Trojai
-from .benchmarks.trojai.utils import get_sanityloader_trojai, get_oodloader_trojai, load_model
+from .trojai.utils import get_sanityloader_trojai, get_oodloader_trojai, load_model
 
 # Validate
 from .validate import get_models_scores, find_best_eps, get_auc_on_models_scores
