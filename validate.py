@@ -8,7 +8,8 @@ from tqdm import tqdm
 def get_models_scores(model_dataset,
                model_score_function,
                progress,
-               live=True):
+               live=True,
+               strict=False):
     '''
     This is a general function for getting scores from a model dataset.
     model_dataset: an iterable that contains models
@@ -42,6 +43,8 @@ def get_models_scores(model_dataset,
                 if len(seen_labels) > 1:
                     print("Current auc:", roc_auc_score(labels, scores))
         except Exception as e:
+            if strict:
+                raise e
             print(f"The following error occured during the evaluation of a model with name {model.meta_data.get('name')}: {str(e)}")
             print("Skipping this model")
     
