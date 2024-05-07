@@ -26,7 +26,7 @@ def get_aucs(model_dataset, eps, get_dataloader, score='final_auc', attack_class
         if verbose:
             print(f"Current model: {model.meta_data['name']}")
         dataloader = get_dataloader(model)
-        if score != 'final_auc':
+        if score != 'final_auc' and not multi_eps:
             init_perf = get_auc(model, dataloader, attack=None, progress=progress)
         
         if eps == 0 or attack_class is None:
@@ -36,10 +36,10 @@ def get_aucs(model_dataset, eps, get_dataloader, score='final_auc', attack_class
         adv_perf = get_auc(model, dataloader, attack, progress=progress)
         
         if multi_eps:
-            attack_eps = eps
-            attack_steps = 10
-            attack_alpha = 2.5 * attack_eps / attack_steps
-            attack = attack_class(model, eps=attack_eps, steps=attack_steps, alpha=attack_alpha, attack_in=attack_in)
+            new_eps = eps
+            new_steps = 10
+            new_alpha = 2.5 * new_eps / new_steps
+            attack = attack_class(model, eps=new_eps, steps=new_steps, alpha=new_alpha, attack_in=attack_in)
             new_adv_perf = get_auc(model, dataloader, attack, progress=progress)
             return adv_perf / new_adv_perf
         
