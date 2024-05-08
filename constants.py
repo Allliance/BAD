@@ -79,10 +79,10 @@ num_classes = {
     'cifar10': 10,
     'cifar100': 100,
     'mnist': 10,
+    'pubfig': 50,
     'fmnist': 10,
     'gtsrb': 43,
     'celeba': 8,
-    'trojai': 5,
 }
 
 # Normalizations
