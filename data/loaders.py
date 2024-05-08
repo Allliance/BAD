@@ -67,11 +67,11 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
             return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
         else:
             raise NotImplementedError
-    except Exception as _:
+    except Exception as e:
         if not download:
             return get_dataset(name, transform, train, dummy_params, download=True)
         else:
-            raise ValueError("Error occured during loading datasets")
+            raise ValueError("The following error occured during loading datasets", str(e))
 
 def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
     if name == 'rot':
