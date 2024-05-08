@@ -4,7 +4,7 @@ from PIL import Image
 from torchvision import transforms
 
 class PubFig(Dataset):
-    def __init__(self, root_dir, train=True, transform=None):
+    def __init__(self, root_dir='/kaggle/input/pubfig-50class-dataset/pubfig', train=True, transform=None):
         """
         Args:
             root_dir (string): Directory with all the images.

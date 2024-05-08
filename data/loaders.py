@@ -9,6 +9,7 @@ from BAD.data.neg_transformations.cutpaste import CutPasteDataset
 from BAD.data.neg_transformations.distort import DistortDataset
 from BAD.data.neg_transformations.elastic import ElasticDataset
 from BAD.data.datasets.gtsrb import GTSRB
+from BAD.data.datasets.pubfig import PubFig
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
@@ -38,6 +39,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
     - 'cifar100'
     - 'gtsrb'
     - 'mnist'
+    - 'pubfig'
     - 'fmnist'
     - 'SVHN'
     - 'gaussian'
@@ -59,6 +61,8 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
             return torchvision.datasets.CIFAR100(root=ROOT, train=train, download=download, transform=transform)
         elif name == 'gtsrb':
             return GTSRB(train=train,transform=transform, download=download)
+        elif name == 'pubfig':
+            return PubFig(train=train, transform=transform)
         elif name in ['gaussina', 'blank', 'uniform']:
             return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
         else:
