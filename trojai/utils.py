@@ -16,8 +16,16 @@ from BAD.data.utils import sample_dataset
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 archs_batch_sizes = {
+    'squeezenetv1_1': 128,
+    'squeezenetv1_0': 128,
+    'shufflenet1_0': 128,
+    'shufflenet1_5': 128,
+    'shufflenet2_0': 128,
+    'googlenet': 256,
+    
     'default': 64,
     'resnet18': 128,
+    
     'resnet50': 32,
     'resnet101': 32,
     'densenet121': 32,
