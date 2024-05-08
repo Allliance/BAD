@@ -12,7 +12,7 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 class ElasticDataset(Dataset):
-    def __init__(self, base_dataset, imagenet_root, label, transform=None, alpha_affine=100, sigma=50, alpha=100, p=1.0,**kwargs):
+    def __init__(self, base_dataset, label, transform=None, alpha_affine=100, sigma=50, alpha=100, p=1.0,**kwargs):
         self.base_dataset = base_dataset
         self.label = label
         self.transform = transform
