@@ -37,6 +37,7 @@ class TrojAIDataset(Dataset):
                     with open(os.path.join(root_dir, name, 'ground_truth.csv'), 'r') as f:
                         label = f.read()
                     self.model_data.append({
+                        'rnd': rnd,
                         'name': name,
                         'bgr': self.bgr,
                         'label': 1 - int(label),

@@ -71,8 +71,10 @@ def load_model(model_data, **model_kwargs):
 
 
 def get_dataset_trojai(model):
-    return ExampleDataset(root_dir=os.path.join(os.path.dirname(model.meta_data['model_path'])
-                                                   , 'example_data'), use_bgr=model.meta_data['bgr'])
+    rnd = model.meta_data['rnd']
+    example_data_path = 'example_data' if rnd < 3 else 'clean_example_data'
+    return ExampleDataset(root_dir=os.path.join(os.path.dirname(model.meta_data['model_path']),
+                          example_data_path), use_bgr=model.meta_data['bgr'])
 
 
 def get_sanityloader_trojai(model, batch_size=None):
