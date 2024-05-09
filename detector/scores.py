@@ -2,7 +2,8 @@ import torch
 import torchvision
 import numpy as np
 
-import torch.nn.functional as F
+import torch.nn.functional 
+as F
 
 from numpy.linalg import norm
 from tqdm import tqdm
@@ -15,6 +16,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.neighbors import KernelDensity
 from scipy.stats import entropy
+from BAD.scores.msp import get_msp
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -54,6 +56,28 @@ def get_features(model, loader, attack, progress=False, ):
     return features, labels
 
 # score in [l2, cosine]
+
+
+def msp_ood_diff(model, testloader, attack_class=None, attack_params=None, progress=False, num_classes=10):
+    attack = attack_class(**attack_params)
+    all_scores_bad = []
+    all_labels = []
+    all_scores_clean = []
+
+    for data, target in testloader:
+        data = data.to(device)
+        target = target.to(device)
+        scores_clean = get_msp(model, data).tolist()
+        all_scores_clean += scores_clean.tolist()
+        scores_bad = get_msp(model, attack(data)).tolist()
+        all_scores_bad += scores_bad
+        all_labels += target.tolist()
+    ood_msp_clean = np.asarray(all_scores_clean)[np.asarray(all_labels)==0]
+    ood_msp_bad = np.asarray(all_scores_bad)[np.asarray(all_labels)==0]
+    del_msp = np.mean(ood_msp_bad) - np.mean(ood_msp_clean)
+    return del_msp
+
+
 def max_diff(model, testloader, attack_class=None, attack_params=None,
              score='l2', use_in=True, progress=False, num_classes=10, normalize_features=False):
     max_l2 = 0
