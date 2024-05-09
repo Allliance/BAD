@@ -55,7 +55,7 @@ CLEAN_ROOT_DICT = {
 },
 'pubfig': {
     'resnet': '/kaggle/input/pubfig-resnet-allmodels/models/clean',
-    'preact': '/kaggle/input/create-clean-preactresnet18-6attack-60models/clean_models/clean',
+    'preact': '/kaggle/input/pubfig-preact-allmodels/models/clean',
 }
 }
 
@@ -83,7 +83,7 @@ BAD_ROOT_DICT = {
 },
 'pubfig': {
     'resnet': '/kaggle/input/pubfig-resnet-allmodels/models',
-    'preact': '/kaggle/input/backdoor-preactresnet18-6attack-60models/backdoored_models',
+    'preact': '/kaggle/input/pubfig-preact-allmodels/models',
 }
 }
 
