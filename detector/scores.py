@@ -66,10 +66,10 @@ def msp_ood_diff(model, testloader, attack_class=None, attack_params=None, progr
     for data, target in testloader:
         data = data.to(device)
         target = target.to(device)
-        scores_clean = get_msp(model, data).tolist()
+        scores_clean = get_msp(model, data)
         all_scores_clean += scores_clean.tolist()
-        scores_bad = get_msp(model, attack(data)).tolist()
-        all_scores_bad += scores_bad
+        scores_bad = get_msp(model, attack(data))
+        all_scores_bad += scores_bad.tolist()
         all_labels += target.tolist()
     ood_msp_clean = np.asarray(all_scores_clean)[np.asarray(all_labels)==0]
     ood_msp_bad = np.asarray(all_scores_bad)[np.asarray(all_labels)==0]
