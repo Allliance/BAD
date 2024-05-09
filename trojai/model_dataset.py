@@ -23,33 +23,37 @@ class TrojAIDataset(Dataset):
         self.model_data = []
         
         for root_dir in root_dirs:
-            names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]
-            
-            data = pd.read_csv(data_csv)
-            data.set_index('model_name', inplace=True)
+            try:
+                names = [x for x in os.listdir(root_dir) if os.path.isdir(os.path.join(root_dir, x))]
+                
+                data = pd.read_csv(data_csv)
+                data.set_index('model_name', inplace=True)
 
-            data = data.to_dict(orient='index')
-            for name in names:
-                if custom_arch and data[name]['model_architecture'] != custom_arch:
-                    continue
-                model_path = os.path.join(root_dir, name, 'model.pt')
-                with open(os.path.join(root_dir, name, 'ground_truth.csv'), 'r') as f:
-                    label = f.read()
-                self.model_data.append({
-                    'name': name,
-                    'bgr': self.bgr,
-                    'label': 1 - int(label),
-                    'model_path': model_path,
-                    'num_classes': data[name]['number_classes'],
-                    'arch': data[name]['model_architecture'],
-                    'data': data,
-                })
-                if load_check:
-                    model = model_loader(self.model_data[-1])
-                    if model is None:
-                        self.model_data = self.model_data[:-1]
-                    else:
-                        del model
+                data = data.to_dict(orient='index')
+                for name in names:
+                    if custom_arch and data[name]['model_architecture'] != custom_arch:
+                        continue
+                    model_path = os.path.join(root_dir, name, 'model.pt')
+                    with open(os.path.join(root_dir, name, 'ground_truth.csv'), 'r') as f:
+                        label = f.read()
+                    self.model_data.append({
+                        'name': name,
+                        'bgr': self.bgr,
+                        'label': 1 - int(label),
+                        'model_path': model_path,
+                        'num_classes': data[name]['number_classes'],
+                        'arch': data[name]['model_architecture'],
+                        'data': data,
+                    })
+                    if load_check:
+                        model = model_loader(self.model_data[-1])
+                        if model is None:
+                            self.model_data = self.model_data[:-1]
+                        else:
+                            del model
+            except Exception as e:
+                print(f"Error while loading models of directory: {root_dir} Error:", e)
+                print("Skipping this directory")
         
         random.shuffle(self.model_data)
         if sample:
