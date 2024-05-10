@@ -2,7 +2,7 @@ import random
 import torch
 import torchvision
 from torchvision import transforms
-from BAD.data.datasets.custom_datasets import MixedDataset, SingleLabelDataset, DummyDataset
+from BAD.data.datasets.custom_datasets import MixedDataset, SingleLabelDataset, DummyDataset, NegativeDataset
 from BAD.data.neg_transformations.rotation import RotationDataset
 from BAD.data.neg_transformations.mixup import MixupDataset
 from BAD.data.neg_transformations.cutpaste import CutPasteDataset
@@ -111,16 +111,16 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
         if isinstance(out_dataset, list):
-            out_datasets = []
-            for out in out_dataset:
-                if out in negatives:
-                    out_datasets.append(get_negative_augmentation(out, in_dataset, out_label, transform=out_transform, **kwargs))
-                else:
-                    out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
-            length = int(out_portion * len(in_dataset))
-            out_dataset = MixedDataset(out_datasets, label=out_label, length=length,transform=out_transform)
-        elif out_dataset in negatives:
-            out_dataset = get_negative_augmentation(out_dataset, in_dataset, out_label, transform=out_transform, **kwargs)
+            # The provided list must be negatives
+            # out_datasets = []
+            negatives = out_dataset
+            out_dataset = NegativeDataset(base_dataset=in_dataset, label=out_label,
+                                          neg_transformations=negatives, **kwargs)
+            # for out in out_dataset:
+            #     if out not in negatives:
+            #         out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
+            # length = int(out_portion * len(in_dataset))
+            # out_dataset = MixedDataset(out_datasets, label=out_label, length=length,transform=out_transform)
         else:
             out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
     else:

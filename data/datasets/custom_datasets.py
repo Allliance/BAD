@@ -17,13 +17,13 @@ class NegativeDataset(Dataset):
         self.transforms = {}
         for transform in neg_transformations:
             if transform == 'elastic':
-                transforms['elastic'] = get_elastic(**kwargs)
+                transforms['elastic'] = get_elastic(kwargs.get('elastic'))
             elif transform == 'mixup':
-                transforms['mixup'] = get_mixup(**kwargs)
+                transforms['mixup'] = get_mixup(kwargs.get('mixup'))
             elif transform == 'cutpaste':
-                transforms['cutpaste'] = get_cutpaste(**kwargs)
+                transforms['cutpaste'] = get_cutpaste(kwargs.get('cutpaste'))
             elif transform == 'distort':
-                transforms['distort'] = get_distort(**kwargs)
+                transforms['distort'] = get_distort(kwargs.get('distort'))
 
     def __len__(self):
         return len(self.base_dataset)
