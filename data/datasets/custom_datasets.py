@@ -8,9 +8,31 @@ from torchvision.datasets import ImageFolder
 import os
 import random
 import numpy as np
+from neg_transformations import get_cutpaste, get_distort, get_elastic, get_mixup
 
 class NegativeDataset(Dataset):
-    pass
+    def __init__(self, base_dataset, label, neg_transformations=[], **kwargs):
+        self.base_dataset = base_dataset
+        self.label = label
+        self.transforms = {}
+        for transform in neg_transformations:
+            if transform == 'elastic':
+                transforms['elastic'] = get_elastic(**kwargs)
+            elif transform == 'mixup':
+                transforms['mixup'] = get_mixup(**kwargs)
+            elif transform == 'cutpaste':
+                transforms['cutpaste'] = get_cutpaste(**kwargs)
+            elif transform == 'distort':
+                transforms['distort'] = get_distort(**kwargs)
+
+    def __len__(self):
+        return len(self.base_dataset)
+
+    def __getitem__(self, idx):
+        image, _ = self.base_dataset[idx]
+        transform = self.transforms[np.random.choice(self.transforms.items())]
+        
+        return transform(image), self.label
 
 
 class MixedDataset(Dataset):
@@ -46,19 +68,16 @@ class MixedDataset(Dataset):
         return sample, self.label
 
 class SingleLabelDataset(Dataset):
-    # defining values in the constructor
     def __init__(self, label, dataset):
         self.dataset = dataset
         self.len = len(dataset)
         self.label = label
 
-    # Getting the data samples
     def __getitem__(self, idx):
         image, _ = self.dataset[idx]
 
         return image, self.label
 
-    # Getting data size/length
     def __len__(self):
         return self.len
 
