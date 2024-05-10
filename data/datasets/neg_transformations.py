@@ -54,3 +54,6 @@ def get_distort(**kwargs):
     distort = A.Compose([A.GridDistortion(num_steps=num_steps, distort_limit=distort_limit, p=p),
         ToTensorV2()])
     return lambda image: distort(image=image.permute(1, 2, 0).numpy())['image']
+
+def get_rot(**kwargs):
+    return lambda image: torch.rot90(image, k=random.randint(1, 3), dims=(1, 2))
