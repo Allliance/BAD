@@ -44,12 +44,9 @@ class MixedDataset(Dataset):
 
 class SingleLabelDataset(Dataset):
     # defining values in the constructor
-    def __init__(self, label, dataset, transform = None, lim=None):
+    def __init__(self, label, dataset):
         self.dataset = dataset
         self.len = len(dataset)
-        if lim is not None:
-            self.len = min(lim, self.len)
-
         self.label = label
 
     # Getting the data samples
