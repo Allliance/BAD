@@ -19,7 +19,7 @@ class NegativeDataset(Dataset):
             if transform == 'elastic':
                 transforms['elastic'] = get_elastic(kwargs.get('elastic'))
             elif transform == 'mixup':
-                transforms['mixup'] = get_mixup(kwargs.get('mixup'))
+                transforms['mixup'] = get_mixup(**kwargs.get('mixup'))
             elif transform == 'cutpaste':
                 transforms['cutpaste'] = get_cutpaste(kwargs.get('cutpaste'))
             elif transform == 'distort':
