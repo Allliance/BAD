@@ -45,8 +45,9 @@ archs_batch_sizes = {
 def load_model(model_data, **model_kwargs):
     model_path = model_data['model_path']
     arch = model_data['arch']
-    print(arch)
     num_classes = model_data['num_classes']
+    print("Loading a", arch, "with", num_classes, "classes")
+    
     try:
         net = torch.load(model_path, map_location=device)
     except Exception as e:
