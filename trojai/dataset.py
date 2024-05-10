@@ -43,6 +43,7 @@ class ExampleDataset(Dataset):
             
         self.labels = [get_class(image_path) for image_path in images_paths]
         self.data = [image_loader(os.path.join(root_dir, image_path)) for image_path in images_paths]
+        print("Loading a dataset with", len(set(self.labels)), "classes")
 
     def __len__(self):
         return len(self.data)
