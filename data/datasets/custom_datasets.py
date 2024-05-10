@@ -24,6 +24,7 @@ class NegativeDataset(Dataset):
                 self.transforms['cutpaste'] = get_cutpaste(**kwargs.get('cutpaste', {}))
             elif transform == 'distort':
                 self.transforms['distort'] = get_distort(**kwargs.get('distort', {}))
+        print("Construction is done")
 
     def __len__(self):
         return len(self.base_dataset)
