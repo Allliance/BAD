@@ -30,7 +30,7 @@ class NegativeDataset(Dataset):
 
     def __getitem__(self, idx):
         image, _ = self.base_dataset[idx]
-        transform = self.transforms[np.random.choice(list(self.transforms.items()))]
+        transform = self.transforms[np.random.choice(list(self.transforms.keys()))]
         
         return transform(image), self.label
 
