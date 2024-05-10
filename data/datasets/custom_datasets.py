@@ -9,7 +9,7 @@ import os
 import random
 import numpy as np
 
-class NegativeDataset(Dataset)
+class NegativeDataset(Dataset):
     pass
 
 
