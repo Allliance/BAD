@@ -16,11 +16,6 @@ class MixupDataset(Dataset):
                                transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]))
         self.mixup_alpha = mixup_alpha
         self.label = label
-        self.transform = transform
-#         self.transform = transforms.Compose([
-#             transforms.ToTensor(),
-#             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))  # Imagenet normalization
-#         ])
 
     def __len__(self):
         return len(self.base_dataset)
@@ -33,7 +28,4 @@ class MixupDataset(Dataset):
 
         mixed_img = (1 - self.mixup_alpha) * base_img + self.mixup_alpha * imagenet_img
 
-        # if self.transform:
-        #     mixed_img = self.transform(mixed_img)
-        
         return mixed_img, self.label

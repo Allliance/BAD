@@ -9,6 +9,9 @@ import os
 import random
 import numpy as np
 
+class NegativeDataset(Dataset)
+    pass
+
 
 class MixedDataset(Dataset):
     def __init__(self, datasets, label, length, transform=None, datasets_probs=None):

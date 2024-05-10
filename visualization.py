@@ -10,7 +10,7 @@ def plot_images_by_label(image_dict):
     max_images = max(len(images) for images in image_dict.values())
     
     # Create a figure with subplots
-    fig, axes = plt.subplots(nrows=max_images, ncols=num_labels, figsize=(num_labels * 3, max_images * 3))
+    fig, axes = plt.subplots(nrows=max_images, ncols=num_labels, figsize=(num_labels * 2, max_images * 2))
     
     # Flatten the axes array for easy indexing
     if num_labels == 1:
