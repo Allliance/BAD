@@ -10,7 +10,7 @@ import random
 import numpy as np
 
 class MixupDataset(Dataset):
-    def __init__(self, base_dataset, imagenet_root, label, transform=None, mixup_alpha=0.5, **kwargs):
+    def __init__(self, base_dataset, imagenet_root, label, transform=None, mixup_alpha=0.3, **kwargs):
         self.base_dataset = base_dataset
         self.imagenet_dataset = ImageFolder(imagenet_root,
                                transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]))
