@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 import os
 import random
 import numpy as np
-from neg_transformations import get_cutpaste, get_distort, get_elastic, get_mixup
+from .neg_transformations import get_cutpaste, get_distort, get_elastic, get_mixup
 
 class NegativeDataset(Dataset):
     def __init__(self, base_dataset, label, neg_transformations=[], **kwargs):
