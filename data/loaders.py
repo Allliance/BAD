@@ -126,7 +126,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
     else:
         out_dataset = custom_ood_dataset
     if out_dataset and final_ood_trans:
-        out_dataset = get_negative_augmentation(out_dataset, final_ood_trans)
+        out_dataset = get_negative_augmentation(final_ood_trans, out_dataset, out_label)
 
     # Labeling - ID
     if in_label is not None and in_dataset is not None:
