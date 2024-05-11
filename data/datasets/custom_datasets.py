@@ -27,8 +27,6 @@ class NegativeDataset(Dataset):
             elif transform == 'rot':
                 self.transforms['rot'] = get_rot(**kwargs.get('rot', {}))
                 
-        print(self.transforms)
-            
 
     def __len__(self):
         return len(self.base_dataset)
