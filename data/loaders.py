@@ -8,9 +8,10 @@ from BAD.data.datasets.pubfig import PubFig
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
-from torchvision.transforms.functional import rotate
+from torchvision.datasets import ImageFolder
 from BAD.data.transforms import *
 from BAD.data.utils import sample_dataset, filter_labels
+from BAD.constants import OUT_LABEL, IN_LABEL
 
 ROOT = '~/data'
 negatives = ['rot', 'mixup', 'cutpaste', 'distort', 'elastic']
@@ -60,6 +61,8 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
             return PubFig(train=train, transform=transform)
         elif name in ['gaussina', 'blank', 'uniform']:
             return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
+        elif os.path.isdir(name):
+            return ImageFolder(name, transform=transform)
         else:
             raise NotImplementedError
     except Exception as e:
@@ -68,65 +71,52 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
         else:
             raise ValueError("The following error occured during loading datasets", str(e))
 
-def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
-                   out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
-                   in_transform=None, out_transform=None, custom_ood_dataset=None, custom_in_dataset=None,
-                    balanced=True, balanced_sample=False, out_portion=1, sample_out=True, sample_in=True, final_ood_trans='elastic', **kwargs):
-    assert in_label != out_label
-    assert out_label is not None
-    assert in_source in ['train', 'test', None]
+def get_ood_loader(in_dataset=None, out_dataset=None,
+                   sample_num=None, batch_size=256,
+                   in_transform=None, out_transform=None,
+                   custom_ood_dataset=None, custom_in_dataset=None,
+                   out_in_ratio=1, final_ood_trans='elastic', **kwargs):
     assert in_dataset is not None or custom_in_dataset is not None or custom_ood_dataset is not None or out_dataset is not None
     
     # In-Distribution Dataset
     if custom_in_dataset is not None:
         in_dataset = custom_in_dataset
     else:
-        if in_source is not None:
-            in_dataset = get_dataset(in_dataset, in_transform, in_source == 'train', **kwargs)
+        in_dataset = get_dataset(in_dataset, in_transform, trian=True, **kwargs)
     
-
     # Sampling - ID
-    if in_dataset is not None and sample and sample_in:
+    if in_dataset is not None and sample_num is not None:
         in_dataset = sample_dataset(in_dataset, portion=sample_num, balanced=balanced_sample)
+
+    # Labeling - ID
+    if in_dataset is not None:
+        in_dataset = SingleLabelDataset(IN_LABEL, in_dataset)
 
     # Out-Distribution Dataset
     if custom_ood_dataset is None:
-        if isinstance(out_dataset, list):
-            # The provided list must be negatives
-            # out_datasets = []
-            negatives = out_dataset
-            out_dataset = NegativeDataset(base_dataset=in_dataset, label=out_label,
-                                          neg_transformations=negatives, **kwargs)
-            # for out in out_dataset:
-            #     if out not in negatives:
-            #         out_datasets.append(get_dataset(out, out_transform, train=False, **kwargs))
-            # length = int(out_portion * len(in_dataset))
-            # out_dataset = MixedDataset(out_datasets, label=out_label, length=length,transform=out_transform)
-        else:
-            out_dataset = get_dataset(out_dataset, out_transform, in_dataset, **kwargs)
+        if isinstance(out_dataset, str):
+            out_dataset = [out_dataset]
+        all_out_datasets = []
+        neg_datasets = [item for item in out_dataset if item in negatives]
+        if neg_datasets:
+            all_out_datasets += NegativeDataset(base_dataset=in_dataset, label=out_label,
+                                        neg_transformations=negatives, **kwargs)
+        for out in out_dataset:
+            if out not in negatives:
+                all_out_datasets.append(get_dataset(out, out_transform, train=True, **kwargs))
+        length = int(out_in_ratio * len(in_dataset))
+        out_dataset = MixedDataset(out_datasets, label=out_label, length=length, transform=out_transform)
     else:
         out_dataset = custom_ood_dataset
+        
     if out_dataset and final_ood_trans:
         out_dataset = NegativeDataset(base_dataset=out_dataset, label=out_label,
                                           neg_transformations=[final_ood_trans], **kwargs)
 
-    # Labeling - ID
-    if in_label is not None and in_dataset is not None:
-        in_dataset = SingleLabelDataset(in_label, in_dataset)
-
     # Labeling - OOD
-    if out_dataset is not None and out_label is not None:
-        out_dataset = SingleLabelDataset(out_label, out_dataset)
+    if out_dataset is not None:
+        out_dataset = SingleLabelDataset(OUT_LABEL, out_dataset)
     
-    # Sampling
-        
-    if out_filter_labels:
-        out_dataset = filter_labels(out_dataset, out_filter_labels)
-
-    if sample and sample_out:
-        out_dataset = sample_dataset(out_dataset, portion=sample_num, balanced=balanced_sample)
-    if balanced and len(out_dataset) > len(in_dataset):
-        out_dataset = sample_dataset(out_dataset, portion=len(in_dataset)/len(out_dataset), balanced=balanced_sample)
     if in_dataset is not None and out_dataset is not None:
         final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     elif in_dataset is not None:
@@ -135,6 +125,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=20
         final_dataset = out_dataset
     else:
         raise ValueError("Empty dataset error occured")
+    
     testloader = torch.utils.data.DataLoader(final_dataset, batch_size=batch_size,
                                          shuffle=True)
     

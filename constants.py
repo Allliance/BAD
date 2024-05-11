@@ -1,5 +1,12 @@
 # For OOD Data: 1 is for ID, 0 is for OOD
+OUT_LABEL = 0
+IN_LABEL = 1
 # For Model Dataset: 1 is for Clean, 0 is for Bad
+CLEAN_LABEL = 1
+BACKDOOR_LABEL = 0
+
+SMALL_ARCHS = ['squeezenetv1_1', 'squeezenetv1_0', 'shufflenet1_0',
+                'shufflenet1_5', 'shufflenet2_0', 'googlenet']
 
 TROJAI_ROOT_DICT = {
     0: {
