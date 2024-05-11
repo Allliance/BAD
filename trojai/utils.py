@@ -101,4 +101,4 @@ def get_oodloader_trojai(model, out_dataset, sample_num=None, batch_size=None, *
     return get_ood_loader(custom_in_dataset=dataset,
                           out_dataset=out_dataset,
                           out_transform=transforms.Compose([transforms.Resize(224), transforms.ToTensor()]),
-                          batch_size=batch_size, sample=False, **kwargs)
+                          batch_size=batch_size, **kwargs)
