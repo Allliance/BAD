@@ -46,6 +46,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
     if transform is None:
         transform = get_transform(name)
     try:
+        print(name, os.path.isdir(name))
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
         elif name == 'mnist':
