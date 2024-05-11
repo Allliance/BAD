@@ -12,6 +12,7 @@ from torchvision.datasets import ImageFolder
 from BAD.data.transforms import *
 from BAD.data.utils import sample_dataset, filter_labels
 from BAD.constants import OUT_LABEL, IN_LABEL
+import os
 
 ROOT = '~/data'
 negatives = ['rot', 'mixup', 'cutpaste', 'distort', 'elastic']
