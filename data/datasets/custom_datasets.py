@@ -58,6 +58,7 @@ class MixedDataset(Dataset):
 
     def __getitem__(self, idx):
         target_dataset = self.datasets[np.random.choice(len(self.datasets), p=self.datasets_probs)]
+        print(type(target_dataset))
         sample_idx = np.random.randint(len(target_dataset))
         sample, _ = target_dataset[sample_idx]
         
