@@ -3,11 +3,6 @@ import torch
 import torchvision
 from torchvision import transforms
 from BAD.data.datasets.custom_datasets import MixedDataset, SingleLabelDataset, DummyDataset, NegativeDataset
-from BAD.data.neg_transformations.rotation import RotationDataset
-from BAD.data.neg_transformations.mixup import MixupDataset
-from BAD.data.neg_transformations.cutpaste import CutPasteDataset
-from BAD.data.neg_transformations.distort import DistortDataset
-from BAD.data.neg_transformations.elastic import ElasticDataset
 from BAD.data.datasets.gtsrb import GTSRB
 from BAD.data.datasets.pubfig import PubFig
 from torch.utils.data import Subset
@@ -72,20 +67,6 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
             return get_dataset(name, transform, train, dummy_params, download=True)
         else:
             raise ValueError("The following error occured during loading datasets", str(e))
-
-def get_negative_augmentation(name, dataset, label, transform=None, **kwargs):
-    if name == 'rot':
-        return RotationDataset(dataset, label=label, transform=transform, **kwargs)
-    elif name == 'mixup':
-        return MixupDataset(dataset, label=label, transform=transform, **kwargs)
-    elif name == 'cutpaste':
-        return CutPasteDataset(dataset, label=label, transform=transform, **kwargs)
-    elif name == 'distort':
-        return DistortDataset(dataset, label=label, transform=transform, **kwargs)
-    elif name == 'elastic':
-        return ElasticDataset(dataset, label=label, transform=transform, **kwargs)
-    else:
-        raise NotImplementedError
 
 def get_ood_loader(in_dataset=None, out_dataset=None, sample=True, sample_num=2000, in_label=1,
                    out_label=0, batch_size=256, in_source='train', out_filter_labels=[],
