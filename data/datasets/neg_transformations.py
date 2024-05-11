@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 import os
 import random
 import numpy as np
-from BAD.data.neg_transformations.cutpaste import CutPasteUnion
+from BAD.data.datasets.cutpaste import CutPasteUnion
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
