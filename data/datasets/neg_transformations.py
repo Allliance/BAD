@@ -39,8 +39,9 @@ def get_elastic(**kwargs):
     interp = kwargs.get('interp', "bilinear") # or nearest
     
     to_pil = transforms.ToPILImage()
-    elastic = ElasticTransform(alpha=alpha, sigma=sigma,
-                               interpolation=InterpolationMode.BILINEAR if interp == 'bilinear' else InterpolationMode.NEAREST)
+    elastic = transforms.Compose([ElasticTransform(alpha=alpha, sigma=sigma,
+                               interpolation=InterpolationMode.BILINEAR if interp == 'bilinear' else InterpolationMode.NEAREST),
+                                  transforms.ToTensor()])
     return lambda image: elastic(to_pil(image))
     # elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),
     #         ToTensorV2()])
