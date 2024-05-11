@@ -70,7 +70,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
         if not download:
             return get_dataset(name, transform, train, dummy_params, download=True)
         else:
-            raise ValueError("The following error occured during loading datasets", str(e))
+            raise e
 
 def get_ood_loader(in_dataset=None, out_dataset=None,
                    sample_num=None, batch_size=256,
