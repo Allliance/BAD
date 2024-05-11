@@ -99,18 +99,18 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
         all_out_datasets = []
         neg_datasets = [item for item in out_dataset if item in negatives]
         if neg_datasets:
-            all_out_datasets += NegativeDataset(base_dataset=in_dataset, label=out_label,
+            all_out_datasets += NegativeDataset(base_dataset=in_dataset, label=OUT_LABEL,
                                         neg_transformations=negatives, **kwargs)
         for out in out_dataset:
             if out not in negatives:
                 all_out_datasets.append(get_dataset(out, out_transform, train=True, **kwargs))
         length = int(out_in_ratio * len(in_dataset))
-        out_dataset = MixedDataset(out_datasets, label=out_label, length=length, transform=out_transform)
+        out_dataset = MixedDataset(out_datasets, label=OUT_LABEL, length=length, transform=out_transform)
     else:
         out_dataset = custom_ood_dataset
         
     if out_dataset and final_ood_trans:
-        out_dataset = NegativeDataset(base_dataset=out_dataset, label=out_label,
+        out_dataset = NegativeDataset(base_dataset=out_dataset, label=OUT_LABEL,
                                           neg_transformations=[final_ood_trans], **kwargs)
 
     # Labeling - OOD
