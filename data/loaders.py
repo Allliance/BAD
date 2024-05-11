@@ -105,6 +105,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
             if out not in negatives:
                 all_out_datasets.append(get_dataset(out, out_transform, train=True, **kwargs))
         length = int(out_in_ratio * len(in_dataset))
+        print(all_out_datasets)
         out_dataset = MixedDataset(all_out_datasets, label=OUT_LABEL, length=length, transform=out_transform)
     else:
         out_dataset = custom_ood_dataset
