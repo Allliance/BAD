@@ -63,7 +63,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
         elif name in ['gaussina', 'blank', 'uniform']:
             return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
         elif os.path.isdir(name):
-            return ImageFolder(name, transform=transform)
+            return ImageFolder(name, transform=hr_transform)
         else:
             raise NotImplementedError
     except Exception as e:
