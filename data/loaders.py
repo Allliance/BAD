@@ -99,8 +99,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
         all_out_datasets = []
         neg_datasets = [item for item in out_dataset if item in negatives]
         if neg_datasets:
-            all_out_datasets += NegativeDataset(base_dataset=in_dataset, label=OUT_LABEL,
-                                        neg_transformations=negatives, **kwargs)
+            all_out_datasets.append(NegativeDataset(base_dataset=in_dataset, label=OUT_LABEL,
+                                        neg_transformations=negatives, **kwargs))
         for out in out_dataset:
             if out not in negatives:
                 all_out_datasets.append(get_dataset(out, out_transform, train=True, **kwargs))
