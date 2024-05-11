@@ -11,7 +11,8 @@ import numpy as np
 from BAD.data.datasets.cutpaste import CutPasteUnion
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-
+from torchvision.transforms import ElasticTransform
+from torchvision.transforms import InterpolationMode
 
 def get_mixup(**kwargs):
     mixup_alpha = kwargs.get('mixup_alpha', 0.3)
@@ -35,11 +36,17 @@ def get_elastic(**kwargs):
     alpha = kwargs.get('alpha', 100)
     sigma = kwargs.get('sigma', 50)
     alpha_affine = kwargs.get('alpha_affine', 100)
+    interp = kwargs.get('interp', "bilinear") # or nearest
     
-    elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),
-            ToTensorV2()])
+    to_pil = transforms.ToPILImage()
+    elastic = ElasticTransform(alpha=alpha, sigma=sigma,
+                               interpolation=InterpolationMode.BILINEAR if interp == 'bilinear' else InterpolationMode.NEAREST)
+    return lambda image: elastic(to_pil(image))
+    # elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),
+    #         ToTensorV2()])
     
-    return lambda image: elastic(image=image.permute(1, 2, 0).numpy())['image']
+    # return lambda image: elastic(image=image.permute(1, 2, 0).numpy())['image']
+    
 
 def get_cutpaste(**kwargs):
     cutpaste = CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ]))
