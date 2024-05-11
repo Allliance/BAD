@@ -38,15 +38,15 @@ def get_elastic(**kwargs):
     alpha_affine = kwargs.get('alpha_affine', 100)
     interp = kwargs.get('interp', "bilinear") # or nearest
     
-    to_pil = transforms.ToPILImage()
-    elastic = transforms.Compose([ElasticTransform(alpha=alpha, sigma=sigma,
-                               interpolation=InterpolationMode.BILINEAR if interp == 'bilinear' else InterpolationMode.NEAREST),
-                                  transforms.ToTensor()])
-    return lambda image: elastic(to_pil(image))
-    # elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),
-    #         ToTensorV2()])
+    # to_pil = transforms.ToPILImage()
+    # elastic = transforms.Compose([ElasticTransform(alpha=alpha, sigma=sigma,
+    #                            interpolation=InterpolationMode.BILINEAR if interp == 'bilinear' else InterpolationMode.NEAREST),
+    #                               transforms.ToTensor()])
+    # return lambda image: elastic(to_pil(image))
+    elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),
+            ToTensorV2()])
     
-    # return lambda image: elastic(image=image.permute(1, 2, 0).numpy())['image']
+    return lambda image: elastic(image=image.permute(1, 2, 0).numpy())['image']
     
 
 def get_cutpaste(**kwargs):
