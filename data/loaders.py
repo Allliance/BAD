@@ -76,7 +76,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
                    sample_num=None, batch_size=256,
                    in_transform=None, out_transform=None,
                    custom_ood_dataset=None, custom_in_dataset=None,
-                   out_in_ratio=1, final_ood_trans='elastic', **kwargs):
+                   out_in_ratio=1, final_ood_trans=None, **kwargs):
     assert in_dataset is not None or custom_in_dataset is not None or custom_ood_dataset is not None or out_dataset is not None
     
     # In-Distribution Dataset
