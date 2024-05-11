@@ -50,7 +50,7 @@ def get_elastic(**kwargs):
     
 
 def get_cutpaste(**kwargs):
-    cutpaste = CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ]))
+    cutpaste = CutPasteUnion(transform=transforms.Compose([transforms.ToTensor(), ]), **kwargs)
     to_pil = transforms.ToPILImage()
     return lambda image: cutpaste(to_pil(image))
 
