@@ -45,7 +45,17 @@ TROJAI_ROOT_DICT = {
         'metadata': '/kaggle/input/trojai-r3-test-p0/models/metadata.csv',
     }
     },
-    4: [],
+    4: {
+    'train': 
+        {
+        'folders': [f'/kaggle/input/trojai-r4-all-train-part{i}/models' for i in range(11)],
+        'metadata': '/kaggle/input/trojai-r4-all-train-part0/metadata.csv',
+        },
+    'test': {
+        'folders': ['/kaggle/input/trojai-r4-test-p0/models', '/kaggle/input/trojai-r3-train-p1/models'],
+        'metadata': '/kaggle/input/trojai-r4-test-p0/models/metadata.csv',
+    }
+    },
 }
 
 CLEAN_ROOT_DICT = {
