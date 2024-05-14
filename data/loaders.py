@@ -87,7 +87,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     
     # Sampling - ID
     if in_dataset is not None and sample_num is not None:
-        in_dataset = sample_dataset(in_dataset, portion=sample_num, balanced=balanced_sample)
+        in_dataset = sample_dataset(in_dataset, portion=sample_num)
 
     # Labeling - ID
     if in_dataset is not None:
