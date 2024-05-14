@@ -14,6 +14,15 @@ from albumentations.pytorch import ToTensorV2
 from torchvision.transforms import ElasticTransform
 from torchvision.transforms import InterpolationMode
 
+def get_random_param(param):
+    if isinstance(param, tuple) or isinstance(param, list):
+        if isinstance(param[0], int):
+            return random.randint(*param)
+        else:
+            return random.uniform(*param)
+    else:
+        return param
+    
 def get_mixup(**kwargs):
     mixup_alpha = kwargs.get('mixup_alpha', 0.3)
     imagenet_root = kwargs.get('imagenet_root')
@@ -26,7 +35,9 @@ def get_mixup(**kwargs):
         imagenet_idx = np.random.randint(len(imagenet_dataset))
         imagenet_img, _ = imagenet_dataset[imagenet_idx]
 
-        mixed_img = (1 - mixup_alpha) * image + mixup_alpha * imagenet_img
+        new_mixup_alpha = get_random_param(mixup_alpha)
+
+        mixed_img = (1 - new_mixup_alpha) * image + new_mixup_alpha * imagenet_img
 
         return mixed_img
     return lambda image: mixup(image, imagenet_dataset, mixup_alpha)
@@ -43,10 +54,13 @@ def get_elastic(**kwargs):
     #                            interpolation=InterpolationMode.BILINEAR if interp == 'bilinear' else InterpolationMode.NEAREST),
     #                               transforms.ToTensor()])
     # return lambda image: elastic(to_pil(image))
-    elastic = A.Compose([A.ElasticTransform(alpha=alpha, p=p, sigma=sigma, alpha_affine=alpha_affine),
-            ToTensorV2()])
-    
-    return lambda image: elastic(image=image.permute(1, 2, 0).numpy())['image']
+    def elastic(image):
+        elastic_transform = A.Compose([A.ElasticTransform(alpha=get_random_param(alpha), p=get_random_param(p),
+                                                sigma=get_random_param(sigma), alpha_affine=get_random_param(alpha_affine)),
+                ToTensorV2()])
+        return elastic_transform(image=image.permute(1, 2, 0).numpy())['image']
+        
+    return elastic
     
 
 def get_cutpaste(**kwargs):
@@ -59,9 +73,15 @@ def get_distort(**kwargs):
     num_steps = kwargs.get('num_steps', 10)
     distort_limit = kwargs.get('distort_limit', 1)
     
-    distort = A.Compose([A.GridDistortion(num_steps=num_steps, distort_limit=distort_limit, p=p),
-        ToTensorV2()])
-    return lambda image: distort(image=image.permute(1, 2, 0).numpy())['image']
+    
+    def distort(image):
+        distort_transform = A.Compose([A.GridDistortion(num_steps=get_random_param(num_steps),
+                                                        distort_limit=get_random_param(distort_limit),
+                                                        p=get_random_param(p)),
+            ToTensorV2()])
+        return distort_transform(image=image.permute(1, 2, 0).numpy())['image']
+    
+    return distort
 
 def get_rot(**kwargs):
     return lambda image: torch.rot90(image, k=random.randint(1, 3), dims=(1, 2))
