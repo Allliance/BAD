@@ -21,7 +21,7 @@ archs_batch_sizes = {
     'shufflenet1_0': 128,
     'shufflenet1_5': 128,
     'shufflenet2_0': 128,
-    'googlenet': 128,
+    # 'googlenet': 128,
     
     'default': 64,
     'resnet18': 128,
