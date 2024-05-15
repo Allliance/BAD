@@ -61,7 +61,8 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
         elif name == 'pubfig':
             return PubFig(train=train, transform=transform)
         elif name in ['gaussina', 'blank', 'uniform']:
-            return DummyDataset(pattern=name, label=dummy_params['label'], pattern_args=dummy_params)
+            label = dummy_params.get('label', OUT_LABEL)
+            return DummyDataset(pattern=name, label=label, pattern_args=dummy_params)
         elif os.path.isdir(name):
             return ImageFolder(name, transform=hr_transform)
         else:
