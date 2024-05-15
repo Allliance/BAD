@@ -30,7 +30,7 @@ def get_transform(dataset):
       raise NotImplementedError
 
 def get_dataset(name, transform=None, train=False,
-                dummy_params={}, download=False, in_dataset=None **kwargs):
+                dummy_params={}, download=False, in_dataset=None, **kwargs):
     '''
     Available datasets:
     - 'cifar10'
