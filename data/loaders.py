@@ -24,10 +24,10 @@ def get_transform(dataset):
       return bw_transform
   elif dataset in ['gaussian', 'blank']:
       return None
-  elif dataset in ['pubfig', 'TI']:
+  elif dataset in ['pubfig']:
       return hr_transform
   else:
-      raise NotImplementedError
+      return None
 
 def get_dataset(name, transform=None, train=False,
                 dummy_params={}, download=False, in_dataset=None, **kwargs):
@@ -63,7 +63,10 @@ def get_dataset(name, transform=None, train=False,
             new_transforms.append(transforms.Resize((size, size)))
             new_transforms.append(transforms.ToTensor())
             
-            transform = transforms.Compose([transform, transforms.Compose(new_transforms)])
+            if transform is not None:
+                transform = transforms.Compose([transform, transforms.Compose(new_transforms)])
+            else:
+                transform = transforms.Compose(new_transforms)
     try:
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
