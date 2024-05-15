@@ -60,6 +60,7 @@ def get_dataset(name, transform=None, train=False,
                 new_transforms.append(transforms.ToPILImage())
             
             if channels == 1:
+                print('salam')
                 new_transforms.append(transforms.Grayscale())
             elif channels == 3 and name in ['mnist', 'fmnist']:
                 new_transforms.append(transforms.Grayscale(3))
