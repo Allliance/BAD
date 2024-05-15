@@ -60,7 +60,7 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
             return GTSRB(train=train,transform=transform, download=download)
         elif name == 'pubfig':
             return PubFig(train=train, transform=transform)
-        elif name in ['gaussina', 'blank', 'uniform']:
+        elif name in ['gaussian', 'blank', 'uniform']:
             label = dummy_params.get('label', OUT_LABEL)
             return DummyDataset(pattern=name, label=label, pattern_args=dummy_params)
         elif os.path.isdir(name):
