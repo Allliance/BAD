@@ -84,4 +84,4 @@ def get_distort(**kwargs):
     return distort
 
 def get_rot(**kwargs):
-    return lambda image: torch.rot90(image, k=random.randint(1, 3), dims=(1, 2))
+    return lambda image: torch.rot90(image, k=1, dims=(1, 2))
