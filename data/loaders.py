@@ -61,7 +61,7 @@ def get_dataset(name, transform=None, train=False,
             new_transforms.append(transforms.Resize((size, size)))
             new_transforms.append(transforms.ToTensor())
             
-            transform = transform.Compose([transform, transform.Compose(new_transforms)])
+            transform = transforms.Compose([transform, transforms.Compose(new_transforms)])
     try:
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
