@@ -57,7 +57,8 @@ def get_dataset(name, transform=None, train=False,
             
             if channels == 1:
                 new_transforms.append(transforms.Grayscale())
-                
+            elif channels == 3 and name in ['mnist', 'fmnist']:
+                new_transforms.append(transforms.Grayscale())
             new_transforms.append(transforms.Resize((size, size)))
             new_transforms.append(transforms.ToTensor())
             
