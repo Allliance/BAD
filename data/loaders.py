@@ -52,8 +52,9 @@ def get_dataset(name, transform=None, train=False,
         if in_dataset is not None:
             id_sample = in_dataset[0][0]
             size = id_sample.size()[-1]
-            channels = id_sample.size()[1]
+            channels = id_sample.size()[0]
             new_transforms = [transforms.ToPILImage()]
+            print(channels, size)
             
             if channels == 1:
                 new_transforms.append(transforms.Grayscale())
