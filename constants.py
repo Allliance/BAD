@@ -5,6 +5,8 @@ IN_LABEL = 1
 CLEAN_LABEL = 1
 BACKDOOR_LABEL = 0
 
+TINY_IMAGENET_ROOT = "/kaggle/input/tinyimagenet/"
+
 SMALL_ARCHS = ['squeezenetv1_1', 'squeezenetv1_0', 'shufflenet1_0',
                 'shufflenet1_5', 'shufflenet2_0', 'googlenet']
 

@@ -11,7 +11,7 @@ from copy import deepcopy
 from torchvision.datasets import ImageFolder
 from BAD.data.transforms import *
 from BAD.data.utils import sample_dataset, filter_labels
-from BAD.constants import OUT_LABEL, IN_LABEL
+from BAD.constants import OUT_LABEL, IN_LABEL, TINY_IMAGENET_ROOT
 import os
 
 ROOT = '~/data'
@@ -43,6 +43,7 @@ def get_dataset(name, transform=None, train=False,
     - 'gaussian'
     - 'blank'
     - 'uniform'
+    - 'TI'
     '''
     
     if transform is None:
@@ -66,6 +67,8 @@ def get_dataset(name, transform=None, train=False,
     try:
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
+        elif name == 'TI':
+            return torchvision.datasets.ImageFolder(root=TINY_IMAGENET_ROOT, transform=transform)
         elif name == 'mnist':
             return torchvision.datasets.MNIST(root=ROOT, train=train, download=download, transform=transform)
         elif name == 'fmnist':
