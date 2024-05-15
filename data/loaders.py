@@ -56,8 +56,7 @@ def get_dataset(name, transform=None, train=False,
             size = id_sample.size()[-1]
             channels = id_sample.size()[0]
             new_transforms = []
-            if not isinstance(id_sample, PIL.Image.Image):
-                print('slaam')
+            if name != "TI":
                 new_transforms.append(transforms.ToPILImage())
             
             if channels == 1:
