@@ -8,6 +8,7 @@ from BAD.data.datasets.pubfig import PubFig
 from torch.utils.data import Subset
 from collections import defaultdict
 from copy import deepcopy
+import PIL.Image
 from torchvision.datasets import ImageFolder
 from BAD.data.transforms import *
 from BAD.data.utils import sample_dataset, filter_labels
@@ -54,7 +55,9 @@ def get_dataset(name, transform=None, train=False,
             id_sample = in_dataset[0][0]
             size = id_sample.size()[-1]
             channels = id_sample.size()[0]
-            new_transforms = [transforms.ToPILImage()]
+            new_transforms = []
+            if not isinstance(id_sample, PIL.Image.Image):
+                new_transforms.append(transforms.ToPILImage())
             
             if channels == 1:
                 new_transforms.append(transforms.Grayscale())
