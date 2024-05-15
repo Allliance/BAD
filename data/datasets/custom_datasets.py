@@ -88,16 +88,17 @@ class DummyDataset(Dataset):
     def __init__(self, label, pattern, pattern_args={}, transform=None):
         num_samples = pattern_args.get('num_samples', 1000)
         size = pattern_args.get('size', 32)
+        channels = pattern_args.get('channels', 3)
         
         if pattern == 'gaussian':
-            self.data = torch.randn((num_samples, 3, size, size))
+            self.data = torch.randn((num_samples, channels, size, size))
         elif pattern == 'blank':
             color = pattern_args.get('color', 0)
-            self.data = torch.ones((num_samples, 3, size, size)) * color
+            self.data = torch.ones((num_samples, channels, size, size)) * color
         elif pattern == 'uniform':
             low = pattern_args.get('low', 0)
             high = pattern_args.get('high', 1)
-            self.data = torch.rand((num_samples, 3, size, size)) * (high - low) + low
+            self.data = torch.rand((num_samples, channels, size, size)) * (high - low) + low
         else:
             raise ValueError('Invalid pattern')
         self.label = label

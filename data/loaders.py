@@ -90,6 +90,8 @@ def get_dataset(name, transform=None, train=False,
             return PubFig(train=train, transform=transform)
         elif name in ['gaussian', 'blank', 'uniform']:
             label = dummy_params.get('label', OUT_LABEL)
+            dummy_params['size'] = size
+            dummy_params['channels'] = channels
             return DummyDataset(pattern=name, label=label, pattern_args=dummy_params)
         elif os.path.isdir(name):
             return ImageFolder(name, transform=hr_transform)
