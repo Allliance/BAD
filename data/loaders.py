@@ -29,7 +29,8 @@ def get_transform(dataset):
   else:
       raise NotImplementedError
 
-def get_dataset(name, transform=None, train=False, dummy_params={}, download=False, **kwargs):
+def get_dataset(name, transform=None, train=False,
+                dummy_params={}, download=False, in_dataset=None **kwargs):
     '''
     Available datasets:
     - 'cifar10'
@@ -43,8 +44,24 @@ def get_dataset(name, transform=None, train=False, dummy_params={}, download=Fal
     - 'blank'
     - 'uniform'
     '''
+    
     if transform is None:
         transform = get_transform(name)
+        
+        # Make sure ID samples and OOD samples have the same size
+        if in_dataset is not None:
+            id_sample = in_dataset[0][0]
+            size = id_sample.size()[-1]
+            channels = id_sample.size()[1]
+            new_transforms = [transforms.ToPILImage()]
+            
+            if channels == 1:
+                new_transforms.append(transforms.Grayscale())
+                
+            new_transforms.append(transforms.Resize((size, size)))
+            new_transforms.append(transforms.ToTensor())
+            
+            transform = transform.Compose([transform, transform.Compose(new_transforms)])
     try:
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
@@ -86,6 +103,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     else:
         in_dataset = get_dataset(in_dataset, in_transform, trian=True, **kwargs)
     
+    in_transform = in_dataset.transform
+    
     # Sampling - ID
     if in_dataset is not None and sample_num is not None:
         in_dataset = sample_dataset(in_dataset, portion=sample_num)
@@ -105,7 +124,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
                                         neg_transformations=neg_datasets, **kwargs))
         for out in out_dataset:
             if out not in negatives:
-                all_out_datasets.append(get_dataset(out, out_transform, train=True, **kwargs))
+                all_out_datasets.append(get_dataset(out, out_transform, train=True,
+                                                    in_dataset=in_dataset, in_transform=in_transform, **kwargs))
         length = int(out_in_ratio * len(in_dataset))
         out_dataset = MixedDataset(all_out_datasets, label=OUT_LABEL, length=length, transform=out_transform)
     else:
