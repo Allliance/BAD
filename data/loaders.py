@@ -24,7 +24,7 @@ def get_transform(dataset):
       return bw_transform
   elif dataset in ['gaussian', 'blank']:
       return None
-  elif dataset in ['pubfig']:
+  elif dataset in ['pubfig', 'TI']:
       return hr_transform
   else:
       raise NotImplementedError
