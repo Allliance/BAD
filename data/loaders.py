@@ -54,7 +54,6 @@ def get_dataset(name, transform=None, train=False,
             size = id_sample.size()[-1]
             channels = id_sample.size()[0]
             new_transforms = [transforms.ToPILImage()]
-            print(channels, size)
             
             if channels == 1:
                 new_transforms.append(transforms.Grayscale())
@@ -64,7 +63,6 @@ def get_dataset(name, transform=None, train=False,
             new_transforms.append(transforms.ToTensor())
             
             transform = transforms.Compose([transform, transforms.Compose(new_transforms)])
-            print(transform)
     try:
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
