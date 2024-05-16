@@ -115,8 +115,11 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     else:
         in_dataset = get_dataset(in_dataset, in_transform, trian=True, **kwargs)
     
-    in_transform = in_dataset.transform
-    
+    try:
+        in_transform = in_dataset.transform
+    except Exception as _:
+        # Trojai dataset
+        pass
     # Sampling - ID
     if in_dataset is not None and sample_num is not None:
         in_dataset = sample_dataset(in_dataset, portion=sample_num)
