@@ -2,7 +2,7 @@ from PIL import Image
 from torchvision import transforms
 import torch
 from torch.utils.data import Dataset
-from torchvision.transforms.functional import rotate
+from torchvision.transforms.functional import rotate, resize
 import torchvision
 from torchvision.datasets import ImageFolder
 import os
@@ -34,6 +34,9 @@ def get_mixup(**kwargs):
     def mixup(image, imagenet_dataset, mixup_alpha):
         imagenet_idx = np.random.randint(len(imagenet_dataset))
         imagenet_img, _ = imagenet_dataset[imagenet_idx]
+
+        if imagenet_img.size()[-1] != image.size()[-1]:
+            imagenet_img = resize(imagenet_img, image.size()[-1])
 
         new_mixup_alpha = get_random_param(mixup_alpha)
 
