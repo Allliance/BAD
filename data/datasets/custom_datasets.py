@@ -11,9 +11,11 @@ import numpy as np
 from .neg_transformations import get_cutpaste, get_distort, get_elastic, get_mixup, get_rot
 
 class NegativeDataset(Dataset):
-    def __init__(self, base_dataset, label, neg_transformations=[], **kwargs):
+    def __init__(self, base_dataset, label, neg_transformations=[], sequential=False, **kwargs):
         self.base_dataset = base_dataset
         self.label = label
+        self.sequential = sequential
+        self.transforms_order = neg_transformations
         self.transforms = {}
         for transform in neg_transformations:
             if transform == 'elastic':
@@ -33,7 +35,16 @@ class NegativeDataset(Dataset):
 
     def __getitem__(self, idx):
         image, _ = self.base_dataset[idx]
-        transform = self.transforms[np.random.choice(list(self.transforms.keys()))]
+        if self.sequential:
+            def transform_func(image):
+                for transform in self.transforms_order:
+                    image = transform(image)
+                    
+                return image
+            
+            transform = transform_func
+        else:
+            transform = self.transforms[np.random.choice(list(self.transforms.keys()))]
         
         return transform(image), self.label
 
