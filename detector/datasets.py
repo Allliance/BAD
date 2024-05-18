@@ -58,7 +58,7 @@ class ModelDataset(Dataset):
             
             cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
             
-            if sample:
+            if balanced:
                 cleans_data = random.sample(cleans_data, min(len(self.bads_data), len(cleans_data)))
             self.cleans_data = cleans_data
         
