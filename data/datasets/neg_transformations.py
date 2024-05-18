@@ -2,7 +2,7 @@ from PIL import Image
 from torchvision import transforms
 import torch
 from torch.utils.data import Dataset
-from torchvision.transforms.functional import rotate, resize, to_grayscale
+from torchvision.transforms.functional import rotate, resize, to_grayscale, to_pil_image, to_tensor
 import torchvision
 from torchvision.datasets import ImageFolder
 import os
@@ -39,7 +39,7 @@ def get_mixup(**kwargs):
             print("Yow")
             imagenet_img = resize(imagenet_img, image.size()[-1])
         if imagenet_img.size()[0] != image.size()[0]:
-            imagenet_img = to_grayscale(imagenet_img, image.size()[0])
+            imagenet_img = to_tensor(to_grayscale(to_pil_image(imagenet_img), image.size()[0]))
 
         new_mixup_alpha = get_random_param(mixup_alpha)
 
