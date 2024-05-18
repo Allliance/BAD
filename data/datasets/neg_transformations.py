@@ -36,13 +36,10 @@ def get_mixup(**kwargs):
         imagenet_img, _ = imagenet_dataset[imagenet_idx]
 
         if imagenet_img.size()[-1] != image.size()[-1]:
-            print("Yow")
             imagenet_img = resize(imagenet_img, (image.size()[-2], image.size()[-1]))
-            print(imagenet_img.size())
             
         if imagenet_img.size()[0] != image.size()[0]:
             imagenet_img = to_tensor(to_grayscale(to_pil_image(imagenet_img), image.size()[0]))
-        print(imagenet_img.size())
         new_mixup_alpha = get_random_param(mixup_alpha)
 
         mixed_img = (1 - new_mixup_alpha) * image + new_mixup_alpha * imagenet_img
