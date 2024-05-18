@@ -26,7 +26,7 @@ def extract_info_from_filepath(filepath):
     }
 
 class ModelDataset(Dataset):
-    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5, discards=None, version=None):
+    def __init__(self, cleans_folder, bads_folder, model_loader, sample=False, sample_k=5, discards=None, version=None, more_clean=True):
         self.data = []
         self.model_data_dict = {}
         self.loader = model_loader
@@ -58,7 +58,7 @@ class ModelDataset(Dataset):
             cleans_data = [extract_info_from_filepath(model_path) for model_path in extract_models_paths(cleans_folder)]
             
             if sample:
-                cleans_data = random.sample(cleans_data, sample_k*4)
+                cleans_data = random.sample(cleans_data, sample_k*(4 if more_clean else 1))
             self.cleans_data = cleans_data
         
         self.data = self.bads_data + self.cleans_data
