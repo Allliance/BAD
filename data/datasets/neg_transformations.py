@@ -2,7 +2,7 @@ from PIL import Image
 from torchvision import transforms
 import torch
 from torch.utils.data import Dataset
-from torchvision.transforms.functional import rotate, resize, grayscale
+from torchvision.transforms.functional import rotate, resize, to_grayscale
 import torchvision
 from torchvision.datasets import ImageFolder
 import os
