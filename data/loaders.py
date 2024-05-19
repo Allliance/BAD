@@ -44,6 +44,7 @@ def get_dataset(name, transform=None, train=False,
     - 'gaussian'
     - 'blank'
     - 'uniform'
+    - 'stl'
     - 'TI'
     '''
     
@@ -73,6 +74,8 @@ def get_dataset(name, transform=None, train=False,
     try:
         if name == 'SVHN':
             return torchvision.datasets.SVHN(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
+        elif name == 'stl10':
+            return torchvision.datasets.STL10(root=ROOT, split='train' if train else 'test', download=download, transform=transform)
         elif name == 'TI':
             return torchvision.datasets.ImageFolder(root=TINY_IMAGENET_ROOT, transform=transform)
         elif name == 'mnist':
