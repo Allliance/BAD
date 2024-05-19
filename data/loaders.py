@@ -21,6 +21,8 @@ negatives = ['rot', 'mixup', 'cutpaste', 'distort', 'elastic']
 def get_transform(dataset):
   if dataset in ['cifar10', 'cifar100', 'gtsrb', 'SVHN']:
       return normal_transform
+  elif dataset in ['stl']:
+      return bw_transform
   elif dataset in ['fmnist', 'mnist']:
       return bw_transform
   elif dataset in ['gaussian', 'blank']:
