@@ -12,6 +12,10 @@ celeba_transform = transforms.Compose([
     transforms.ToTensor()
     ])
 
+no_transform = transforms.Compose([
+    transforms.ToTensor()
+    ])
+
 bw_transform = transforms.Compose([
     transforms.ToTensor()
     ])
