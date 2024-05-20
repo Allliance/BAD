@@ -61,59 +61,79 @@ TROJAI_ROOT_DICT = {
 }
 
 CLEAN_ROOT_DICT = {
-'cifar10': {
+'a2o':{
+    'cifar10': {
     'resnet': '/kaggle/input/clean-resnet18-120models-dataset',
     'preact': '/kaggle/input/cleanset-preact',
     'vit': '/kaggle/input/vitb16-cifar10-allmodels/models/clean',
+    },
+    'cifar100': {
+        'resnet': '/kaggle/input/cifar100-renset18-all-models/models/clean',
+        'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/models/clean',
+    },
+    'mnist': {
+        'resnet': '/kaggle/input/clean-testset-resnet-mnist/models',
+        'preact': '/kaggle/input/clean-preactresnet18-mnist-120models-dataset',
+    },
+    'gtsrb': {
+        'resnet': '/kaggle/input/gtsrb-renset18-all-models/models/clean',
+        'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/models/clean',
+    },
+    'celeba': {
+        'resnet': '',
+        'preact': '',
+    },
+    'pubfig': {
+        'resnet': '/kaggle/input/pubfig-resnet-allmodels/models/clean',
+        'preact': '/kaggle/input/pubfig-preact-allmodels/models/clean',
+    }
 },
-'cifar100': {
-    'resnet': '/kaggle/input/cifar100-renset18-all-models/models/clean',
-    'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/models/clean',
-},
-'mnist': {
-    'resnet': '/kaggle/input/clean-testset-resnet-mnist/models',
-    'preact': '/kaggle/input/clean-preactresnet18-mnist-120models-dataset',
-},
-'gtsrb': {
-    'resnet': '/kaggle/input/gtsrb-renset18-all-models/models/clean',
-    'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/models/clean',
-},
-'celeba': {
-    'resnet': '',
-    'preact': '',
-},
-'pubfig': {
-    'resnet': '/kaggle/input/pubfig-resnet-allmodels/models/clean',
-    'preact': '/kaggle/input/pubfig-preact-allmodels/models/clean',
+'a2a':{
+    'cifar10': {
+        
+    }
 }
 }
 
+CLEAN_ADV_ROOT_DICT = {
+    
+}
+
 BAD_ROOT_DICT = {
-'cifar10': {
+'a2o':{
+    'cifar10': {
     'resnet': '/kaggle/input/backdoored-resnet18-120models-6attack-dataset',
     'preact': '/kaggle/input/badset-preact',
     'vit': '/kaggle/input/vitb16-cifar10-allmodels/models'
     },
-'mnist': {
-    'resnet': '/kaggle/input/bad-testset-resnet-mnist/models',
-    'preact': '/kaggle/input/backdoored-preactresnet18-mnist-100models-5attack',
+    'mnist': {
+        'resnet': '/kaggle/input/bad-testset-resnet-mnist/models',
+        'preact': '/kaggle/input/backdoored-preactresnet18-mnist-100models-5attack',
+    },
+    'cifar100': {
+        'resnet': '/kaggle/input/cifar100-renset18-all-models/models',
+        'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/models',
+    },
+    'gtsrb': {
+        'resnet': '/kaggle/input/gtsrb-renset18-all-models/models',
+        'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/models',
+    },
+    'celeba': {
+        'resnet': '',
+        'preact': '',
+    },
+    'pubfig': {
+        'resnet': '/kaggle/input/pubfig-resnet-allmodels/models',
+        'preact': '/kaggle/input/pubfig-preact-allmodels/models',
+    }
 },
-'cifar100': {
-    'resnet': '/kaggle/input/cifar100-renset18-all-models/models',
-    'preact': '/kaggle/input/cifar100-preactresnet18-allmodels/models',
-},
-'gtsrb': {
-    'resnet': '/kaggle/input/gtsrb-renset18-all-models/models',
-    'preact': '/kaggle/input/gtsrb-preactresnet18-cleans-bads/models',
-},
-'celeba': {
-    'resnet': '',
-    'preact': '',
-},
-'pubfig': {
-    'resnet': '/kaggle/input/pubfig-resnet-allmodels/models',
-    'preact': '/kaggle/input/pubfig-preact-allmodels/models',
+'a2a':{
+    
 }
+}
+
+BAD_ADV_ROOT_DICT = {
+    
 }
 
 # Number of classes

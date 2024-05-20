@@ -7,10 +7,12 @@ class BaseModel(nn.Module):
     def __init__(self, backbone, normalize=True,
                  mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261],
                  input_scalar=None, feature_extractor=None, meta_data=None,
-                 input_channels=3):
+                 input_channels=3, double_norm=False):
         super(BaseModel, self).__init__()
         mu = torch.tensor(mean)
         std = torch.tensor(std)
+        
+        self.double_norm = double_norm
         
         if input_channels == 3:
             mu = mu.view(3,1,1)
@@ -47,6 +49,8 @@ class BaseModel(nn.Module):
         if self.input_scalar is not None:
             x = x * self.input_scalar
         if self.do_norm:
+            x = self.norm(x)
+        if self.double_norm and self.do_norm:
             x = self.norm(x)
         out = self.backbone(x)
         return out
