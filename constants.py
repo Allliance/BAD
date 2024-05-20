@@ -16,9 +16,10 @@ TROJAI_ROOT_DICT = {
     'test': ['/kaggle/input/trojai-r0-train-p1/models'],
     },
     1: {
-        'train': {
-        'folders': ['/kaggle/input/trojai-r1-train/models'],
-        'metadata': '/kaggle/input/trojai-r1-train/models/metadata.csv',
+        'train': 
+        {
+        'folders': [f'/kaggle/input/trojai-r1-all-train-p{i}/models' for i in range(11)],
+        'metadata': '/kaggle/input/trojai-r1-all-train-p0/metadata.csv',
         },
         'test': {
             'folders': ['/kaggle/input/trojai-r1-test/models'],
@@ -54,8 +55,19 @@ TROJAI_ROOT_DICT = {
         'metadata': '/kaggle/input/trojai-r4-all-train-part0/metadata.csv',
         },
     'test': {
-        'folders': ['/kaggle/input/trojai-r4-test-p0/models', '/kaggle/input/trojai-r3-train-p1/models'],
+        'folders': ['/kaggle/input/trojai-r4-test-p0/models', '/kaggle/input/trojai-r4-train-p1/models'],
         'metadata': '/kaggle/input/trojai-r4-test-p0/models/metadata.csv',
+    },
+    11:{
+    'train':
+        {
+        'folders': [f'/kaggle/input/trojai-round11-all-train-part{i}/models' for i in range(2)],
+        'metadata': '/kaggle/input/trojai-round11-all-train-part0/models/metadata.csv',
+        },
+    'test': {
+        'folders': ['/kaggle/input/trojai-r11-test-p0/models', '/kaggle/input/trojai-r11-train-p1/models'],
+        'metadata': '/kaggle/input/trojai-r11-test-p0/models/metadata.csv',
+    },
     }
     },
 }
