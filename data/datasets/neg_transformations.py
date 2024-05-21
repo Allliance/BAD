@@ -49,9 +49,9 @@ def get_mixup(**kwargs):
 
 def get_elastic(**kwargs):
     p = kwargs.get('p', 1.0)
-    alpha = kwargs.get('alpha', 100)
-    sigma = kwargs.get('sigma', 50)
-    alpha_affine = kwargs.get('alpha_affine', 100)
+    alpha = kwargs.get('alpha', 150.0)
+    sigma = kwargs.get('sigma', 5.0)
+    alpha_affine = kwargs.get('alpha_affine', 10)
     interp = kwargs.get('interp', "bilinear") # or nearest
     
     # to_pil = transforms.ToPILImage()
