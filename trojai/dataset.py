@@ -7,6 +7,7 @@ import os
 import re
 import numpy as np
 import torch
+import json
 
 def image_loader(fn):
     img = skimage.io.imread(fn)
