@@ -41,7 +41,13 @@ class ExampleDataset(Dataset):
         
         images_paths = [x for x in os.listdir(root_dir) if x.endswith('.png')]
             
-        self.labels = [get_class(image_path) for image_path in images_paths]
+        if rnd < 11:
+            self.labels = [get_class(image_path) for image_path in images_paths]
+        else:
+            self.labels = []
+            for image_path in image_paths:
+                with open(os.path.join(root_dir, image_path.replace('.png', '.json'))) as f:
+                    self.labels.append(json.load(f))
         self.data = [image_loader(os.path.join(root_dir, image_path)) for image_path in images_paths]
         print("Loading a dataset with", len(set(self.labels)), "classes")
 
