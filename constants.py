@@ -58,10 +58,10 @@ TROJAI_ROOT_DICT = {
         'folders': ['/kaggle/input/trojai-r4-test-p0/models', '/kaggle/input/trojai-r4-train-p1/models'],
         'metadata': '/kaggle/input/trojai-r4-test-p0/models/metadata.csv',
     },
-    11:{
+    11: {
     'train':
         {
-        'folders': [f'/kaggle/input/trojai-round11-train-p1/models', '/kaggle/input/trojai-round11-all-train-part0/models'],
+        'folders': ['/kaggle/input/trojai-round11-train-p1/models', '/kaggle/input/trojai-round11-all-train-part0/models'],
         'metadata': '/kaggle/input/trojai-round11-all-train-part0/models/metadata.csv',
         },
     'test': {
