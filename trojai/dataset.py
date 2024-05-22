@@ -32,7 +32,7 @@ def get_class(filepath):
     return int(re.search(r'class_(\d+)', filepath).group(1))
 
 class ExampleDataset(Dataset):
-    def __init__(self, root_dir, size=224, use_bgr=False):
+    def __init__(self, root_dir, size=224, use_bgr=False, rnd=None):
         self.transform = transforms.Compose([
             transforms.ToPILImage(),
             transforms.ToTensor(),

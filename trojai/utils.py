@@ -80,7 +80,7 @@ def get_dataset_trojai(model):
     else:
         example_data_path = 'clean-example-data'
     return ExampleDataset(root_dir=os.path.join(os.path.dirname(model.meta_data['model_path']),
-                          example_data_path), use_bgr=model.meta_data['bgr'])
+                          example_data_path), use_bgr=model.meta_data['bgr'], rnd=rnd)
 
 
 def get_sanityloader_trojai(model, batch_size=None):
