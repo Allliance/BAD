@@ -45,7 +45,7 @@ class ExampleDataset(Dataset):
             self.labels = [get_class(image_path) for image_path in images_paths]
         else:
             self.labels = []
-            for image_path in image_paths:
+            for image_path in images_paths:
                 with open(os.path.join(root_dir, image_path.replace('.png', '.json'))) as f:
                     self.labels.append(json.load(f))
         self.data = [image_loader(os.path.join(root_dir, image_path)) for image_path in images_paths]

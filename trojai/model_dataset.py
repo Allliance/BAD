@@ -64,6 +64,10 @@ class TrojAIDataset(Dataset):
         return len(self.model_data)
 
     def __getitem__(self, idx):
-        model = self.model_loader(self.model_data[idx], meta_data=self.model_data[idx], normalize=False)
-        return model, model.meta_data['label'] if model is not None else None
+        try:
+            model = self.model_loader(self.model_data[idx], meta_data=self.model_data[idx], normalize=False)
+            return model, model.meta_data['label'] if model is not None else None
+        except Exception as e:
+            print("Following error occured while loading model", str(e))
+            return None, None
     
