@@ -32,13 +32,13 @@ def get_models_scores(model_dataset,
             model, label = model_dataset[i]
 
             score = model_score_function(model)
-
             if progress:
                 print(f'No. {i}, Label: {label}, Score: {score}')
             
             scores.append(score)
             labels.append(label)
             if live:
+                print("Label:", label, "Score:", score)
                 seen_labels.add(label)
                 
                 if len(seen_labels) > 1:
