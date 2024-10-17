@@ -111,7 +111,9 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
                    sample_num=None, batch_size=256,
                    in_transform=None, out_transform=None,
                    custom_ood_dataset=None, custom_in_dataset=None,
-                   out_in_ratio=1, final_ood_trans=None, **kwargs):
+                   out_in_ratio=1, final_ood_trans=None,
+                   only_ood=False,
+                   **kwargs):
     assert in_dataset is not None or custom_in_dataset is not None or custom_ood_dataset is not None or out_dataset is not None
     
     # In-Distribution Dataset
@@ -162,6 +164,9 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     if out_dataset is not None:
         out_dataset = SingleLabelDataset(OUT_LABEL, out_dataset)
     
+    if only_ood:
+        in_dataset = None
+
     if in_dataset is not None and out_dataset is not None:
         final_dataset = torch.utils.data.ConcatDataset([in_dataset, out_dataset])
     elif in_dataset is not None:
