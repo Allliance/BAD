@@ -117,7 +117,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     # In-Distribution Dataset
     if custom_in_dataset is not None:
         in_dataset = custom_in_dataset
-    else:
+    elif in_dataset is not None:
         in_dataset = get_dataset(in_dataset, in_transform, trian=True, **kwargs)
     
     try:
