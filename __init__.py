@@ -42,6 +42,4 @@ from .validate import get_models_scores, find_best_eps, get_auc_on_models_scores
 # Utils
 from .utils import find_min_eps, get_best_acc_and_thresh, clear_memory, split_dataset_by_arch
 
-# Scores
-from .score_functions import get_aucs, get_l2
 

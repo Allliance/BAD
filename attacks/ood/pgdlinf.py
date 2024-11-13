@@ -23,7 +23,7 @@ class PGD(Attack):
         >>> adv_images = attack(images, labels)
     """
 
-    def __init__(self, model, target_class=None, eps=8/255, alpha=2/255, steps=10, random_start=True, attack_in=True):
+    def __init__(self, model, target_class=None, eps=8/255, alpha=2/255, steps=10, random_start=True, attack_in=False):
         super().__init__("PGD", model)
         self.eps = eps
         self.alpha = alpha
