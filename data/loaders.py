@@ -157,8 +157,10 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
         out_dataset = custom_ood_dataset
         
     if out_dataset and final_ood_trans:
+        if not isinstance(final_ood_trans, list):
+            final_ood_trans = [final_ood_trans]
         out_dataset = NegativeDataset(base_dataset=out_dataset, label=OUT_LABEL,
-                                          neg_transformations=[final_ood_trans], **kwargs)
+                                          neg_transformations=final_ood_trans, **kwargs)
 
     # Labeling - OOD
     if out_dataset is not None:
