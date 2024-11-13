@@ -85,7 +85,7 @@ class ModelDataset(Dataset):
 
     def __getitem__(self, idx):
         model = self.load_model(self.data[idx])
-        label = int(self.data[idx].get('attack') is None)
+        label = int(self.data[idx].get('attack') is not None)
         data = copy(self.data[idx])
         
         if self.version is not None:
