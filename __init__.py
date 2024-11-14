@@ -31,7 +31,7 @@ from .constants import num_classes as num_classes_dict
 
 # visualization
 from .visualization import visualize_samples
-from .attacks.ood.pgdlinf import PGD as Attack
+from .attacks.ood.pgdfinal import PGD as Attack
 
 # Trojai
 from BAD.trojai.utils import get_sanityloader_trojai, get_oodloader_trojai, load_model
