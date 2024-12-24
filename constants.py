@@ -12,8 +12,14 @@ SMALL_ARCHS = ['squeezenetv1_1', 'squeezenetv1_0', 'shufflenet1_0',
 
 TROJAI_ROOT_DICT = {
     0: {
-    'train': ['/kaggle/input/trojai-r0-train-p0/root/models'],
-    'test': ['/kaggle/input/trojai-r0-train-p1/models'],
+        'train': {
+          'folders': ['/kaggle/input/trojai-r0-train-p0/root/models'],
+          'metadata': '/kaggle/input/trojai-r0-train-p0/root/models/metadata.csv',
+        },
+        'test': {
+          'folders': ['/kaggle/input/trojai-r0-train-p1/models'],
+          'metadata': '/kaggle/input/trojai-r0-train-p1/models/metadata.csv',
+        }
     },
     1: {
         'train': 
