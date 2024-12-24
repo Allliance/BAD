@@ -40,6 +40,8 @@ class TrojAIDataset(Dataset):
                         'rnd': rnd,
                         'name': name,
                         'bgr': self.bgr,
+                        # 0 in ground truth means that the model is trojaned
+                        # So in our setting, 1 means trojaned and 0 means clean
                         'label': 1 - int(label),
                         'model_path': model_path,
                         'num_classes': data[name]['number_classes'],
