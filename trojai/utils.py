@@ -73,12 +73,17 @@ def load_model(model_data, **model_kwargs):
 
 def get_dataset_trojai(model):
     rnd = model.meta_data['rnd']
-    if rnd < 3:
+    # if rnd < 3:
+    #     example_data_path = 'example_data'
+    # elif rnd == 4:
+    #     example_data_path = 'clean_example_data'
+    # else:
+    #     example_data_path = 'clean-example-data'
+    if rnd < 1:
         example_data_path = 'example_data'
-    elif rnd == 4:
-        example_data_path = 'clean_example_data'
     else:
         example_data_path = 'clean-example-data'
+        
     return ExampleDataset(root_dir=os.path.join(os.path.dirname(model.meta_data['model_path']),
                           example_data_path), use_bgr=model.meta_data['bgr'], rnd=rnd)
 
