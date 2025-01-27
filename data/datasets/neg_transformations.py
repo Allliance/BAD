@@ -98,30 +98,31 @@ def get_colorjitter_plus(**kwargs):
     hue = kwargs.get('hue', 0.1)
     p = kwargs.get('p', 0.8)
     
+    color_jitter = transforms.ColorJitter(
+        brightness=brightness,
+        contrast=contrast,
+        saturation=saturation,
+        hue=hue
+    )
+    
     def colorjitter_plus(image):
         if random.random() > p:
             return image
+        
+        # Convert tensor to PIL for ColorJitter
+        if isinstance(image, torch.Tensor):
+            to_pil = transforms.ToPILImage()
+            to_tensor = transforms.ToTensor()
+            image = to_pil(image)
             
-        # Convert to HSV for better color manipulation
-        hsv_image = image.convert('HSV')
-        hsv = np.array(hsv_image)
+        # Apply color jitter
+        image = color_jitter(image)
         
-        # Correlation-aware adjustments
-        if random.random() < 0.5:
-            # Increase saturation more for highly saturated regions
-            saturation_mask = hsv[:,:,1] > 128
-            hsv[:,:,1][saturation_mask] = np.clip(
-                hsv[:,:,1][saturation_mask] * (1 + random.uniform(0, saturation)), 0, 255)
-        
-        # Apply random color transformations
-        transforms_to_apply = transforms.ColorJitter(
-            brightness=brightness,
-            contrast=contrast,
-            saturation=saturation,
-            hue=hue
-        )
-        
-        return transforms_to_apply(image)
+        # Convert back to tensor if input was tensor
+        if isinstance(image, Image.Image):
+            image = to_tensor(image)
+            
+        return image
     
     return colorjitter_plus
 
