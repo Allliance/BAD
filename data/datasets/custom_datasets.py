@@ -8,7 +8,7 @@ from torchvision.datasets import ImageFolder
 import os
 import random
 import numpy as np
-from .neg_transformations import get_cutpaste, get_distort, get_elastic, get_mixup, get_rot
+from .neg_transformations import get_cutpaste, get_distort, get_elastic, get_mixup, get_rot, get_gridmask, get_jigsaw, get_random_erasing, get_colorjitter_plus
 
 class NegativeDataset(Dataset):
     def __init__(self, base_dataset, label, neg_transformations, sequential=False, **kwargs):
@@ -20,16 +20,18 @@ class NegativeDataset(Dataset):
         
         # Helper function to get transformation based on name
         def get_transform(transform_name, kwargs):
-            if transform_name == 'elastic':
-                return get_elastic(**kwargs.get('elastic', {}))
-            elif transform_name == 'mixup':
-                return get_mixup(**kwargs.get('mixup', {}))
-            elif transform_name == 'cutpaste':
-                return get_cutpaste(**kwargs.get('cutpaste', {}))
-            elif transform_name == 'distort':
-                return get_distort(**kwargs.get('distort', {}))
-            elif transform_name == 'rot':
-                return get_rot(**kwargs.get('rot', {}))
+            transform_map = {
+                'elastic': get_elastic,
+                'mixup': get_mixup,
+                'cutpaste': get_cutpaste,
+                'distort': get_distort,
+                'rot': get_rot,
+                'gridmask': get_gridmask,
+                'jigsaw': get_jigsaw,
+                'random_erasing': get_random_erasing,
+                'colorjitter_plus': get_colorjitter_plus
+            }
+            return transform_map[transform_name](**kwargs.get(transform_name, {}))
             
         # Handle both single transformations and lists of transformations
         for transform_item in neg_transformations:
