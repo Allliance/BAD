@@ -127,6 +127,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     except Exception as _:
         # Trojai dataset
         pass
+    
     # Sampling - ID
     if in_dataset is not None and sample_num is not None:
         in_dataset = sample_dataset(in_dataset, portion=sample_num)
@@ -135,19 +136,24 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
     if in_dataset is not None:
         in_dataset = SingleLabelDataset(IN_LABEL, in_dataset)
 
-    # Out-Distribution Dataset
+    # Out-of-Distribution Dataset
     if custom_ood_dataset is None:
         if isinstance(out_dataset, str):
             out_dataset = [out_dataset]
         all_out_datasets = []
-        neg_datasets = [item for item in out_dataset if item in negatives]
+        neg_datasets = []
+        for out in out_dataset:
+            try:
+                all_out_datasets.append(get_dataset(out, out_transform, train=True,
+                                                        in_dataset=in_dataset, in_transform=in_transform, **kwargs))
+            except Exception as e:
+                neg_datasets.append(out)
+                continue    
+        
         if neg_datasets:
             all_out_datasets.append(NegativeDataset(base_dataset=in_dataset, label=OUT_LABEL,
                                         neg_transformations=neg_datasets, **kwargs))
-        for out in out_dataset:
-            if out not in negatives:
-                all_out_datasets.append(get_dataset(out, out_transform, train=True,
-                                                    in_dataset=in_dataset, in_transform=in_transform, **kwargs))
+            
         if in_dataset is not None:
             length = int(out_in_ratio * len(in_dataset))
         else:
