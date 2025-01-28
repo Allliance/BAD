@@ -93,6 +93,10 @@ def get_dataset(name, transform=None, train=False,
         elif name == 'pubfig':
             return PubFig(train=train, transform=transform)
         elif name in ['gaussian', 'blank', 'uniform']:
+            id_sample = in_dataset[0][0]
+            size = id_sample.size()[-1]
+            channels = id_sample.size()[0]
+            
             label = dummy_params.get('label', OUT_LABEL)
             dummy_params['size'] = size
             dummy_params['channels'] = channels
