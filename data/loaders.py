@@ -112,7 +112,7 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
                    in_transform=None, out_transform=None,
                    custom_ood_dataset=None, custom_in_dataset=None,
                    out_in_ratio=1, final_ood_trans=None,
-                   only_ood=False,
+                   only_ood=False, debug=False,
                    **kwargs):
     assert in_dataset is not None or custom_in_dataset is not None or custom_ood_dataset is not None or out_dataset is not None
     
@@ -147,6 +147,8 @@ def get_ood_loader(in_dataset=None, out_dataset=None,
                 all_out_datasets.append(get_dataset(out, out_transform, train=True,
                                                         in_dataset=in_dataset, in_transform=in_transform, **kwargs))
             except Exception as e:
+                if debug:
+                    raise e
                 neg_datasets.append(out)
                 continue    
         
