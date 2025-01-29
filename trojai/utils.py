@@ -79,10 +79,10 @@ def get_dataset_trojai(model):
     #     example_data_path = 'clean_example_data'
     # else:
     #     example_data_path = 'clean-example-data'
-    if rnd < 1:
-        example_data_path = 'example_data'
-    else:
+    if rnd == 1:
         example_data_path = 'clean-example-data'
+    else:
+        example_data_path = 'example_data'
         
     return ExampleDataset(root_dir=os.path.join(os.path.dirname(model.meta_data['model_path']),
                           example_data_path), use_bgr=model.meta_data['bgr'], rnd=rnd)
